@@ -11,8 +11,6 @@ export default function Home() {
   const { addMultipleFilesToStore, buffers } = useStore();
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    console.log(acceptedFiles);
-
     const readerResults = await Promise.all(
       acceptedFiles.map((file) => {
         return new Promise((resolve, reject) => {

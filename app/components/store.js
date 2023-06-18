@@ -28,6 +28,7 @@ const useStore = create((set, get) => ({
     buffers: [],
     fileNames: [],
     results: [],
+    selectedMesh: null,
 
     addFileToStore: (newBuffer, name) => {
         set((state) => ({
@@ -44,7 +45,11 @@ const useStore = create((set, get) => ({
     },
 
     clearFiles: () => {
-        set({ buffers: [] });
+        set({ buffers: [], fileNames: [], results: [] });
+    },
+
+    setSelectedMesh: (mesh) => {
+        set({ selectedMesh: mesh });
     },
 
     generateScene: async () => {
