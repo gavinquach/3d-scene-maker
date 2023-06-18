@@ -1,6 +1,7 @@
 "use client";
 
 import {
+    AdaptiveDpr,
     BakeShadows,
     ContactShadows,
     Environment,
@@ -16,60 +17,79 @@ import {
     Outline,
 } from "@react-three/postprocessing";
 
-import useStore from "./store.js";
+import ControlParams from "./Controls/ControlParams.jsx";
+import useStore from "../utils/store.js";
 import Model from "./Model";
 // import { schadowplatz_1k } from "../assets/images";
 
 const Scene = () => {
     const generateScene = useStore((state) => state.generateScene);
+    const buffers = useStore((state) => state.buffers);
     const results = useStore((state) => state.results);
     const fileNames = useStore((state) => state.fileNames);
     const selectedMesh = useStore((state) => state.selectedMesh);
+    const setTransforms = useStore((state) => state.setTransforms);
 
+    const { transformMode, environment } = ControlParams();
+
+    // generate scene whenever buffer array is changed
     useEffect(() => {
         startTransition(() => {
             generateScene();
         });
-    }, [generateScene]);
+    }, [buffers, generateScene]);
+
+    const handleTransform = () => {
+        const mesh = selectedMesh?.current;
+        if (mesh) {
+            startTransition(() => {
+                setTransforms({
+                    position: mesh.position,
+                    rotation: mesh.rotation,
+                    scale: mesh.scale,
+                });
+            });
+        }
+    };
 
     return (
-        <div className="h-full w-screen">
-            <Canvas
-                gl={{ preserveDrawingBuffer: true }}
-                shadows
-                dpr={[1, 1.5]}
-                camera={{ position: [-5, 5, -5], fov: 50 }}
-            >
-                <Perf position="top-left" />
-                <ambientLight intensity={0.3} />
-                <Environment background preset="city" />
+        <Canvas
+            gl={{ preserveDrawingBuffer: true }}
+            shadows
+            dpr={[1, 1.5]}
+            camera={{ position: [0, 5, -10], fov: 50 }}
+        >
+            <Perf position="bottom-right" />
+            <ambientLight intensity={0.3} />
+            <Environment background preset={environment} />
 
-                <OrbitControls makeDefault />
+            <OrbitControls makeDefault />
 
-                <Suspense fallback={null}>
-                    <Selection>
-                        <EffectComposer multisampling={8} autoClear={false}>
-                            <Outline
-                                blur
-                                visibleEdgeColor="orange"
-                                edgeStrength={100}
-                                width={1000}
-                            />
-                        </EffectComposer>
-                        {results.length > 0 &&
-                            results.map((result, i) => (
-                                <Model key={fileNames[i]} result={result} name={fileNames[i]} />
-                            ))}
-                        {selectedMesh && (
-                            <TransformControls
-                                object={selectedMesh}
-                                enabled={selectedMesh}
-                                mode={"translate"}
-                            />
-                        )}
-                    </Selection>
+            <Suspense fallback={null}>
+                <Selection>
+                    <EffectComposer multisampling={8} autoClear={false}>
+                        <Outline
+                            blur
+                            visibleEdgeColor="orange"
+                            edgeStrength={100}
+                            width={1000}
+                        />
+                    </EffectComposer>
+                    {results.length > 0 &&
+                        results.map((result, i) => (
+                            <Model key={fileNames[i]} result={result} name={fileNames[i]} />
+                        ))}
+                    {selectedMesh && (
+                        <TransformControls
+                            object={selectedMesh}
+                            enabled={selectedMesh}
+                            mode={transformMode}
+                            onObjectChange={handleTransform}
+                        />
+                    )}
+                </Selection>
 
-                    <ContactShadows
+                {/* <ContactShadows
                         frames={1}
                         position={[0, -0.1, 0]}
                         opacity={0.75}
@@ -77,10 +97,10 @@ const Scene = () => {
                         blur={2}
                         far={6}
                     />
-                    <BakeShadows />
-                </Suspense>
-            </Canvas>
-        </div>
+                    <BakeShadows /> */}
+            </Suspense>
+            <AdaptiveDpr pixelated />
+        </Canvas>
     );
 };
 

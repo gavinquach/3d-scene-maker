@@ -19,6 +19,7 @@
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.6",
     "gltfjsx": "^6.2.3",
+    "leva": "^0.9.35",
     "next": "13.4.6",
     "postcss": "8.4.24",
     "r3f-perf": "^7.1.2",

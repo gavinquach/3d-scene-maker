@@ -29,6 +29,11 @@ const useStore = create((set, get) => ({
     fileNames: [],
     results: [],
     selectedMesh: null,
+    selectedMeshTransforms: {
+        position: { x: 0, y: 0, z: 0 },
+        rotation: { x: 0, y: 0, z: 0 },
+        scale: { x: 1, y: 1, z: 1 },
+    },
 
     addFileToStore: (newBuffer, name) => {
         set((state) => ({
@@ -49,7 +54,48 @@ const useStore = create((set, get) => ({
     },
 
     setSelectedMesh: (mesh) => {
-        set({ selectedMesh: mesh });
+        set({
+            selectedMesh: mesh,
+            selectedMeshTransforms: {
+                position: {
+                    x: mesh?.current?.position.x,
+                    y: mesh?.current?.position.y,
+                    z: mesh?.current?.position.z,
+                },
+                rotation: {
+                    x: mesh?.current?.rotation.x,
+                    y: mesh?.current?.rotation.y,
+                    z: mesh?.current?.rotation.z,
+                },
+                scale: {
+                    x: mesh?.current?.scale.x,
+                    y: mesh?.current?.scale.y,
+                    z: mesh?.current?.scale.z,
+                },
+            },
+        });
+    },
+
+    setTransforms: ({ position, rotation, scale }) => {
+        set({
+            selectedMeshTransforms: {
+                position: {
+                    x: position.x,
+                    y: position.y,
+                    z: position.z,
+                },
+                rotation: {
+                    x: rotation.x,
+                    y: rotation.y,
+                    z: rotation.z,
+                },
+                scale: {
+                    x: scale.x,
+                    y: scale.y,
+                    z: scale.z,
+                },
+            },
+        });
     },
 
     generateScene: async () => {
