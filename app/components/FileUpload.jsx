@@ -24,7 +24,7 @@ const FileUpload = ({ onDrop }) => {
                 <p>Drag and drop a .gltf or .glb file here</p>
             )}
 
-            {fileRejections.length && (
+            {fileRejections.length > 0 && (
                 <p className="block text-center text-xl pt-4 text-red-300">
                     Only .gltf or .glb files are accepted
                 </p>
