@@ -1,7 +1,7 @@
 "use client";
 
 import { useAnimations } from "@react-three/drei";
-import { memo, useLayoutEffect, useRef, useState } from "react";
+import { memo, startTransition, useLayoutEffect, useRef, useState } from "react";
 import { Select } from "@react-three/postprocessing";
 import useStore from "./store";
 
@@ -16,7 +16,9 @@ const Model = ({ result, name, ...props }) => {
 
     const setOutline = (bool) => {
         hover(bool);
-        setSelectedMesh(bool ? mesh : null);
+        startTransition(() => {
+            setSelectedMesh(bool ? mesh : null);
+        }, [setSelectedMesh]);
     };
 
     // play animations
