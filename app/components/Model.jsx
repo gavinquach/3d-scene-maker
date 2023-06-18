@@ -29,7 +29,6 @@ const Model = ({ result, name, ...props }) => {
                 obj.material.envMapIntensity = 0.5;
             }
         });
-        console.log(mesh.current);
     }, [actions, scene]);
 
     return (
