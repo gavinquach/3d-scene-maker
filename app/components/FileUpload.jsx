@@ -4,7 +4,7 @@ const FileUpload = ({ onDrop }) => {
     const { getRootProps, getInputProps, isDragActive, fileRejections } =
         useDropzone({
             onDrop,
-            maxFiles: 5,
+            maxFiles: 20,
             accept: ".gltf, .glb",
         });
 
