@@ -8,7 +8,8 @@ import FileUpload from "./components/FileUpload.jsx";
 import Scene from "./components/Scene.jsx";
 
 export default function Home() {
-  const { addMultipleFilesToStore, buffers } = useStore();
+  const addMultipleFilesToStore = useStore((state) => state.addMultipleFilesToStore);
+  const buffers = useStore((state) => state.buffers);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const readerResults = await Promise.all(
@@ -28,7 +29,7 @@ export default function Home() {
           name.replace(/ /g, "_").replace(/\.glb|gltf/g, "")
       )
     );
-  }, []);
+  }, [addMultipleFilesToStore]);
 
   return (
     // <main className="flex min-h-screen flex-col items-center justify-between p-24">

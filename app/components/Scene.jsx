@@ -30,7 +30,7 @@ const Scene = () => {
         startTransition(() => {
             generateScene();
         });
-    }, []);
+    }, [generateScene]);
 
     return (
         <div className="h-full w-screen">
