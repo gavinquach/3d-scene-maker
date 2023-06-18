@@ -12,7 +12,7 @@ const Model = ({ result, name, ...props }) => {
 
     const setSelectedMesh = useStore((state) => state.setSelectedMesh);
 
-    const { position, rotation, scale } = ControlParams();
+    // const { position, rotation, scale } = ControlParams();
 
     const { scene, animations } = result;
     const { actions } = useAnimations(animations, mesh);
@@ -47,9 +47,9 @@ const Model = ({ result, name, ...props }) => {
                 name={name}
                 onClick={() => setOutline(true)}
                 onPointerMissed={() => setOutline(false)}
-                position={[position.x, position.y, position.z]}
-                rotation={[rotation.x, rotation.y, rotation.z]}
-                scale={[scale.x, scale.y, scale.z]}
+                // position={[position.x, position.y, position.z]}
+                // rotation={[rotation.x, rotation.y, rotation.z]}
+                // scale={[scale.x, scale.y, scale.z]}
                 {...props}
                 dispose={null}
             />
