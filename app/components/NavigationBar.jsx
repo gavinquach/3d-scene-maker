@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import FileUploadSmall from "./FileUploadSmall.jsx";
+import FileUpload from "./FileUpload.jsx";
 import NewTabLink from "./NewTabLink.jsx";
 
 const NavigationBar = ({ onDrop }) => {
@@ -21,7 +21,7 @@ const NavigationBar = ({ onDrop }) => {
                         >
                             Upload File
                         </div>
-                        {isWindowOn && <FileUploadSmall onDrop={onDrop} />}
+                        {isWindowOn && <FileUpload small onDrop={onDrop} />}
                     </li>
                     <li className="text-white text-sm px-4 py-2">
                         <NewTabLink href="https://github.com/gavinquach/3d-scene-maker">
