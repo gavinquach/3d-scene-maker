@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import FileUpload from "./FileUpload.jsx";
 import NewTabLink from "./NewTabLink.jsx";
@@ -6,14 +6,16 @@ import NewTabLink from "./NewTabLink.jsx";
 const NavigationBar = ({ onDrop, handleDeleteObject }) => {
     const [isWindowOn, setIsWindowOn] = useState(false);
 
-    const toggleWindow = () => {
-        setIsWindowOn(!isWindowOn);
+    const toggleWindow = (bool = null) => {
+        setIsWindowOn(bool === null ? !isWindowOn : bool);
     };
     const [isSecondDropdownOpen, setIsSecondDropdownOpen] = useState(false);
 
     const toggleSecondDropdown = () => {
         setIsSecondDropdownOpen(!isSecondDropdownOpen);
     };
+
+    const isHoveringOverFileUpload = useRef(false);
 
     return (
         <header className="bg-gray-900 py-2 px-4 flex items-center justify-between">
@@ -23,10 +25,35 @@ const NavigationBar = ({ onDrop, handleDeleteObject }) => {
                         <div
                             className="text-white text-sm px-4 py-2 cursor-pointer"
                             onClick={toggleWindow}
+                            onDragOver={() => toggleWindow(true)}
+                            onDragLeave={() => {
+                                setTimeout(() => {
+                                    if (!isHoveringOverFileUpload.current) {
+                                        toggleWindow(false);
+                                    }
+                                }, 600);
+                            }}
                         >
                             Upload File
                         </div>
-                        {isWindowOn && <FileUpload small onDrop={onDrop} />}
+                        {isWindowOn && (
+                            <span
+                                onDragOver={() => {
+                                    toggleWindow(true);
+                                    isHoveringOverFileUpload.current = true;
+                                }}
+                                onDragLeave={() => {
+                                    isHoveringOverFileUpload.current = false;
+                                    setTimeout(() => {
+                                        if (!isHoveringOverFileUpload.current) {
+                                            toggleWindow(false);
+                                        }
+                                    }, 600);
+                                }}
+                            >
+                                <FileUpload small onDrop={onDrop} />
+                            </span>
+                        )}
                     </li>
                     <li className="relative">
                         <div
