@@ -35,6 +35,7 @@ export default function Home() {
                 name.replace(/ /g, "_").replace(/\.glb|gltf/g, "")
             );
 
+            // TODO: REMOVE DUPLICATE FILES FROM LIST, KEEP THE NON DUPLICATES
             let sameFile = false;
             files.forEach((file: { buffer: ArrayBuffer; name: string }) => {
                 if (filenames.includes(file.name)) {
