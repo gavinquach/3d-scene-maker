@@ -12,6 +12,7 @@ const FileUpload = ({ small = false, onDrop }) => {
         });
 
     const sameFile = useStore((state) => state.sameFile);
+    const files = useStore((state) => state.files);
 
     return (
         <>
@@ -26,6 +27,9 @@ const FileUpload = ({ small = false, onDrop }) => {
                 }
             >
                 <input {...getInputProps()} />
+
+                {files.length < 1 && <p className="text-5xl mb-8">Scene is empty! </p>}
+
                 {isDragActive ? (
                     <p>Drop the files here...</p>
                 ) : (

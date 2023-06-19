@@ -89,6 +89,16 @@ export default function Home() {
                     </main>
                 </div>
             )}
+
+            <p
+                className="fixed bottom-2 right-2 cursor-default hover:cursor-pointer"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    window.open("https://github.com/gavinquach/", "_blank", "noreferrer");
+                }}
+            >
+                3D Scene Maker (W.I.P) by gavinquach
+            </p>
         </>
     );
 }
