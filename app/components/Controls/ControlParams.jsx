@@ -4,7 +4,7 @@ import useStore from "../../utils/store.js";
 
 const ControlParams = () => {
     const selectedMeshTransforms = useStore((state) => state.selectedMeshTransforms);
-    console.log(selectedMeshTransforms);
+    // console.log(selectedMeshTransforms);
 
     const { transformMode, position, rotation, scale } = useControls("Transform mode", {
         transformMode: {

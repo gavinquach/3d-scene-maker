@@ -5,7 +5,7 @@ import { startTransition, useCallback, useEffect } from "react";
 import ControlMenu from "./components/Controls/ControlMenu.jsx";
 import FileUpload from "./components/FileUpload.jsx";
 import NavigationBar from "./components/NavigationBar.jsx";
-import Scene from "./components/Scene.jsx";
+import Viewer from "./components/Viewer.jsx";
 
 import useStore from "./utils/store.js";
 
@@ -16,6 +16,7 @@ export default function Home() {
     const files = useStore((state) => state.files);
     const selectedMesh = useStore((state) => state.selectedMesh);
     const deleteFromStore = useStore((state) => state.deleteFromStore);
+    const setSameFile = useStore((state) => state.setSameFile);
 
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
@@ -35,23 +36,23 @@ export default function Home() {
             );
 
             let sameFile = false;
-            files.map((file: { buffer: ArrayBuffer; name: string }) => {
+            files.forEach((file: { buffer: ArrayBuffer; name: string }) => {
                 if (filenames.includes(file.name)) {
                     sameFile = true;
+                    setSameFile(sameFile);
                 }
             });
             if (!sameFile) addMultipleFilesToStore(readerResults, filenames);
         },
-        [addMultipleFilesToStore]
+        [files]
     );
 
-    const handleDeleteObject = () => {
-        if (selectedMesh) {
-            startTransition(() => {
-                deleteFromStore(selectedMesh);
-            });
-        }
-    };
+    const handleDeleteObject = useCallback(() => {
+        if (selectedMesh === null) return;
+        startTransition(() => {
+            deleteFromStore(selectedMesh);
+        });
+    }, [selectedMesh]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -74,7 +75,7 @@ export default function Home() {
                     />
                     <div className="flex flex-grow">
                         <div className="flex-grow">
-                            <Scene />
+                            <Viewer />
                         </div>
                     </div>
                 </div>

@@ -28,7 +28,7 @@ const Model = ({ gltf, name, ...props }) => {
         hover(bool);
         startTransition(() => {
             setSelectedMesh(bool ? mesh?.current : null);
-        }, [setSelectedMesh]);
+        });
     };
 
     // play animations
@@ -53,20 +53,22 @@ const Model = ({ gltf, name, ...props }) => {
     }, [envIntensity]);
 
     return (
-        <Select enabled={hovered}>
-            <primitive
-                object={scene}
-                ref={mesh}
-                name={name}
-                onClick={() => setOutline(true)}
-                onPointerMissed={() => setOutline(false)}
+        <group
+            {...props}
+            dispose={null}>
+            <Select enabled={hovered}>
+                <primitive
+                    object={scene}
+                    ref={mesh}
+                    name={name}
+                    onClick={() => setOutline(true)}
+                    onPointerMissed={() => setOutline(false)}
                 // position={[position.x, position.y, position.z]}
                 // rotation={[rotation.x, rotation.y, rotation.z]}
                 // scale={[scale.x, scale.y, scale.z]}
-                {...props}
-                dispose={null}
-            />
-        </Select>
+                />
+            </Select>
+        </group>
     );
 };
 
