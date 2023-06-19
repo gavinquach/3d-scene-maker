@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useCallback } from "react";
+import { startTransition, useCallback, useEffect } from "react";
 
 import ControlMenu from "./components/Controls/ControlMenu.jsx";
 import FileUpload from "./components/FileUpload.jsx";
@@ -53,12 +53,25 @@ export default function Home() {
         }
     };
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Delete") {
+                handleDeleteObject();
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [handleDeleteObject]);
+
     return (
         <>
             <ControlMenu hidden={files.length < 1} />
             {files.length > 0 ? (
                 <div className="flex flex-col min-h-screen w-screen">
-                    <NavigationBar onDrop={onDrop} handleDeleteObject={handleDeleteObject} />
+                    <NavigationBar
+                        onDrop={onDrop}
+                        handleDeleteObject={handleDeleteObject}
+                    />
                     <div className="flex flex-grow">
                         <div className="flex-grow">
                             <Scene />

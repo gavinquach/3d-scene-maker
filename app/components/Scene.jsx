@@ -31,36 +31,12 @@ const Scene = () => {
 
     const { transformMode, environment } = ControlParams();
 
-    // generate scene whenever buffer array is changed
+    // generate scene whenever file array is changed
     useEffect(() => {
         startTransition(() => {
             generateScene();
         });
-
-        console.log("files:", files);
     }, [files, generateScene]);
-
-    // useEffect(() => {
-    //     console.log("results:", results);
-
-    //     // add gltf to scene
-    //     results.forEach(({ gltf }) => {
-    //         const gltfScene = gltf.scene;
-    //         const animations = gltf.animations;
-    //         const { actions } = useAnimations(animations, mesh);
-
-    //         Object.keys(actions).forEach((action) => actions[action]?.play());
-
-    //         gltfScene.traverse((obj) => {
-    //             if (obj.isMesh) {
-    //                 obj.castShadow = obj.receiveShadow = true;
-    //                 obj.material.envMapIntensity = envIntensity;
-    //             }
-    //         });
-
-    //         scene.add(gltfScene);
-    //     });
-    // }, [results]);
 
     const handleTransform = () => {
         const mesh = selectedMesh?.current;
