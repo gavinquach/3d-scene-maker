@@ -1,6 +1,6 @@
 import { useControls } from "leva";
 
-import useStore from "../../utils/store";
+import useStore from "../../utils/store.js";
 
 const ControlParams = () => {
     const selectedMeshTransforms = useStore((state) => state.selectedMeshTransforms);
@@ -41,20 +41,19 @@ const ControlParams = () => {
         },
     });
 
-    const { environment } = useControls(
-        "Menu",
+    const { envIntensity, environment } = useControls(
+        "Lighting",
         {
-            intensity: {
-                value: 1,
+            envIntensity: {
+                value: 0.5,
                 min: 0,
                 max: 2,
-                step: 0.1,
+                step: 0.01,
                 label: "light intensity",
             },
             environment: {
                 value: "city",
                 options: [
-                    "",
                     "sunset",
                     "dawn",
                     "night",
@@ -72,6 +71,7 @@ const ControlParams = () => {
     );
 
     return {
+        envIntensity,
         environment,
         transformMode,
         position, rotation, scale,

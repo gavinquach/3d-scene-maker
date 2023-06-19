@@ -3,11 +3,16 @@ import React, { useState } from "react";
 import FileUpload from "./FileUpload.jsx";
 import NewTabLink from "./NewTabLink.jsx";
 
-const NavigationBar = ({ onDrop }) => {
+const NavigationBar = ({ onDrop, handleDeleteObject }) => {
     const [isWindowOn, setIsWindowOn] = useState(false);
 
     const toggleWindow = () => {
         setIsWindowOn(!isWindowOn);
+    };
+    const [isSecondDropdownOpen, setIsSecondDropdownOpen] = useState(false);
+
+    const toggleSecondDropdown = () => {
+        setIsSecondDropdownOpen(!isSecondDropdownOpen);
     };
 
     return (
@@ -22,6 +27,30 @@ const NavigationBar = ({ onDrop }) => {
                             Upload File
                         </div>
                         {isWindowOn && <FileUpload small onDrop={onDrop} />}
+                    </li>
+                    <li className="relative">
+                        <div
+                            className="text-white text-sm px-4 py-2 cursor-pointer"
+                            onClick={toggleSecondDropdown}
+                        >
+                            Object
+                        </div>
+                        {isSecondDropdownOpen && (
+                            <ul className="absolute w-28 top-full left-0 z-50 bg-gray-800 text-white rounded shadow-lg mt-1">
+                                <li
+                                    className="py-1 px-4 hover:bg-gray-600"
+                                    onClick={handleDeleteObject}
+                                >
+                                    <span className="pointer-events-none">Delete</span>
+                                </li>
+                                <li className="py-1 px-4 hover:bg-gray-600">
+                                    <span className="pointer-events-none">Option 2</span>
+                                </li>
+                                <li className="py-1 px-4 hover:bg-gray-600">
+                                    <span className="pointer-events-none">Option 3</span>
+                                </li>
+                            </ul>
+                        )}
                     </li>
                     <li className="text-white text-sm px-4 py-2">
                         <NewTabLink href="https://github.com/gavinquach/3d-scene-maker">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { startTransition, useCallback } from "react";
 
 import ControlMenu from "./components/Controls/ControlMenu.jsx";
 import FileUpload from "./components/FileUpload.jsx";
@@ -13,7 +13,9 @@ export default function Home() {
     const addMultipleFilesToStore = useStore(
         (state) => state.addMultipleFilesToStore
     );
-    const buffers = useStore((state) => state.buffers);
+    const files = useStore((state) => state.files);
+    const selectedMesh = useStore((state) => state.selectedMesh);
+    const deleteFromStore = useStore((state) => state.deleteFromStore);
 
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
@@ -31,17 +33,32 @@ export default function Home() {
             const filenames = acceptedFiles.map(({ name }) =>
                 name.replace(/ /g, "_").replace(/\.glb|gltf/g, "")
             );
-            addMultipleFilesToStore(readerResults, filenames);
+
+            let sameFile = false;
+            files.map((file: { buffer: ArrayBuffer; name: string }) => {
+                if (filenames.includes(file.name)) {
+                    sameFile = true;
+                }
+            });
+            if (!sameFile) addMultipleFilesToStore(readerResults, filenames);
         },
         [addMultipleFilesToStore]
     );
 
+    const handleDeleteObject = () => {
+        if (selectedMesh) {
+            startTransition(() => {
+                deleteFromStore(selectedMesh);
+            });
+        }
+    };
+
     return (
         <>
-            <ControlMenu hidden={buffers.length < 1} />
-            {buffers.length > 0 ? (
+            <ControlMenu hidden={files.length < 1} />
+            {files.length > 0 ? (
                 <div className="flex flex-col min-h-screen w-screen">
-                    <NavigationBar onDrop={onDrop} />
+                    <NavigationBar onDrop={onDrop} handleDeleteObject={handleDeleteObject} />
                     <div className="flex flex-grow">
                         <div className="flex-grow">
                             <Scene />

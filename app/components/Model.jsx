@@ -1,26 +1,33 @@
 "use client";
 
 import { useAnimations } from "@react-three/drei";
-import { memo, startTransition, useLayoutEffect, useRef, useState } from "react";
+import {
+    memo,
+    startTransition,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from "react";
 import { Select } from "@react-three/postprocessing";
-import useStore from "../utils/store";
+import useStore from "../utils/store.js";
 import ControlParams from "./Controls/ControlParams.jsx";
 
-const Model = ({ result, name, ...props }) => {
+const Model = ({ gltf, name, ...props }) => {
     const mesh = useRef();
     const [hovered, hover] = useState(null);
 
     const setSelectedMesh = useStore((state) => state.setSelectedMesh);
 
-    // const { position, rotation, scale } = ControlParams();
+    const { position, rotation, scale, envIntensity } = ControlParams();
 
-    const { scene, animations } = result;
+    const { scene, animations } = gltf;
     const { actions } = useAnimations(animations, mesh);
 
     const setOutline = (bool) => {
         hover(bool);
         startTransition(() => {
-            setSelectedMesh(bool ? mesh : null);
+            setSelectedMesh(bool ? mesh?.current : null);
         }, [setSelectedMesh]);
     };
 
@@ -31,16 +38,22 @@ const Model = ({ result, name, ...props }) => {
         scene.traverse((obj) => {
             if (obj.isMesh) {
                 obj.castShadow = obj.receiveShadow = true;
-                obj.material.envMapIntensity = 0.5;
+                obj.material.envMapIntensity = envIntensity;
             }
         });
     }, [actions, scene]);
 
+    useEffect(() => {
+        scene.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.castShadow = obj.receiveShadow = true;
+                obj.material.envMapIntensity = envIntensity;
+            }
+        });
+    }, [envIntensity]);
+
     return (
         <Select enabled={hovered}>
-            <group>
-
-            </group>
             <primitive
                 object={scene}
                 ref={mesh}

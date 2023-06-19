@@ -24,9 +24,8 @@ import Model from "./Model";
 
 const Scene = () => {
     const generateScene = useStore((state) => state.generateScene);
-    const buffers = useStore((state) => state.buffers);
+    const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
-    const fileNames = useStore((state) => state.fileNames);
     const selectedMesh = useStore((state) => state.selectedMesh);
     const setTransforms = useStore((state) => state.setTransforms);
 
@@ -37,7 +36,31 @@ const Scene = () => {
         startTransition(() => {
             generateScene();
         });
-    }, [buffers, generateScene]);
+
+        console.log("files:", files);
+    }, [files, generateScene]);
+
+    // useEffect(() => {
+    //     console.log("results:", results);
+
+    //     // add gltf to scene
+    //     results.forEach(({ gltf }) => {
+    //         const gltfScene = gltf.scene;
+    //         const animations = gltf.animations;
+    //         const { actions } = useAnimations(animations, mesh);
+
+    //         Object.keys(actions).forEach((action) => actions[action]?.play());
+
+    //         gltfScene.traverse((obj) => {
+    //             if (obj.isMesh) {
+    //                 obj.castShadow = obj.receiveShadow = true;
+    //                 obj.material.envMapIntensity = envIntensity;
+    //             }
+    //         });
+
+    //         scene.add(gltfScene);
+    //     });
+    // }, [results]);
 
     const handleTransform = () => {
         const mesh = selectedMesh?.current;
@@ -76,13 +99,13 @@ const Scene = () => {
                         />
                     </EffectComposer>
                     {results.length > 0 &&
-                        results.map((result, i) => (
-                            <Model key={fileNames[i]} result={result} name={fileNames[i]} />
+                        results.map(({ gltf, name }) => (
+                            <Model key={name} gltf={gltf} name={name} />
                         ))}
                     {selectedMesh && (
                         <TransformControls
-                            object={selectedMesh}
-                            enabled={selectedMesh}
+                            object={selectedMesh || null}
+                            enabled={selectedMesh ? true : false}
                             mode={transformMode}
                             onObjectChange={handleTransform}
                         />

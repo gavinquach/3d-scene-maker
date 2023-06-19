@@ -25,8 +25,7 @@ if (typeof window !== "undefined") {
 }
 
 const useStore = create((set, get) => ({
-    buffers: [],
-    fileNames: [],
+    files: [],
     results: [],
     selectedMesh: null,
     selectedMeshTransforms: {
@@ -37,20 +36,40 @@ const useStore = create((set, get) => ({
 
     addFileToStore: (newBuffer, name) => {
         set((state) => ({
-            buffers: [...state.buffers, newBuffer],
-            fileNames: [...state.fileNames, name],
+            files: [...state.files, { buffer: newBuffer, name: name }],
         }));
     },
 
     addMultipleFilesToStore: (newBuffers, names) => {
         set((state) => ({
-            buffers: [...state.buffers, ...newBuffers],
-            fileNames: [...state.fileNames, ...names],
+            files: [
+                ...state.files,
+                ...newBuffers.map((newBuffer, index) => ({
+                    buffer: newBuffer,
+                    name: names[index],
+                })),
+            ],
         }));
     },
 
-    clearFiles: () => {
-        set({ buffers: [], fileNames: [], results: [] });
+    getBufferFromScene: (scene) => {
+        const { results } = get();
+        const result = results.find(({ gltf }) => gltf.scene === scene);
+        return result ? result.buffer : null;
+    },
+
+    deleteFromStore: (obj) => {
+        if (obj === null) return;
+        const objBuffer = get().getBufferFromScene(obj);
+        set((state) => ({
+            files: state.files.filter(({ buffer }) => buffer !== objBuffer),
+            results: state.results.filter(({ gltf }) => gltf.scene !== obj),
+            selectedMesh: null,
+        }));
+    },
+
+    clearAll: () => {
+        set({ files: [], results: [] });
     },
 
     setSelectedMesh: (mesh) => {
@@ -99,16 +118,22 @@ const useStore = create((set, get) => ({
     },
 
     generateScene: async () => {
-        const { buffers } = get();
-        const promiseResults = await Promise.all(
-            buffers.map((buffer) => {
+        const { files } = get();
+        const gltfs = await Promise.all(
+            files.map((file) => {
                 return new Promise((resolve, reject) =>
-                    gltfLoader.parse(buffer, "", resolve, reject)
+                    gltfLoader.parse(file.buffer, "", resolve, reject)
                 );
             })
         );
 
-        set({ results: promiseResults });
+        set({
+            results: gltfs.map((gltf, index) => ({
+                gltf: gltf,
+                buffer: files[index].buffer,
+                name: files[index].name,
+            })),
+        });
     },
 }));
 
