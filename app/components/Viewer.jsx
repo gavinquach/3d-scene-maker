@@ -28,7 +28,6 @@ const Viewer = () => {
     const results = useStore((state) => state.results);
     const selectedMesh = useStore((state) => state.selectedMesh);
     const setTransforms = useStore((state) => state.setTransforms);
-    const sameFile = useStore((state) => state.sameFile);
 
     const { transformMode, environment } = ControlParams();
 
@@ -37,7 +36,6 @@ const Viewer = () => {
         startTransition(() => {
             generateScene();
         });
-        console.log(files);
     }, [files, generateScene]);
 
     const handleTransform = () => {
