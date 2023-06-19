@@ -14,7 +14,7 @@ import useStore from "../utils/store.js";
 import ControlParams from "./Controls/ControlParams.jsx";
 
 const Model = ({ gltf, name, ...props }) => {
-    const mesh = useRef();
+    const mesh = useRef(null);
     const [hovered, hover] = useState(null);
 
     const setSelectedMesh = useStore((state) => state.setSelectedMesh);

@@ -20,6 +20,7 @@ import {
 import ControlParams from "./Controls/ControlParams.jsx";
 import useStore from "../utils/store.js";
 import Model from "./Model.jsx";
+import OrbitGizmo from "./OrbitGizmo.jsx";
 // import { schadowplatz_1k } from "../assets/images";
 
 const Viewer = () => {
@@ -58,7 +59,10 @@ const Viewer = () => {
             dpr={[1, 1.5]}
             camera={{ position: [0, 5, -10], fov: 50 }}
         >
-            <Perf position="bottom-right" />
+            <Perf position="bottom-left" />
+
+            <OrbitGizmo />
+ 
             <Environment background preset={environment} />
             <ambientLight intensity={0.3} />
             <directionalLight
