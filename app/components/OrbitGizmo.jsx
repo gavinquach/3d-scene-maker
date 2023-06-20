@@ -1,3 +1,5 @@
+/* eslint-disable react/display-name */
+
 import { BackSide, Matrix4 } from "three";
 import { forwardRef, memo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
