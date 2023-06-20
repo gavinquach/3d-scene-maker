@@ -24,7 +24,7 @@ const NavigationBar = ({ onDrop, handleDeleteObject }) => {
                     <li className="relative">
                         <div
                             className="text-white text-sm px-4 py-2 cursor-pointer"
-                            onClick={toggleWindow}
+                            onClick={() => toggleWindow(null)}
                             onDragOver={() => toggleWindow(true)}
                             onDragLeave={() => {
                                 setTimeout(() => {
