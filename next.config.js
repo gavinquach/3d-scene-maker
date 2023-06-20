@@ -7,7 +7,6 @@ module.exports = withPlugins([withImages], {
     const newConfig = Object.assign({}, config, {
       module: Object.assign({}, config.module, {
         rules: config.module.rules.concat([
-          {"react/display-name": "off"},
           {
             test: /\.gltf$/,
             loader: 'raw-loader',
