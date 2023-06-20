@@ -60,7 +60,7 @@ const useStore = create((set, get) => ({
 
     getBufferFromScene: (scene) => {
         const { results } = get();
- 
+
         // Use hash map for O(1) lookup
         const resultsMap = new Map();
 
@@ -85,7 +85,12 @@ const useStore = create((set, get) => ({
     },
 
     clearAll: () => {
-        set({ files: [], results: [] });
+        set({
+            files: [],
+            results: [],
+            selectedMesh: null,
+            blockGenerateScene: true,
+        });
     },
 
     setSelectedMesh: (mesh) => {
