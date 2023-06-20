@@ -1,9 +1,10 @@
 "use client";
 
-import { TransformControls, useAnimations } from "@react-three/drei";
+import { useAnimations } from "@react-three/drei";
 import {
     memo,
     startTransition,
+    useCallback,
     useEffect,
     useLayoutEffect,
     useRef,
@@ -12,8 +13,9 @@ import {
 import { Select } from "@react-three/postprocessing";
 import useStore from "../utils/store.js";
 import ControlParams from "./Controls/ControlParams.jsx";
+// import { useGraph } from "@react-three/fiber";
 
-const Model = ({ gltf, name, ...props }) => {
+const Model = ({ buffer, gltf, name, ...props }) => {
     const mesh = useRef(null);
     const [hovered, hover] = useState(null);
 
@@ -21,7 +23,15 @@ const Model = ({ gltf, name, ...props }) => {
 
     const { position, rotation, scale, envIntensity } = ControlParams();
 
-    const { scene, animations } = gltf;
+    const scene = useCallback(gltf.scene, [gltf.scene]);
+    const animations = useCallback(gltf.animations, [gltf.animations]);
+
+    console.log(scene);
+
+    // TODO: Figure out how to effectively use nodes and materials like GLTFJSX https://github.com/pmndrs/gltfjsx/blob/master/src/utils/parser.js 
+    // so that users can add the same models to the scene many times without sacrificing performance
+    // const { nodes, materials } = useGraph(scene);
+
     const { actions } = useAnimations(animations, mesh);
 
     const setOutline = (bool) => {
