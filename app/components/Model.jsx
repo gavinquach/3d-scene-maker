@@ -1,6 +1,6 @@
 "use client";
 
-import { useAnimations } from "@react-three/drei";
+import { TransformControls, useAnimations } from "@react-three/drei";
 import {
     memo,
     startTransition,
@@ -18,6 +18,7 @@ const Model = ({ gltf, name, ...props }) => {
     const [hovered, hover] = useState(null);
 
     const setSelectedMesh = useStore((state) => state.setSelectedMesh);
+    const selectedMesh = useStore((state) => state.selectedMesh);
 
     const { position, rotation, scale, envIntensity } = ControlParams();
 
@@ -53,22 +54,37 @@ const Model = ({ gltf, name, ...props }) => {
     }, [envIntensity]);
 
     return (
-        <group
-            {...props}
-            dispose={null}>
-            <Select enabled={hovered}>
-                <primitive
-                    object={scene}
-                    ref={mesh}
-                    name={name}
-                    onClick={() => setOutline(true)}
-                    onPointerMissed={() => setOutline(false)}
-                // position={[position.x, position.y, position.z]}
-                // rotation={[rotation.x, rotation.y, rotation.z]}
-                // scale={[scale.x, scale.y, scale.z]}
-                />
-            </Select>
-        </group>
+        <>
+            {selectedMesh ? (
+                <TransformControls {...props} dispose={null}>
+                    <Select enabled={hovered}>
+                        <primitive
+                            object={scene}
+                            ref={mesh}
+                            name={name}
+                            onClick={() => setOutline(true)}
+                            onPointerMissed={() => setOutline(false)}
+                        // position={[position.x, position.y, position.z]}
+                        // rotation={[rotation.x, rotation.y, rotation.z]}
+                        // scale={[scale.x, scale.y, scale.z]}
+                        />
+                    </Select>
+                </TransformControls>
+            ) : (
+                <Select enabled={hovered} {...props} dispose={null}>
+                    <primitive
+                        object={scene}
+                        ref={mesh}
+                        name={name}
+                        onClick={() => setOutline(true)}
+                        onPointerMissed={() => setOutline(false)}
+                    // position={[position.x, position.y, position.z]}
+                    // rotation={[rotation.x, rotation.y, rotation.z]}
+                    // scale={[scale.x, scale.y, scale.z]}
+                    />
+                </Select>
+            )}
+        </>
     );
 };
 

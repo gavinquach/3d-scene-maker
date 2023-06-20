@@ -43,7 +43,11 @@ export default function Home() {
                     setSameFile(sameFile);
                 }
             });
-            if (!sameFile) addMultipleFilesToStore(readerResults, filenames);
+            if (!sameFile) {
+                startTransition(() => {
+                    addMultipleFilesToStore(readerResults, filenames);
+                });
+            }
         },
         [files]
     );
