@@ -34,10 +34,7 @@ const useStore = create((set, get) => ({
         scale: { x: 1, y: 1, z: 1 },
     },
     sameFile: false,
-
-    setSameFile: (bool) => {
-        set({ sameFile: bool });
-    },
+    blockGenerateScene: false,
 
     addFileToStore: (newBuffer, name) => {
         set((state) => ({
@@ -70,6 +67,7 @@ const useStore = create((set, get) => ({
             files: state.files.filter(({ buffer }) => buffer !== objBuffer),
             results: state.results.filter(({ gltf }) => gltf.scene !== obj),
             selectedMesh: null,
+            blockGenerateScene: true,
         }));
     },
 
@@ -123,6 +121,12 @@ const useStore = create((set, get) => ({
     },
 
     generateScene: async () => {
+        const { blockGenerateScene } = get();
+        if (blockGenerateScene) {
+            set({ blockGenerateScene: false });
+            return;
+        }
+
         const { files } = get();
         const gltfs = await Promise.all(
             files.map((file) => {
@@ -139,6 +143,14 @@ const useStore = create((set, get) => ({
                 name: files[index].name,
             })),
         });
+    },
+
+    setSameFile: (bool) => {
+        set({ sameFile: bool });
+    },
+
+    setBlockGenerateScene: (bool) => {
+        set({ blockGenerateScene: bool });
     },
 }));
 
