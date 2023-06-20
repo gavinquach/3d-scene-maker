@@ -35,6 +35,10 @@ const useStore = create((set, get) => ({
     },
     sameFiles: false,
     blockGenerateScene: false,
+    sceneData: {
+        invisible: [],
+        objects: [],
+    },
 
     addFileToStore: (newBuffer, name) => {
         set((state) => ({
@@ -120,6 +124,8 @@ const useStore = create((set, get) => ({
         });
     },
 
+    addToScene: () => { },
+
     generateScene: async () => {
         const { blockGenerateScene } = get();
         if (blockGenerateScene) {
@@ -127,22 +133,47 @@ const useStore = create((set, get) => ({
             return;
         }
 
-        const { files } = get();
+        const { files, results } = get();
+
         const gltfs = await Promise.all(
             files.map((file) => {
                 return new Promise((resolve, reject) =>
-                    gltfLoader.parse(file.buffer, "", resolve, reject)
+                    gltfLoader.parse(
+                        file.buffer,
+                        "",
+                        (gltf) => {
+                            gltf.name = file.name; // Assign the name property
+                            resolve(gltf);
+                        },
+                        reject
+                    )
                 );
             })
         );
 
-        set({
-            results: gltfs.map((gltf, index) => ({
-                gltf: gltf,
-                buffer: files[index].buffer,
-                name: files[index].name,
-            })),
-        });
+        if (results.length === 0) {
+            set({
+                results: gltfs.map((gltf, index) => ({
+                    gltf: gltf,
+                    buffer: files[index].buffer,
+                    name: files[index].name,
+                })),
+            });
+        } else {
+            // Create a set of gltf names for O(1) lookup
+            const gltfNamesSet = new Set(results.map((result) => result.name));
+
+            // Remove matching objects from gltfs list
+            const remainingGltfs = gltfs
+                .filter(({ name }) => !gltfNamesSet.has(name))
+                .map((gltf, index) => ({
+                    gltf: gltf,
+                    buffer: files[index].buffer,
+                    name: files[index].name,
+                }));
+
+            set({ results: [...results, ...remainingGltfs] });
+        }
     },
 
     setSameFiles: (bool) => {
