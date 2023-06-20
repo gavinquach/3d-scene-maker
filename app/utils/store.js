@@ -89,7 +89,6 @@ const useStore = create((set, get) => ({
             files: [],
             results: [],
             selectedMesh: null,
-            blockGenerateScene: true,
         });
     },
 
@@ -98,19 +97,19 @@ const useStore = create((set, get) => ({
             selectedMesh: mesh,
             selectedMeshTransforms: {
                 position: {
-                    x: mesh?.current?.position.x,
-                    y: mesh?.current?.position.y,
-                    z: mesh?.current?.position.z,
+                    x: mesh?.position?.x || 0,
+                    y: mesh?.position?.y || 0,
+                    z: mesh?.position?.z || 0,
                 },
                 rotation: {
-                    x: mesh?.current?.rotation.x,
-                    y: mesh?.current?.rotation.y,
-                    z: mesh?.current?.rotation.z,
+                    x: mesh?.rotation?.x || 0,
+                    y: mesh?.rotation?.y || 0,
+                    z: mesh?.rotation?.z || 0,
                 },
                 scale: {
-                    x: mesh?.current?.scale.x,
-                    y: mesh?.current?.scale.y,
-                    z: mesh?.current?.scale.z,
+                    x: mesh?.scale?.x || 1,
+                    y: mesh?.scale?.y || 1,
+                    z: mesh?.scale?.z || 1,
                 },
             },
         });
@@ -141,8 +140,7 @@ const useStore = create((set, get) => ({
     addToScene: () => { },
 
     generateScene: async () => {
-        const { blockGenerateScene } = get();
-        if (blockGenerateScene) {
+        if (get().blockGenerateScene) {
             set({ blockGenerateScene: false });
             return;
         }

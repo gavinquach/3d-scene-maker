@@ -15,7 +15,7 @@ import useStore from "../utils/store.js";
 import ControlParams from "./Controls/ControlParams.jsx";
 // import { useGraph } from "@react-three/fiber";
 
-const Model = ({ buffer, gltf, name, ...props }) => {
+const Model = ({ gltf, name, ...props }) => {
     const mesh = useRef(null);
     const [hovered, hover] = useState(null);
 

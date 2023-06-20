@@ -21,7 +21,7 @@ import ControlParams from "./Controls/ControlParams.jsx";
 import useStore from "../utils/store.js";
 import Model from "./Model.jsx";
 import OrbitGizmo from "./OrbitGizmo.jsx";
-import { schadowplatz_1k } from "../assets/images";
+// import { schadowplatz_1k } from "../assets/images";
 
 const Viewer = () => {
     const generateScene = useStore((state) => state.generateScene);
@@ -34,6 +34,7 @@ const Viewer = () => {
 
     // generate scene whenever file array is changed
     useEffect(() => {
+        if (files.length === 0) return;
         startTransition(() => {
             generateScene();
         });
@@ -86,7 +87,7 @@ const Viewer = () => {
                         />
                     </EffectComposer>
                     {results.length > 0 &&
-                        results.map(({ gltf, name }) => (
+                        results.map(({ buffer, gltf, name }) => (
                             <Model key={name} gltf={gltf} name={name} />
                         ))}
                     {selectedMesh && (
