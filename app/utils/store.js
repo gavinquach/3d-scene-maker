@@ -58,29 +58,12 @@ const useStore = create((set, get) => ({
         }));
     },
 
-    getBufferFromScene: (scene) => {
-        const { results } = get();
-
-        // Use hash map for O(1) lookup
-        const resultsMap = new Map();
-
-        // Populate the Map with the scene and buffer values
-        for (const { gltf } of results) {
-            resultsMap.set(gltf.scene, gltf.buffer);
-        }
-
-        // Get the buffer value for a given scene
-        return resultsMap.get(scene) || null;
-    },
-
     deleteFromStore: (obj) => {
         if (obj === null) return;
-        const objBuffer = get().getBufferFromScene(obj);
         set((state) => ({
-            files: state.files.filter(({ buffer }) => buffer !== objBuffer),
+            files: state.files.filter(({ name }) => name !== obj.name),
             results: state.results.filter(({ gltf }) => gltf.scene.name !== obj.name),
             selectedMesh: null,
-            blockGenerateScene: true,
         }));
     },
 
@@ -137,14 +120,11 @@ const useStore = create((set, get) => ({
         });
     },
 
-    addToScene: () => { },
+    unblockGenerateScene: () => {
+        set({ blockGenerateScene: false });
+    },
 
     generateScene: async () => {
-        if (get().blockGenerateScene) {
-            set({ blockGenerateScene: false });
-            return;
-        }
-
         const { files, results } = get();
 
         const gltfs = await Promise.all(

@@ -24,6 +24,8 @@ import OrbitGizmo from "./OrbitGizmo.jsx";
 // import { schadowplatz_1k } from "../assets/images";
 
 const Viewer = () => {
+    const blockGenerateScene = useStore((state) => state.blockGenerateScene);
+    const unblockGenerateScene = useStore((state) => state.unblockGenerateScene);
     const generateScene = useStore((state) => state.generateScene);
     const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
@@ -35,6 +37,12 @@ const Viewer = () => {
     // generate scene whenever file array is changed
     useEffect(() => {
         if (files.length === 0) return;
+
+        if (blockGenerateScene) {
+            unblockGenerateScene();
+            return;
+        }
+
         startTransition(() => {
             generateScene();
         });
