@@ -14,9 +14,10 @@ export default function Home() {
         (state) => state.addMultipleFilesToStore
     );
     const files = useStore((state) => state.files);
+    const results = useStore((state) => state.results);
     const selectedMesh = useStore((state) => state.selectedMesh);
     const deleteFromStore = useStore((state) => state.deleteFromStore);
-    const setSameFile = useStore((state) => state.setSameFile);
+    const setSameFiles = useStore((state) => state.setSameFiles);
 
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
@@ -35,21 +36,29 @@ export default function Home() {
                 name.replace(/ /g, "_").replace(/\.glb|gltf/g, "")
             );
 
-            // TODO: REMOVE DUPLICATE FILES FROM LIST, KEEP THE NON DUPLICATES
-            let sameFile = false;
-            files.forEach((file: { buffer: ArrayBuffer; name: string }) => {
-                if (filenames.includes(file.name)) {
-                    sameFile = true;
-                    setSameFile(sameFile);
+            // remove duplicates
+            for (const result of results) {
+                const index = filenames.indexOf(result.name);
+                if (index > -1) {
+                    filenames.splice(index, 1);
+                    readerResults.splice(index, 1);
                 }
-            });
-            if (!sameFile) {
-                startTransition(() => {
-                    addMultipleFilesToStore(readerResults, filenames);
-                });
             }
+
+            if (filenames.length === 0) {
+                setSameFiles(true);
+
+                setTimeout(() => {
+                    setSameFiles(false);
+                }, 2000);
+                return;
+            }
+
+            startTransition(() => {
+                addMultipleFilesToStore(readerResults, filenames);
+            });
         },
-        [files]
+        [files, results]
     );
 
     const handleDeleteObject = useCallback(() => {

@@ -33,7 +33,7 @@ const useStore = create((set, get) => ({
         rotation: { x: 0, y: 0, z: 0 },
         scale: { x: 1, y: 1, z: 1 },
     },
-    sameFile: false,
+    sameFiles: false,
     blockGenerateScene: false,
 
     addFileToStore: (newBuffer, name) => {
@@ -42,13 +42,13 @@ const useStore = create((set, get) => ({
         }));
     },
 
-    addMultipleFilesToStore: (newBuffers, names) => {
+    addMultipleFilesToStore: (newBuffers, newNames) => {
         set((state) => ({
             files: [
                 ...state.files,
                 ...newBuffers.map((newBuffer, index) => ({
                     buffer: newBuffer,
-                    name: names[index],
+                    name: newNames[index],
                 })),
             ],
         }));
@@ -145,8 +145,8 @@ const useStore = create((set, get) => ({
         });
     },
 
-    setSameFile: (bool) => {
-        set({ sameFile: bool });
+    setSameFiles: (bool) => {
+        set({ sameFiles: bool });
     },
 
     setBlockGenerateScene: (bool) => {

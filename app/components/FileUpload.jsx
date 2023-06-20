@@ -11,7 +11,7 @@ const FileUpload = ({ small = false, onDrop }) => {
             },
         });
 
-    const sameFile = useStore((state) => state.sameFile);
+    const sameFiles = useStore((state) => state.sameFiles);
     const files = useStore((state) => state.files);
 
     return (
@@ -42,7 +42,7 @@ const FileUpload = ({ small = false, onDrop }) => {
                     </p>
                 )}
 
-                {sameFile && (
+                {sameFiles && (
                     <p className="block text-center text-xl pt-4 text-red-300">
                         Duplicate file
                     </p>
