@@ -18,7 +18,6 @@ const Model = ({ gltf, name, ...props }) => {
     const [hovered, hover] = useState(null);
 
     const setSelectedMesh = useStore((state) => state.setSelectedMesh);
-    const selectedMesh = useStore((state) => state.selectedMesh);
 
     const { position, rotation, scale, envIntensity } = ControlParams();
 
