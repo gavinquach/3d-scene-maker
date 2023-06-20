@@ -60,8 +60,17 @@ const useStore = create((set, get) => ({
 
     getBufferFromScene: (scene) => {
         const { results } = get();
-        const result = results.find(({ gltf }) => gltf.scene === scene);
-        return result ? result.buffer : null;
+ 
+        // Use hash map for O(1) lookup
+        const resultsMap = new Map();
+
+        // Populate the Map with the scene and buffer values
+        for (const { gltf } of results) {
+            resultsMap.set(gltf.scene, gltf.buffer);
+        }
+
+        // Get the buffer value for a given scene
+        return resultsMap.get(scene) || null;
     },
 
     deleteFromStore: (obj) => {
