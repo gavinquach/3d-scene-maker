@@ -69,7 +69,7 @@ const useStore = create((set, get) => ({
         const objBuffer = get().getBufferFromScene(obj);
         set((state) => ({
             files: state.files.filter(({ buffer }) => buffer !== objBuffer),
-            results: state.results.filter(({ gltf }) => gltf.scene !== obj),
+            results: state.results.filter(({ gltf }) => gltf.scene.name !== obj.name),
             selectedMesh: null,
             blockGenerateScene: true,
         }));
