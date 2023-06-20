@@ -26,8 +26,6 @@ const Model = ({ gltf, name, ...props }) => {
     const scene = useCallback(gltf.scene, [gltf.scene]);
     const animations = useCallback(gltf.animations, [gltf.animations]);
 
-    console.log(scene);
-
     // TODO: Figure out how to effectively use nodes and materials like GLTFJSX https://github.com/pmndrs/gltfjsx/blob/master/src/utils/parser.js 
     // so that users can add the same models to the scene many times without sacrificing performance
     // const { nodes, materials } = useGraph(scene);
