@@ -63,7 +63,8 @@ const Viewer = () => {
 
             <OrbitGizmo />
 
-            <Environment background files={schadowplatz_1k} />
+            {/* <Environment background files={schadowplatz_1k} /> */}
+            <Environment background preset={environment} />
             <ambientLight intensity={0.3} />
             <directionalLight
                 position={[10, 10, 10]}
