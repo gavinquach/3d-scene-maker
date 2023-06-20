@@ -169,7 +169,7 @@ const useStore = create((set, get) => ({
                 .map((gltf, index) => ({
                     gltf: gltf,
                     buffer: files[index].buffer,
-                    name: files[index].name,
+                    name: gltf.name,
                 }));
 
             set({ results: [...results, ...remainingGltfs] });
