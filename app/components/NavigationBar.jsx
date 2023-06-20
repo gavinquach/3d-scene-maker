@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import FileUpload from "./FileUpload.jsx";
 import NewTabLink from "./NewTabLink.jsx";
 
-const NavigationBar = ({ onDrop, handleDeleteObject }) => {
+const NavigationBar = ({ onDrop, handleDeleteObject, handleClearAll }) => {
     const [isWindowOn, setIsWindowOn] = useState(false);
 
     const toggleWindow = (bool = null) => {
@@ -66,14 +66,20 @@ const NavigationBar = ({ onDrop, handleDeleteObject }) => {
                             <ul className="absolute w-28 top-full left-0 z-50 bg-gray-800 text-white rounded shadow-lg mt-1">
                                 <li
                                     className="py-1 px-4 hover:bg-gray-600"
-                                    onClick={handleDeleteObject}
+                                    onClick={() => handleDeleteObject()}
                                 >
                                     <span className="pointer-events-none">Delete</span>
                                 </li>
-                                <li className="py-1 px-4 hover:bg-gray-600">
-                                    <span className="pointer-events-none">Option 2</span>
+                                <li
+                                    className="py-1 px-4 hover:bg-gray-600"
+                                    onClick={() => handleClearAll()}
+                                >
+                                    <span className="pointer-events-none">Delete all</span>
                                 </li>
-                                <li className="py-1 px-4 hover:bg-gray-600">
+                                <li
+                                    className="py-1 px-4 hover:bg-gray-600"
+                                    onClick={() => console.log("Clicked option 3")}
+                                >
                                     <span className="pointer-events-none">Option 3</span>
                                 </li>
                             </ul>

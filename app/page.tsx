@@ -18,6 +18,7 @@ export default function Home() {
     const selectedMesh = useStore((state) => state.selectedMesh);
     const deleteFromStore = useStore((state) => state.deleteFromStore);
     const setSameFiles = useStore((state) => state.setSameFiles);
+    const clearAll = useStore((state) => state.clearAll);
 
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
@@ -68,6 +69,14 @@ export default function Home() {
         });
     }, [selectedMesh]);
 
+    const handleClearAll = useCallback(() => {
+        if (window.confirm("Remove all from scene?")) {
+            startTransition(() => {
+                clearAll();
+            });
+        }
+    }, [clearAll]);
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === "Delete") {
@@ -86,6 +95,7 @@ export default function Home() {
                     <NavigationBar
                         onDrop={onDrop}
                         handleDeleteObject={handleDeleteObject}
+                        handleClearAll={handleClearAll}
                     />
                     <div className="flex flex-grow">
                         <div className="flex-grow">
