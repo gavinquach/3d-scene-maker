@@ -6,6 +6,7 @@ import {
     // ContactShadows,
     Environment,
     OrbitControls,
+    TransformControls,
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { memo, startTransition, Suspense, useEffect, useRef } from "react";
@@ -87,6 +88,14 @@ const Viewer = () => {
                         results.map(({ gltf, name }) => (
                             <Model key={name} gltf={gltf} name={name} />
                         ))}
+                    {selectedMesh && (
+                        <TransformControls
+                            object={selectedMesh || null}
+                            enabled={selectedMesh ? true : false}
+                            mode={transformMode}
+                            onObjectChange={handleTransform}
+                        />
+                    )}
                 </Selection>
 
                 {/* <ContactShadows
