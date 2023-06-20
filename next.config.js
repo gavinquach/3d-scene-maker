@@ -1,20 +1,8 @@
 /** @type {import('next').NextConfig} */
-// module.exports = {
-//   webpack: (config) => {
-//     config.module.rules.push({
-//       test: /\.(glb|gltf)$/,
-//       use: [
-//         {
-//           loader: 'file-loader',
-//         },
-//       ],
-//     });
+const withPlugins = require('next-compose-plugins');
+const withImages = require('next-images');
 
-//     return config;
-//   },
-// };
-
-module.exports = {
+module.exports = withPlugins([withImages], {
   webpack: (config, { isServer }) => {
     const newConfig = Object.assign({}, config, {
       module: Object.assign({}, config.module, {
@@ -23,13 +11,26 @@ module.exports = {
             test: /\.gltf$/,
             loader: 'raw-loader',
           },
+          {
+            test: /\.(hdr|gif|png|jpe?g)$/i,
+            use: [
+              {
+                loader: 'file-loader',
+                options: {
+                  publicPath: '/_next',
+                  outputPath: 'static/images/',
+                  name: '[name].[hash].[ext]',
+                },
+              },
+            ],
+          }
         ]),
       }),
-    })
+    });
     if (!isServer) {
-      newConfig.resolve.fallback.fs = false
+      newConfig.resolve.fallback.fs = false;
     }
 
-    return newConfig
+    return newConfig;
   },
-}
+});
