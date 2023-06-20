@@ -21,7 +21,7 @@ import ControlParams from "./Controls/ControlParams.jsx";
 import useStore from "../utils/store.js";
 import Model from "./Model.jsx";
 import OrbitGizmo from "./OrbitGizmo.jsx";
-// import { schadowplatz_1k } from "../assets/images";
+import { schadowplatz_1k } from "../assets/images";
 
 const Viewer = () => {
     const generateScene = useStore((state) => state.generateScene);
@@ -63,7 +63,7 @@ const Viewer = () => {
 
             <OrbitGizmo />
 
-            <Environment background preset={environment} />
+            <Environment background files={schadowplatz_1k} />
             <ambientLight intensity={0.3} />
             <directionalLight
                 position={[10, 10, 10]}
