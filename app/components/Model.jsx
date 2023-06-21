@@ -8,18 +8,17 @@ import {
     useEffect,
     useLayoutEffect,
     useRef,
-    useState,
 } from "react";
 import { Select } from "@react-three/postprocessing";
+import { useFrame } from "@react-three/fiber";
+
 import useStore from "../utils/store.js";
 import useControlParams from "./Controls/ControlParams.jsx";
-import { useFrame } from "@react-three/fiber";
 
 const Model = ({ gltf, name, ...props }) => {
     const mesh = useRef(null);
 
     const selectedMesh = useStore((state) => state.selectedMesh);
-    console.log("selectedMesh", selectedMesh);
     const setSelectedMesh = useStore((state) => state.setSelectedMesh);
     const setTransforms = useStore((state) => state.setTransforms);
     const meshTransforms = useStore((state) => state.meshTransforms);
@@ -90,11 +89,8 @@ const Model = ({ gltf, name, ...props }) => {
 
     const setOutline = (bool) => {
         startTransition(() => {
-            setSelectedMesh(
-                bool === true ? mesh?.current : null,
-                bool === true ? name : null
-            );
             if (bool) {
+                setSelectedMesh(mesh?.current, name);
                 if (
                     mesh.current?.position.x !== 0 ||
                     mesh.current?.position.y !== 0 ||
@@ -124,6 +120,8 @@ const Model = ({ gltf, name, ...props }) => {
                         },
                     });
                 }
+            } else {
+                setSelectedMesh(null, null);
             }
             handleSetLevaTransform();
         });

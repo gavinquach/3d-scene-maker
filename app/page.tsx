@@ -106,7 +106,7 @@ export default function Home() {
                             <Viewer />
                         </div>
                         <div className="w-1/4 bg-gray-800">
-                            <DirectoryTree results={results} setSelectedMesh={setSelectedMesh} />
+                            <DirectoryTree results={results} selectedMesh={selectedMesh} setSelectedMesh={setSelectedMesh} />
                         </div>
                     </div>
                 </div>

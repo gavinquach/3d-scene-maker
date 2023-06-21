@@ -37,3 +37,7 @@ body {
 .directory-tree li li:hover {
   background-color: #5d5d5d; /* Light color when hovered */
 }
+
+.active-item {
+  background-color: #5d5d5d !important;
+}
