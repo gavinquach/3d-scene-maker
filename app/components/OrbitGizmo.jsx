@@ -83,7 +83,7 @@ const GizmoObject = forwardRef((props, ref) => {
     );
 });
 
-const OrbitGizmo = ({ renderPriority = 2, matrix = new Matrix4() }) => {
+const OrbitGizmo = ({ renderPriority = 2, matrix = new Matrix4(), ...props }) => {
     const mesh = useRef(null);
     const camera = useThree((state) => state.camera);
     const size = useThree((state) => state.size);
@@ -100,8 +100,8 @@ const OrbitGizmo = ({ renderPriority = 2, matrix = new Matrix4() }) => {
     });
 
     return (
-        <Hud renderPriority={renderPriority}>
-            <OrthographicCamera makeDefault position={[0, 0, 100]} zoom={0.8} />
+        <Hud renderPriority={renderPriority} {...props} dispose={null}>
+            <OrthographicCamera makeDefault position={[-300, 0, 100]} zoom={0.8} />
             <GizmoObject
                 ref={mesh}
                 position={[size.width / 2 - 300, size.height / 2 - 20, 0]}

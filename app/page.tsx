@@ -105,7 +105,7 @@ export default function Home() {
                         <div className="flex-grow">
                             <Viewer />
                         </div>
-                        <div className="w-1/4 bg-gray-800">
+                        <div className="w-1/5 bg-gray-800">
                             <DirectoryTree results={results} selectedMesh={selectedMesh} setSelectedMesh={setSelectedMesh} />
                         </div>
                     </div>
