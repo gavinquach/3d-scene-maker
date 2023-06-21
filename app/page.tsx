@@ -3,6 +3,7 @@
 import { startTransition, useCallback, useEffect } from "react";
 
 import ControlMenu from "./components/Controls/ControlMenu.jsx";
+import DirectoryTree from "./components/DirectoryTree.jsx";
 import FileUpload from "./components/FileUpload.jsx";
 import NavigationBar from "./components/NavigationBar.jsx";
 import Viewer from "./components/Viewer.jsx";
@@ -103,35 +104,8 @@ export default function Home() {
                         <div className="flex-grow">
                             <Viewer />
                         </div>
-                        <div className="w-1/4 bg-gray-800"><ul className="directory-tree list-none pl-4">
-                            <li className="mb-2">
-                                <span className="folder font-bold cursor-pointer">Folder 1</span>
-                                <ul className="pl-4">
-                                    <li className="mb-2">
-                                        <span className="folder font-bold cursor-pointer">Subfolder 1</span>
-                                        <ul className="pl-4">
-                                            <li className="mb-2">
-                                                <span className="file cursor-pointer">File 1</span>
-                                            </li>
-                                            <li className="mb-2">
-                                                <span className="file cursor-pointer">File 2</span>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li className="mb-2">
-                                <span className="folder font-bold cursor-pointer">Folder 2</span>
-                                <ul className="pl-4">
-                                    <li className="mb-2">
-                                        <span className="file cursor-pointer">File 3</span>
-                                    </li>
-                                    <li className="mb-2">
-                                        <span className="file cursor-pointer">File 4</span>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
+                        <div className="w-1/4 bg-gray-800">
+                            <DirectoryTree results={results} />
                         </div>
                     </div>
                 </div>
