@@ -23,19 +23,6 @@ const DirectoryTree = ({ results }) => (
                 ))}
             </ul>
         </li>
-        <li className="mb-2">
-            <span className="folder font-bold cursor-pointer" onClick={handleToggle}>
-                Folder 2
-            </span>
-            <ul className="pl-4">
-                <li className="mb-2">
-                    <span className="file cursor-pointer">File 3</span>
-                </li>
-                <li className="mb-2">
-                    <span className="file cursor-pointer">File 4</span>
-                </li>
-            </ul>
-        </li>
     </ul>
 );
 
