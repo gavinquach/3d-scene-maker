@@ -12,30 +12,117 @@ import {
 } from "react";
 import { Select } from "@react-three/postprocessing";
 import useStore from "../utils/store.js";
-import ControlParams from "./Controls/ControlParams.jsx";
-// import { useGraph } from "@react-three/fiber";
+import useControlParams from "./Controls/ControlParams.jsx";
+import { useFrame } from "@react-three/fiber";
 
 const Model = ({ gltf, name, ...props }) => {
     const mesh = useRef(null);
     const [hovered, hover] = useState(null);
 
     const setSelectedMesh = useStore((state) => state.setSelectedMesh);
+    const setTransforms = useStore((state) => state.setTransforms);
+    const meshTransforms = useStore((state) => state.meshTransforms);
 
-    const { position, rotation, scale, envIntensity } = ControlParams();
+    const { setLevaTransforms, envIntensity } = useControlParams();
+
+    const position = meshTransforms[name]?.position;
+    const rotation = meshTransforms[name]?.rotation;
+    const scale = meshTransforms[name]?.scale;
 
     const scene = useCallback(gltf.scene, [gltf.scene]);
     const animations = useCallback(gltf.animations, [gltf.animations]);
 
-    // TODO: Figure out how to effectively use nodes and materials like GLTFJSX https://github.com/pmndrs/gltfjsx/blob/master/src/utils/parser.js 
+    // TODO: Figure out how to effectively use nodes and materials like GLTFJSX https://github.com/pmndrs/gltfjsx/blob/master/src/utils/parser.js
     // so that users can add the same models to the scene many times without sacrificing performance
     // const { nodes, materials } = useGraph(scene);
 
     const { actions } = useAnimations(animations, mesh);
 
+    const previousTransformRef = useRef({
+        position: null,
+        rotation: null,
+        scale: null,
+    });
+
+    const handleSetLevaTransform = () => {
+        setLevaTransforms({
+            position: {
+                x: mesh.current?.position.x,
+                y: mesh.current?.position.y,
+                z: mesh.current?.position.z,
+            },
+            rotation: {
+                x: mesh.current?.rotation.x,
+                y: mesh.current?.rotation.y,
+                z: mesh.current?.rotation.z,
+            },
+            scale: {
+                x: mesh.current?.scale.x,
+                y: mesh.current?.scale.y,
+                z: mesh.current?.scale.z,
+            },
+        });
+    };
+
+    const handleTransformChange = () => {
+        startTransition(() => {
+            handleSetLevaTransform();
+            setTransforms(name, {
+                position: {
+                    x: mesh.current?.position.x,
+                    y: mesh.current?.position.y,
+                    z: mesh.current?.position.z,
+                },
+                rotation: {
+                    x: mesh.current?.rotation.x,
+                    y: mesh.current?.rotation.y,
+                    z: mesh.current?.rotation.z,
+                },
+                scale: {
+                    x: mesh.current?.scale.x,
+                    y: mesh.current?.scale.y,
+                    z: mesh.current?.scale.z,
+                },
+            });
+        });
+    };
+
     const setOutline = (bool) => {
         hover(bool);
         startTransition(() => {
-            setSelectedMesh(bool ? mesh?.current : null);
+            setSelectedMesh(bool ? mesh?.current : null, name);
+            if (bool) {
+                if (
+                    mesh.current?.position.x !== 0 ||
+                    mesh.current?.position.y !== 0 ||
+                    mesh.current?.position.z !== 0 ||
+                    mesh.current?.rotation.x !== 0 ||
+                    mesh.current?.rotation.y !== 0 ||
+                    mesh.current?.rotation.z !== 0 ||
+                    mesh.current?.scale.x !== 1 ||
+                    mesh.current?.scale.y !== 1 ||
+                    mesh.current?.scale.z !== 1
+                ) {
+                    setTransforms(name, {
+                        position: {
+                            x: mesh.current?.position.x,
+                            y: mesh.current?.position.y,
+                            z: mesh.current?.position.z,
+                        },
+                        rotation: {
+                            x: mesh.current?.rotation.x,
+                            y: mesh.current?.rotation.y,
+                            z: mesh.current?.rotation.z,
+                        },
+                        scale: {
+                            x: mesh.current?.scale.x,
+                            y: mesh.current?.scale.y,
+                            z: mesh.current?.scale.z,
+                        },
+                    });
+                }
+            }
+            handleSetLevaTransform();
         });
     };
 
@@ -60,6 +147,33 @@ const Model = ({ gltf, name, ...props }) => {
         });
     }, [envIntensity]);
 
+    // Use the useFrame hook to check for transform changes
+    useFrame(() => {
+        if (mesh.current) {
+            const { position, rotation, scale } = mesh.current;
+            const previousTransform = previousTransformRef.current;
+
+            // Check if the transform has changed
+            if (
+                previousTransform &&
+                ((previousTransform.position &&
+                    !position.equals(previousTransform.position)) ||
+                    (previousTransform.rotation &&
+                        !rotation.equals(previousTransform.rotation)) ||
+                    (previousTransform.scale && !scale.equals(previousTransform.scale)))
+            ) {
+                handleTransformChange();
+            }
+
+            // Update the previous transform reference
+            previousTransformRef.current = {
+                position: position.clone(),
+                rotation: rotation.clone(),
+                scale: scale.clone(),
+            };
+        }
+    });
+
     return (
         <Select enabled={hovered} {...props} dispose={null}>
             <primitive
@@ -68,9 +182,9 @@ const Model = ({ gltf, name, ...props }) => {
                 name={name}
                 onClick={() => setOutline(true)}
                 onPointerMissed={() => setOutline(false)}
-            // position={[position.x, position.y, position.z]}
-            // rotation={[rotation.x, rotation.y, rotation.z]}
-            // scale={[scale.x, scale.y, scale.z]}
+                position={position ? [position.x, position.y, position.z] : [0, 0, 0]}
+                rotation={rotation ? [rotation.x, rotation.y, rotation.z] : [0, 0, 0]}
+                scale={scale ? [scale.x, scale.y, scale.z] : [1, 1, 1]}
             />
         </Select>
     );

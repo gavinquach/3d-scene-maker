@@ -2,44 +2,33 @@ import { useControls } from "leva";
 
 import useStore from "../../utils/store.js";
 
-const ControlParams = () => {
-    const selectedMeshTransforms = useStore((state) => state.selectedMeshTransforms);
-    // console.log(selectedMeshTransforms);
+const useControlParams = () => {
+    const selectedMesh = useStore((state) => state.selectedMesh);
+    const meshTransforms = useStore((state) => state.meshTransforms);
 
-    const { transformMode, position, rotation, scale } = useControls("Transform mode", {
-        transformMode: {
-            value: "translate",
-            options: ["translate", "rotate", "scale"],
-            label: "Transform mode",
-        },
-        position: {
-            value: {
-                x: selectedMeshTransforms.position.x,
-                y: selectedMeshTransforms.position.y,
-                z: selectedMeshTransforms.position.z,
+    const [{ transformMode, position, rotation, scale }, setLevaTransforms] =
+        useControls(() => ({
+            transformMode: {
+                value: "translate",
+                options: ["translate", "rotate", "scale"],
+                label: "Transform mode",
             },
-            step: 0.1,
-            label: "Location",
-        },
-        rotation: {
-            value: {
-                x: selectedMeshTransforms.rotation.x,
-                y: selectedMeshTransforms.rotation.y,
-                z: selectedMeshTransforms.rotation.z,
+            position: {
+                x: meshTransforms[selectedMesh?.name]?.position?.x || 0,
+                y: meshTransforms[selectedMesh?.name]?.position?.y || 0,
+                z: meshTransforms[selectedMesh?.name]?.position?.z || 0,
             },
-            step: 0.1,
-            label: "Rotation",
-        },
-        scale: {
-            value: {
-                x: selectedMeshTransforms.scale.x,
-                y: selectedMeshTransforms.scale.y,
-                z: selectedMeshTransforms.scale.z,
+            rotation: {
+                x: meshTransforms[selectedMesh?.name]?.rotation?.x || 0,
+                y: meshTransforms[selectedMesh?.name]?.rotation?.y || 0,
+                z: meshTransforms[selectedMesh?.name]?.rotation?.z || 0,
             },
-            step: 0.1,
-            label: "Scale",
-        },
-    });
+            scale: {
+                x: meshTransforms[selectedMesh?.name]?.scale?.x || 1,
+                y: meshTransforms[selectedMesh?.name]?.scale?.y || 1,
+                z: meshTransforms[selectedMesh?.name]?.scale?.z || 1,
+            },
+        }));
 
     const { envIntensity, environment } = useControls(
         "Lighting",
@@ -74,8 +63,11 @@ const ControlParams = () => {
         envIntensity,
         environment,
         transformMode,
-        position, rotation, scale,
+        position,
+        rotation,
+        scale,
+        setLevaTransforms,
     };
 };
 
-export default ControlParams;
+export default useControlParams;

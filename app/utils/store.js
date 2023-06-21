@@ -27,12 +27,8 @@ if (typeof window !== "undefined") {
 const useStore = create((set, get) => ({
     files: [],
     results: [],
-    selectedMesh: null,
-    selectedMeshTransforms: {
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        scale: { x: 1, y: 1, z: 1 },
-    },
+    selectedMesh: { mesh: null, name: null },
+    meshTransforms: {},
     sameFiles: false,
     blockGenerateScene: false,
     sceneData: {
@@ -58,12 +54,12 @@ const useStore = create((set, get) => ({
         }));
     },
 
-    deleteFromStore: (obj) => {
-        if (obj === null) return;
+    deleteFromStore: (meshName) => {
+        if (meshName === null) return;
         set((state) => ({
-            files: state.files.filter(({ name }) => name !== obj.name),
-            results: state.results.filter(({ gltf }) => gltf.scene.name !== obj.name),
-            selectedMesh: null,
+            files: state.files.filter(({ name }) => name !== meshName),
+            results: state.results.filter(({ gltf }) => gltf.scene.name !== meshName),
+            selectedMesh: { mesh: null, name: null },
         }));
     },
 
@@ -71,52 +67,37 @@ const useStore = create((set, get) => ({
         set({
             files: [],
             results: [],
-            selectedMesh: null,
+            selectedMesh: { mesh: null, name: null },
         });
     },
 
-    setSelectedMesh: (mesh) => {
-        set({
-            selectedMesh: mesh,
-            selectedMeshTransforms: {
-                position: {
-                    x: mesh?.position?.x || 0,
-                    y: mesh?.position?.y || 0,
-                    z: mesh?.position?.z || 0,
-                },
-                rotation: {
-                    x: mesh?.rotation?.x || 0,
-                    y: mesh?.rotation?.y || 0,
-                    z: mesh?.rotation?.z || 0,
-                },
-                scale: {
-                    x: mesh?.scale?.x || 1,
-                    y: mesh?.scale?.y || 1,
-                    z: mesh?.scale?.z || 1,
-                },
-            },
-        });
+    setSelectedMesh: (mesh, meshName) => {
+        set({ selectedMesh: { mesh: mesh, name: meshName } });
     },
 
-    setTransforms: ({ position, rotation, scale }) => {
-        set({
-            selectedMeshTransforms: {
-                position: {
-                    x: position.x,
-                    y: position.y,
-                    z: position.z,
-                },
-                rotation: {
-                    x: rotation.x,
-                    y: rotation.y,
-                    z: rotation.z,
-                },
-                scale: {
-                    x: scale.x,
-                    y: scale.y,
-                    z: scale.z,
-                },
+    setHashMapValue: (key, value) => {
+        set((state) => ({
+            hashmap: {
+                ...state.hashmap,
+                [key]: value,
             },
+        }));
+    },
+
+    setTransforms: (name, transforms) => {
+        set((state) => ({
+            meshTransforms: {
+                ...state.meshTransforms,
+                [name]: transforms,
+            }
+        }));
+    },
+    deleteFromTransforms: (name) => {
+        set((state) => {
+            const { [name]: _, ...updatedTransforms } = state.meshTransforms;
+            return {
+                meshTransforms: updatedTransforms,
+            };
         });
     },
 

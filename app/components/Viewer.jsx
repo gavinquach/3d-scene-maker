@@ -17,7 +17,7 @@ import {
     Outline,
 } from "@react-three/postprocessing";
 
-import ControlParams from "./Controls/ControlParams.jsx";
+import useControlParams from "./Controls/ControlParams.jsx";
 import useStore from "../utils/store.js";
 import Model from "./Model.jsx";
 import OrbitGizmo from "./OrbitGizmo.jsx";
@@ -30,9 +30,8 @@ const Viewer = () => {
     const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
     const selectedMesh = useStore((state) => state.selectedMesh);
-    const setTransforms = useStore((state) => state.setTransforms);
 
-    const { transformMode, environment } = ControlParams();
+    const { transformMode, environment } = useControlParams();
 
     // generate scene whenever file array is changed
     useEffect(() => {
@@ -47,19 +46,6 @@ const Viewer = () => {
             generateScene();
         });
     }, [files, generateScene]);
-
-    const handleTransform = () => {
-        const mesh = selectedMesh?.current;
-        if (mesh) {
-            startTransition(() => {
-                setTransforms({
-                    position: mesh.position,
-                    rotation: mesh.rotation,
-                    scale: mesh.scale,
-                });
-            });
-        }
-    };
 
     return (
         <Canvas
@@ -95,15 +81,14 @@ const Viewer = () => {
                         />
                     </EffectComposer>
                     {results.length > 0 &&
-                        results.map(({ buffer, gltf, name }) => (
+                        results.map(({ gltf, name }) => (
                             <Model key={name} gltf={gltf} name={name} />
                         ))}
-                    {selectedMesh && (
+                    {selectedMesh?.mesh && (
                         <TransformControls
-                            object={selectedMesh || null}
-                            enabled={selectedMesh ? true : false}
+                            object={selectedMesh?.mesh || null}
+                            enabled={selectedMesh?.mesh ? true : false}
                             mode={transformMode}
-                            onObjectChange={handleTransform}
                         />
                     )}
                 </Selection>

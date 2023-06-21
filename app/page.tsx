@@ -17,6 +17,7 @@ export default function Home() {
     const results = useStore((state) => state.results);
     const selectedMesh = useStore((state) => state.selectedMesh);
     const deleteFromStore = useStore((state) => state.deleteFromStore);
+    const deleteFromTransforms = useStore((state) => state.deleteFromTransforms);
     const setSameFiles = useStore((state) => state.setSameFiles);
     const clearAll = useStore((state) => state.clearAll);
 
@@ -63,9 +64,10 @@ export default function Home() {
     );
 
     const handleDeleteObject = useCallback(() => {
-        if (selectedMesh === null) return;
+        if (!selectedMesh?.name) return;
         startTransition(() => {
-            deleteFromStore(selectedMesh);
+            deleteFromStore(selectedMesh.name);
+            deleteFromTransforms(selectedMesh.name);
         });
     }, [selectedMesh]);
 
@@ -101,6 +103,36 @@ export default function Home() {
                         <div className="flex-grow">
                             <Viewer />
                         </div>
+                        <div className="w-1/4 bg-gray-800"><ul className="directory-tree list-none pl-4">
+                            <li className="mb-2">
+                                <span className="folder font-bold cursor-pointer">Folder 1</span>
+                                <ul className="pl-4">
+                                    <li className="mb-2">
+                                        <span className="folder font-bold cursor-pointer">Subfolder 1</span>
+                                        <ul className="pl-4">
+                                            <li className="mb-2">
+                                                <span className="file cursor-pointer">File 1</span>
+                                            </li>
+                                            <li className="mb-2">
+                                                <span className="file cursor-pointer">File 2</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li className="mb-2">
+                                <span className="folder font-bold cursor-pointer">Folder 2</span>
+                                <ul className="pl-4">
+                                    <li className="mb-2">
+                                        <span className="file cursor-pointer">File 3</span>
+                                    </li>
+                                    <li className="mb-2">
+                                        <span className="file cursor-pointer">File 4</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        </div>
                     </div>
                 </div>
             ) : (
@@ -115,7 +147,7 @@ export default function Home() {
             )}
 
             <p
-                className="fixed bottom-2 right-2 cursor-default hover:cursor-pointer"
+                className="fixed bottom-2 right-2 cursor-default hover:cursor-pointer pointer-events-none"
                 onClick={(e) => {
                     e.stopPropagation();
                     window.open("https://github.com/gavinquach/", "_blank", "noreferrer");
