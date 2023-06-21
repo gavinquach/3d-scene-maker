@@ -17,8 +17,9 @@ import { useFrame } from "@react-three/fiber";
 
 const Model = ({ gltf, name, ...props }) => {
     const mesh = useRef(null);
-    const [hovered, hover] = useState(null);
 
+    const selectedMesh = useStore((state) => state.selectedMesh);
+    console.log("selectedMesh", selectedMesh);
     const setSelectedMesh = useStore((state) => state.setSelectedMesh);
     const setTransforms = useStore((state) => state.setTransforms);
     const meshTransforms = useStore((state) => state.meshTransforms);
@@ -88,9 +89,11 @@ const Model = ({ gltf, name, ...props }) => {
     };
 
     const setOutline = (bool) => {
-        hover(bool);
         startTransition(() => {
-            setSelectedMesh(bool ? mesh?.current : null, name);
+            setSelectedMesh(
+                bool === true ? mesh?.current : null,
+                bool === true ? name : null
+            );
             if (bool) {
                 if (
                     mesh.current?.position.x !== 0 ||
@@ -175,7 +178,7 @@ const Model = ({ gltf, name, ...props }) => {
     });
 
     return (
-        <Select enabled={hovered} {...props} dispose={null}>
+        <Select enabled={selectedMesh?.name === name} {...props} dispose={null}>
             <primitive
                 object={scene}
                 ref={mesh}

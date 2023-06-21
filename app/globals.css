@@ -25,3 +25,15 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+.directory-tree li:nth-child(odd) {
+  background-color: #001a2b; /* Light color for odd rows */
+}
+
+.directory-tree li:nth-child(even) {
+  background-color: #002b48; /* Dark color for even rows */
+}
+
+.directory-tree li li:hover {
+  background-color: #5d5d5d; /* Light color when hovered */
+}

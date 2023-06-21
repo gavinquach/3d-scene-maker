@@ -72,6 +72,15 @@ const useStore = create((set, get) => ({
     },
 
     setSelectedMesh: (mesh, meshName) => {
+        if (mesh === null && meshName !== null) {
+            // get the mesh from the results
+            const { results } = get();
+            const result = results.find(({ name }) => name === meshName);
+            if (result) {
+                set({ selectedMesh: { mesh: result.gltf.scene, name: meshName } });
+            }
+            return;
+        }
         set({ selectedMesh: { mesh: mesh, name: meshName } });
     },
 

@@ -17,6 +17,7 @@ export default function Home() {
     const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
     const selectedMesh = useStore((state) => state.selectedMesh);
+    const setSelectedMesh = useStore((state) => state.setSelectedMesh);
     const deleteFromStore = useStore((state) => state.deleteFromStore);
     const deleteFromTransforms = useStore((state) => state.deleteFromTransforms);
     const setSameFiles = useStore((state) => state.setSameFiles);
@@ -105,7 +106,7 @@ export default function Home() {
                             <Viewer />
                         </div>
                         <div className="w-1/4 bg-gray-800">
-                            <DirectoryTree results={results} />
+                            <DirectoryTree results={results} setSelectedMesh={setSelectedMesh} />
                         </div>
                     </div>
                 </div>
