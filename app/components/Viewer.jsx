@@ -32,6 +32,13 @@ const Viewer = () => {
     const selectedMesh = useStore((state) => state.selectedMesh);
 
     const { transformMode, environment } = useControlParams();
+    
+    const performanceSettings = {
+        current: 1,
+        min: 0.1,
+        max: 1,
+        debounce: 200,
+    };
 
     // generate scene whenever file array is changed
     useEffect(() => {
@@ -53,6 +60,7 @@ const Viewer = () => {
             shadows
             dpr={[1, 1.5]}
             camera={{ position: [0, 5, -10], fov: 50 }}
+            performance={performanceSettings}
         >
             <Perf position="bottom-left" />
 
