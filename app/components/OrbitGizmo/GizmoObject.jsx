@@ -1,13 +1,57 @@
 /* eslint-disable react/display-name */
 
-import { BackSide, Matrix4 } from "three";
-import { forwardRef, memo, useRef } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
-import { Hud, OrthographicCamera, Text } from "@react-three/drei";
+import { BackSide } from "three";
+import { forwardRef, memo } from "react";
+import { Text } from "@react-three/drei";
+import { gsap } from "gsap";
 
-const GizmoObject = forwardRef((props, ref) => {
+const GizmoObject = forwardRef(({ camera, controls, ...props }, ref) => {
     const handleHover = (e, bool) => {
         e.object.color = bool ? "#ddd" : "#555";
+    };
+
+    const handleClick = (axis) => {
+        let pos;
+
+        if (axis === "x") {
+            if (camera.position.x === -8) {
+                pos = [8, 0, 0];
+            } else {
+                pos = [-8, 0, 0];
+            }
+        }
+        else if (axis === "y") {
+            if (camera.position.y === 8) {
+                console.log('called 1');
+                pos = [0, -8, 0];
+            } else {
+                console.log('called 2');
+                pos = [0, 8, 0];
+            }
+        }
+        else if (axis === "z") {
+            if (camera.position.z === -8) {
+                pos = [0, 0, 8];
+            } else {
+                pos = [0, 0, -8];
+            }
+        }
+
+        gsap.to(camera.position, {
+            x: pos[0],
+            y: pos[1],
+            z: pos[2],
+            ease: "power1.inOut",
+            duration: 0.3,
+        });
+
+        gsap.to(controls.target, {
+            x: 0,
+            y: 0,
+            z: 0,
+            ease: "power1.inOut",
+            duration: 0.3,
+        });
     };
 
     return (
@@ -48,6 +92,7 @@ const GizmoObject = forwardRef((props, ref) => {
                     name="Text_Y"
                     onPointerEnter={(e) => handleHover(e, true)}
                     onPointerLeave={(e) => handleHover(e, false)}
+                    onClick={() => handleClick("y")}
                     color="#555"
                     characters="Y"
                     scale={22}
@@ -59,6 +104,7 @@ const GizmoObject = forwardRef((props, ref) => {
                     name="Text_X"
                     onPointerEnter={(e) => handleHover(e, true)}
                     onPointerLeave={(e) => handleHover(e, false)}
+                    onClick={() => handleClick("x")}
                     color="#555"
                     characters="X"
                     scale={22}
@@ -70,6 +116,7 @@ const GizmoObject = forwardRef((props, ref) => {
                     name="Text_Z"
                     onPointerEnter={(e) => handleHover(e, true)}
                     onPointerLeave={(e) => handleHover(e, false)}
+                    onClick={() => handleClick("z")}
                     color="#555"
                     characters="Z"
                     scale={22}
@@ -83,31 +130,4 @@ const GizmoObject = forwardRef((props, ref) => {
     );
 });
 
-const OrbitGizmo = ({ renderPriority = 2, matrix = new Matrix4(), ...props }) => {
-    const mesh = useRef(null);
-    const camera = useThree((state) => state.camera);
-    const size = useThree((state) => state.size);
-
-    useFrame(() => {
-        // Spin mesh to the inverse of the default cameras matrix
-        matrix.copy(camera.matrix).invert();
-        mesh.current?.quaternion?.setFromRotationMatrix(matrix);
-
-        // Keep text facing the camera
-        mesh.current?.children[3]?.children?.forEach((text) => {
-            text.quaternion.setFromRotationMatrix(camera.matrix);
-        });
-    });
-
-    return (
-        <Hud renderPriority={renderPriority} {...props} dispose={null}>
-            <OrthographicCamera makeDefault position={[-300, 0, 100]} zoom={0.8} />
-            <GizmoObject
-                ref={mesh}
-                position={[size.width / 2 - 300, size.height / 2 - 20, 0]}
-            />
-        </Hud>
-    );
-};
-
-export default memo(OrbitGizmo);
+export default memo(GizmoObject);

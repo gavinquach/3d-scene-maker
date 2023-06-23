@@ -20,7 +20,7 @@ import {
 import useControlParams from "./Controls/ControlParams.jsx";
 import useStore from "../utils/store.js";
 import Model from "./Model.jsx";
-import OrbitGizmo from "./OrbitGizmo.jsx";
+import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
 // import { schadowplatz_1k } from "../assets/images";
 
 const Viewer = () => {
@@ -76,7 +76,7 @@ const Viewer = () => {
                 shadow-normalBias={0.06}
             />
 
-            <OrbitControls makeDefault />
+            <OrbitControls makeDefault name="OrbitControls" />
 
             <Suspense fallback={null}>
                 <Selection>
