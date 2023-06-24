@@ -150,10 +150,6 @@ const Model = ({ gltf, name, ...props }) => {
         });
     }, [envIntensity]);
 
-    useEffect(() => {
-        console.log(selectedMesh);
-    }, [selectedMesh]);
-
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
         if (mesh.current && selectedMesh?.name === name) {
