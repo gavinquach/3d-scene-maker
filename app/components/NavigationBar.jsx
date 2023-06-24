@@ -17,7 +17,7 @@ const NavigationBar = ({ onDrop, handleDeleteObject, handleClearAll }) => {
     const isHoveringOverFileUpload = useRef(false);
 
     return (
-        <header className="bg-gray-900 py-2 px-4 flex items-center justify-between">
+        <header className="bg-gray-900/80 py-1 px-4 flex items-center justify-between">
             <nav>
                 <ul className="flex flex-row justify-left">
                     <li className="relative">

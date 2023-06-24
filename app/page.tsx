@@ -9,7 +9,7 @@ import NavigationBar from "./components/NavigationBar.jsx";
 import Viewer from "./components/Viewer.jsx";
 
 import useStore from "./utils/store.js";
-import blocker from "./utils/generateSceneBlocker.js"
+import blocker from "./utils/generateSceneBlocker.js";
 
 export default function Home() {
     const addMultipleFilesToStore = useStore(
@@ -98,20 +98,22 @@ export default function Home() {
         <>
             <ControlMenu hidden={files.length < 1} />
             {files.length > 0 ? (
-                <div className="flex flex-col min-h-screen w-screen">
-                    <NavigationBar
-                        onDrop={onDrop}
-                        handleDeleteObject={handleDeleteObject}
-                        handleClearAll={handleClearAll}
-                    />
-                    <div className="flex flex-grow">
+                <div className="flex flex-col h-screen max-h-screen w-screen max-w-screen">
+                    <div className="flex h-full max-h-full w-full max-w-full">
                         {/* Scene */}
-                        <div className="flex-grow">
-                            <Viewer />
+                        <div className="flex flex-col h-screen w-full">
+                            <NavigationBar
+                                onDrop={onDrop}
+                                handleDeleteObject={handleDeleteObject}
+                                handleClearAll={handleClearAll}
+                            />
+                            <div className="flex-grow overflow-y-auto">
+                                <Viewer />
+                            </div>
                         </div>
 
                         {/* Sidebar */}
-                        <div className="styled-scrollbar w-1/4 bg-gray-800 overflow-hidden">
+                        <div className="styled-scrollbar max-h-screen w-1/4 bg-gray-800 overflow-hidden">
                             {/* Top Half */}
                             <div className="h-1/3 overflow-y-scroll">
                                 <DirectoryTree
@@ -122,9 +124,7 @@ export default function Home() {
                             </div>
 
                             {/* Bottom Half */}
-                            <div className="flex-grow overflow-hidden">
-                                {/* Your code for the bottom half of the sidebar */}
-                            </div>
+                            <div className="h-2/3 overflow-y-scroll bg-gray-700"></div>
                         </div>
                     </div>
                 </div>
