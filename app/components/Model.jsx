@@ -65,25 +65,23 @@ const Model = ({ gltf, name, ...props }) => {
     };
 
     const handleTransformChange = () => {
-        startTransition(() => {
-            handleSetLevaTransform();
-            setTransforms(name, {
-                position: {
-                    x: mesh.current?.position.x,
-                    y: mesh.current?.position.y,
-                    z: mesh.current?.position.z,
-                },
-                rotation: {
-                    x: mesh.current?.rotation.x,
-                    y: mesh.current?.rotation.y,
-                    z: mesh.current?.rotation.z,
-                },
-                scale: {
-                    x: mesh.current?.scale.x,
-                    y: mesh.current?.scale.y,
-                    z: mesh.current?.scale.z,
-                },
-            });
+        handleSetLevaTransform();
+        setTransforms(name, {
+            position: {
+                x: mesh.current?.position.x,
+                y: mesh.current?.position.y,
+                z: mesh.current?.position.z,
+            },
+            rotation: {
+                x: mesh.current?.rotation.x,
+                y: mesh.current?.rotation.y,
+                z: mesh.current?.rotation.z,
+            },
+            scale: {
+                x: mesh.current?.scale.x,
+                y: mesh.current?.scale.y,
+                z: mesh.current?.scale.z,
+            },
         });
     };
 
@@ -150,7 +148,7 @@ const Model = ({ gltf, name, ...props }) => {
 
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
-        if (mesh.current) {
+        if (mesh.current && selectedMesh?.name === name) {
             const { position, rotation, scale } = mesh.current;
             const previousTransform = previousTransformRef.current;
 
