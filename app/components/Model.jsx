@@ -7,6 +7,7 @@ import {
     useCallback,
     useEffect,
     useLayoutEffect,
+    useMemo,
     useRef,
 } from "react";
 import { Select } from "@react-three/postprocessing";
@@ -29,14 +30,17 @@ const Model = ({ gltf, name, ...props }) => {
     const rotation = meshTransforms[name]?.rotation;
     const scale = meshTransforms[name]?.scale;
 
-    const scene = useCallback(gltf.scene, [gltf.scene]);
-    const animations = useCallback(gltf.animations, [gltf.animations]);
+    const scene = useMemo(() => gltf.scene, [gltf.scene]);
+    const animations = useMemo(() => gltf.animations, [gltf.animations]);
 
     // TODO: Figure out how to effectively use nodes and materials like GLTFJSX https://github.com/pmndrs/gltfjsx/blob/master/src/utils/parser.js
     // so that users can add the same models to the scene many times without sacrificing performance
     // const { nodes, materials } = useGraph(scene);
 
-    const { actions } = useAnimations(animations, mesh);
+    const { actions } = useCallback(useAnimations(animations, mesh), [
+        animations,
+        mesh,
+    ]);
 
     const previousTransformRef = useRef({
         position: null,
@@ -146,6 +150,10 @@ const Model = ({ gltf, name, ...props }) => {
         });
     }, [envIntensity]);
 
+    useEffect(() => {
+        console.log(selectedMesh);
+    }, [selectedMesh]);
+
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
         if (mesh.current && selectedMesh?.name === name) {
@@ -174,9 +182,8 @@ const Model = ({ gltf, name, ...props }) => {
     });
 
     return (
-        <Select enabled={selectedMesh?.name === name} {...props} dispose={null}>
-            <primitive
-                object={scene}
+        <Select enabled={selectedMesh?.name === name}>
+            <mesh
                 ref={mesh}
                 name={name}
                 onClick={() => setOutline(true)}
@@ -184,7 +191,11 @@ const Model = ({ gltf, name, ...props }) => {
                 position={position ? [position.x, position.y, position.z] : [0, 0, 0]}
                 rotation={rotation ? [rotation.x, rotation.y, rotation.z] : [0, 0, 0]}
                 scale={scale ? [scale.x, scale.y, scale.z] : [1, 1, 1]}
-            />
+                {...props}
+                dispose={null}
+            >
+                <primitive object={scene} />
+            </mesh>
         </Select>
     );
 };
