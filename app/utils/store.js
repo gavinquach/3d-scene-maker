@@ -58,7 +58,7 @@ const useStore = create((set, get) => ({
         if (meshName === null) return;
         set((state) => ({
             files: state.files.filter(({ name }) => name !== meshName),
-            results: state.results.filter(({ gltf }) => gltf.scene.name !== meshName),
+            results: state.results.filter(({ name }) => name !== meshName),
             selectedMesh: { mesh: null, name: null },
         }));
     },
