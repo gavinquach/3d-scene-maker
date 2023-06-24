@@ -18,26 +18,49 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
+  background: linear-gradient(to bottom,
       transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
 }
 
 .directory-tree li:nth-child(odd) {
-  background-color: #001a2b; /* Light color for odd rows */
+  background-color: #001a2b;
+  /* Light color for odd rows */
 }
 
 .directory-tree li:nth-child(even) {
-  background-color: #002b48; /* Dark color for even rows */
+  background-color: #002b48;
+  /* Dark color for even rows */
 }
 
 .directory-tree li li:hover {
-  background-color: #5d5d5d; /* Light color when hovered */
+  background-color: #5d5d5d;
+  /* Light color when hovered */
 }
 
 .active-item {
   background-color: #5d5d5d !important;
+}
+
+.styled-scrollbar {
+  /* width */
+  ::-webkit-scrollbar {
+    width: 0.3rem;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: none;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 1rem;
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #333;
+  }
 }

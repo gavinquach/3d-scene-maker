@@ -14,7 +14,7 @@ const DirectoryTree = ({ results, selectedMesh, setSelectedMesh }) => {
                     className="folder font-bold pl-4 cursor-pointer"
                     onClick={handleToggle}
                 >
-                    Scene
+                    Scene Collection
                 </span>
                 <ul className="pl-8">
                     {results.map(({ name }) => (

@@ -32,7 +32,7 @@ const Viewer = () => {
     const selectedMesh = useStore((state) => state.selectedMesh);
 
     const { transformMode, environment } = useControlParams();
-    
+
     const performanceSettings = {
         current: 1,
         min: 0.1,
@@ -102,14 +102,14 @@ const Viewer = () => {
                 </Selection>
 
                 {/* <ContactShadows
-                        frames={1}
-                        position={[0, -0.1, 0]}
-                        opacity={0.75}
-                        scale={15}
-                        blur={2}
-                        far={6}
-                    />
-                    <BakeShadows /> */}
+                            frames={1}
+                            position={[0, -0.1, 0]}
+                            opacity={0.75}
+                            scale={15}
+                            blur={2}
+                            far={6}
+                        />
+                        <BakeShadows /> */}
             </Suspense>
             <AdaptiveDpr pixelated />
         </Canvas>

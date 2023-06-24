@@ -3,7 +3,7 @@
 import { startTransition, useCallback, useEffect } from "react";
 
 import ControlMenu from "./components/Controls/ControlMenu.jsx";
-import DirectoryTree from "./components/DirectoryTree.jsx";
+import DirectoryTree from "./components/Sidebar/DirectoryTree.jsx";
 import FileUpload from "./components/FileUpload.jsx";
 import NavigationBar from "./components/NavigationBar.jsx";
 import Viewer from "./components/Viewer.jsx";
@@ -102,11 +102,26 @@ export default function Home() {
                         handleClearAll={handleClearAll}
                     />
                     <div className="flex flex-grow">
+                        {/* Scene */}
                         <div className="flex-grow">
                             <Viewer />
                         </div>
-                        <div className="w-1/5 bg-gray-800">
-                            <DirectoryTree results={results} selectedMesh={selectedMesh} setSelectedMesh={setSelectedMesh} />
+
+                        {/* Sidebar */}
+                        <div className="styled-scrollbar w-1/4 bg-gray-800 overflow-hidden">
+                            {/* Top Half */}
+                            <div className="h-1/3 overflow-y-scroll">
+                                <DirectoryTree
+                                    results={results}
+                                    selectedMesh={selectedMesh}
+                                    setSelectedMesh={setSelectedMesh}
+                                />
+                            </div>
+
+                            {/* Bottom Half */}
+                            <div className="flex-grow overflow-hidden">
+                                {/* Your code for the bottom half of the sidebar */}
+                            </div>
                         </div>
                     </div>
                 </div>
