@@ -1,5 +1,4 @@
-import React, { useRef, useState } from "react";
-
+import { memo, useRef, useState } from "react";
 import FileUpload from "./FileUpload.jsx";
 import NewTabLink from "./NewTabLink.jsx";
 
@@ -96,4 +95,4 @@ const NavigationBar = ({ onDrop, handleDeleteObject, handleClearAll }) => {
     );
 };
 
-export default NavigationBar;
+export default memo(NavigationBar);

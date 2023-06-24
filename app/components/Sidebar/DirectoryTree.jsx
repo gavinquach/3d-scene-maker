@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 const DirectoryTree = ({ results, selectedMesh, setSelectedMesh }) => {
     const handleToggle = (e) => {
         e.currentTarget.nextElementSibling.classList.toggle("hidden");
@@ -34,4 +36,4 @@ const DirectoryTree = ({ results, selectedMesh, setSelectedMesh }) => {
     );
 };
 
-export default DirectoryTree;
+export default memo(DirectoryTree);

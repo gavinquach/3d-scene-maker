@@ -1,4 +1,4 @@
-import React from "react";
+import { memo } from "react";
 
 const NewTabLink = ({ href, children }) => {
     const handleClick = (e) => {
@@ -13,4 +13,4 @@ const NewTabLink = ({ href, children }) => {
     );
 };
 
-export default NewTabLink;
+export default memo(NewTabLink);

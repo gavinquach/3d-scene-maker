@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useDropzone } from "react-dropzone";
 import useStore from "../utils/store";
 
@@ -52,4 +53,4 @@ const FileUpload = ({ small = false, onDrop }) => {
     );
 };
 
-export default FileUpload;
+export default memo(FileUpload);
