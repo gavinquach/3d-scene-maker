@@ -30,7 +30,6 @@ const useStore = create((set, get) => ({
     selectedMesh: { mesh: null, name: null },
     meshTransforms: {},
     sameFiles: false,
-    blockGenerateScene: false,
     sceneData: {
         invisible: [],
         objects: [],
@@ -110,10 +109,6 @@ const useStore = create((set, get) => ({
         });
     },
 
-    unblockGenerateScene: () => {
-        set({ blockGenerateScene: false });
-    },
-
     generateScene: async () => {
         const { files, results } = get();
 
@@ -133,6 +128,7 @@ const useStore = create((set, get) => ({
             })
         );
 
+        // generate scene for the first time
         if (results.length === 0) {
             set({
                 results: gltfs.map((gltf, index) => ({
@@ -141,7 +137,9 @@ const useStore = create((set, get) => ({
                     name: files[index].name,
                 })),
             });
-        } else {
+        }
+        // when user adds object(s) to the scene
+        else {
             // Create a set of gltf names for O(1) lookup
             const gltfNamesSet = new Set(results.map((result) => result.name));
 
@@ -160,10 +158,6 @@ const useStore = create((set, get) => ({
 
     setSameFiles: (bool) => {
         set({ sameFiles: bool });
-    },
-
-    setBlockGenerateScene: (bool) => {
-        set({ blockGenerateScene: bool });
     },
 }));
 

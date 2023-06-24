@@ -9,6 +9,7 @@ import NavigationBar from "./components/NavigationBar.jsx";
 import Viewer from "./components/Viewer.jsx";
 
 import useStore from "./utils/store.js";
+import blocker from "./utils/generateSceneBlocker.js"
 
 export default function Home() {
     const addMultipleFilesToStore = useStore(
@@ -67,6 +68,8 @@ export default function Home() {
 
     const handleDeleteObject = useCallback(() => {
         if (!selectedMesh?.name) return;
+
+        blocker.canGenerate = false;
         startTransition(() => {
             deleteFromStore(selectedMesh.name);
             deleteFromTransforms(selectedMesh.name);

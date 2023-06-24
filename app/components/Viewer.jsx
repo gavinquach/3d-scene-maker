@@ -9,7 +9,7 @@ import {
     TransformControls,
 } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { memo, startTransition, Suspense, useEffect, useRef } from "react";
+import { memo, startTransition, Suspense, useEffect } from "react";
 import { Perf } from "r3f-perf";
 import {
     Selection,
@@ -23,9 +23,9 @@ import Model from "./Model.jsx";
 import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
 // import { schadowplatz_1k } from "../assets/images";
 
+import blocker from "../utils/generateSceneBlocker.js";
+
 const Viewer = () => {
-    const blockGenerateScene = useStore((state) => state.blockGenerateScene);
-    const unblockGenerateScene = useStore((state) => state.unblockGenerateScene);
     const generateScene = useStore((state) => state.generateScene);
     const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
@@ -44,8 +44,8 @@ const Viewer = () => {
     useEffect(() => {
         if (files.length === 0) return;
 
-        if (blockGenerateScene) {
-            unblockGenerateScene();
+        if (!blocker.canGenerate) {
+            blocker.canGenerate = true;
             return;
         }
 
