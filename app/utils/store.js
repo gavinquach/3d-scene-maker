@@ -63,6 +63,8 @@ const useStore = create((set, get) => ({
             files: [],
             results: [],
             selectedMesh: { mesh: null, name: null },
+            meshTransforms: {},
+            sameFiles: false,
         });
     },
 
