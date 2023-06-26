@@ -106,6 +106,8 @@ export default function Home() {
                                 onDrop={onDrop}
                                 handleDeleteObject={handleDeleteObject}
                                 handleClearAll={handleClearAll}
+                                readSceneData={readSceneData}
+                                exportSceneData={exportSceneData}
                             />
                             <div className="flex-grow overflow-y-auto">
                                 <Viewer />

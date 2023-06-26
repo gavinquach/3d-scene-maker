@@ -182,14 +182,17 @@ const Model = ({ gltf, name, ...props }) => {
             name={name}
             onClick={() => setOutline(true)}
             onPointerMissed={() => setOutline(false)}
-            position={position ? [position.x, position.y, position.z] : [0, 0, 0]}
-            rotation={rotation ? [rotation.x, rotation.y, rotation.z] : [0, 0, 0]}
-            scale={scale ? [scale.x, scale.y, scale.z] : [1, 1, 1]}
-            {...props}
             dispose={null}
         >
             <Select enabled={selectedMesh?.name === name}>
-                <primitive ref={mesh} object={scene} />
+                <primitive
+                    ref={mesh}
+                    object={scene}
+                    position={position ? [position.x, position.y, position.z] : [0, 0, 0]}
+                    rotation={rotation ? [rotation.x, rotation.y, rotation.z] : [0, 0, 0]}
+                    scale={scale ? [scale.x, scale.y, scale.z] : [1, 1, 1]}
+                    {...props}
+                />
             </Select>
         </mesh>
     );

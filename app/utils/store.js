@@ -30,10 +30,6 @@ const useStore = create((set, get) => ({
     selectedMesh: { mesh: null, name: null },
     meshTransforms: {},
     sameFiles: false,
-    sceneData: {
-        invisible: [],
-        objects: [],
-    },
 
     addFileToStore: (newBuffer, name) => {
         set((state) => ({
@@ -92,6 +88,9 @@ const useStore = create((set, get) => ({
         }));
     },
 
+    setMeshTransformsObject: (object) => {
+        set({ meshTransforms: object });
+    },
     setTransforms: (name, transforms) => {
         set((state) => ({
             meshTransforms: {

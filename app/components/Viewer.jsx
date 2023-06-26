@@ -8,7 +8,7 @@ import {
     OrbitControls,
     TransformControls,
 } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { memo, startTransition, Suspense, useEffect } from "react";
 import { Perf } from "r3f-perf";
 import {
@@ -24,6 +24,33 @@ import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
 // import { schadowplatz_1k } from "../assets/images";
 
 import blocker from "../utils/generateSceneBlocker.js";
+
+const CheckMeshTransforms = () => {
+    const meshTransforms = useStore((state) => state.meshTransforms);
+    const scene = useThree((state) => state.scene);
+
+    useEffect(() => {
+        console.log("meshTransforms:", meshTransforms);
+        console.log("scene:", scene);
+
+        scene.children.forEach((child) => {
+            if (child.type !== "Mesh") return;
+
+            Object.keys(meshTransforms).forEach((obj) => {
+                const objTransforms = meshTransforms[obj];
+                if (obj === child.name) {
+                    child.position.set(objTransforms.position.x, objTransforms.position.y, objTransforms.position.z);
+                    child.rotation.set(objTransforms.rotation.x, objTransforms.rotation.y, objTransforms.rotation.z);
+                    child.scale.set(objTransforms.scale.x, objTransforms.scale.y, objTransforms.scale.z);
+
+                    console.log("Set transforms for:", obj);
+                    return;
+                }
+            });
+        });
+    }, [meshTransforms]);
+    return null;
+};
 
 const Viewer = () => {
     const generateScene = useStore((state) => state.generateScene);
@@ -62,6 +89,7 @@ const Viewer = () => {
             camera={{ position: [0, 5, -10], fov: 50 }}
             performance={performanceSettings}
         >
+            <CheckMeshTransforms />
             <Perf position="bottom-left" />
 
             <OrbitGizmo />
@@ -102,14 +130,14 @@ const Viewer = () => {
                 </Selection>
 
                 {/* <ContactShadows
-                            frames={1}
-                            position={[0, -0.1, 0]}
-                            opacity={0.75}
-                            scale={15}
-                            blur={2}
-                            far={6}
-                        />
-                        <BakeShadows /> */}
+                    frames={1}
+                    position={[0, -0.1, 0]}
+                    opacity={0.75}
+                    scale={15}
+                    blur={2}
+                    far={6}
+                />
+                <BakeShadows /> */}
             </Suspense>
             <AdaptiveDpr pixelated />
         </Canvas>
