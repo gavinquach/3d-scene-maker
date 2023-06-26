@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useCallback, useEffect } from "react";
+import { ChangeEventHandler, startTransition, useCallback, useEffect, useState } from "react";
 
 import ControlMenu from "./components/Controls/ControlMenu.jsx";
 import DirectoryTree from "./components/Sidebar/DirectoryTree.jsx";
@@ -23,6 +23,61 @@ export default function Home() {
     const deleteFromTransforms = useStore((state) => state.deleteFromTransforms);
     const setSameFiles = useStore((state) => state.setSameFiles);
     const clearAll = useStore((state) => state.clearAll);
+
+    const meshTransforms = useStore((state) => state.meshTransforms);
+    const setMeshTransformsObject = useStore((state) => state.setMeshTransformsObject);
+
+    const readSceneData: ChangeEventHandler<HTMLInputElement> = (event) => {
+        if (event?.target?.files?.length === 0) return;
+
+        const file: File | undefined = event.target.files?.[0];
+
+        if (!file) return;
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+            const content = e?.target?.result;
+            const parsed = JSON.parse(content as string);
+            console.log(parsed);
+
+            setMeshTransformsObject(parsed.transforms);
+        };
+
+        reader.readAsText(file);
+    };
+
+    const exportSceneData: () => void = useCallback(() => {
+        // const buffers: ArrayBuffer[] = files.map(({ buffer }: { buffer: ArrayBuffer }) => buffer);
+
+        // const batchSize = 1000000; // Number of buffers to process in each batch
+        // const base64Strings: string[] = [];
+        // for (let i = 0; i < buffers.length; i += batchSize) {
+        //     const batch = buffers.slice(i, i + batchSize);
+        //     console.log(`Processing batch ${i / batchSize + 1} of ${Math.ceil(buffers.length / batchSize)}`);
+
+        //     const batchBase64Strings: string[] = batch.map((buffer: ArrayBuffer) => {
+        //         const uint8Array: Uint8Array = new Uint8Array(buffer);
+        //         return btoa(String.fromCharCode(...Array.from(uint8Array)));
+        //     });
+        //     base64Strings.push(...batchBase64Strings);
+        // }
+
+        const sceneData = {
+            // buffersBase64: base64Strings,
+            transforms: meshTransforms,
+        };
+        const jsonString: string = JSON.stringify(sceneData, null, 2);
+        const blob: Blob = new Blob([jsonString], { type: "application/json" });
+
+        const downloadLink: HTMLAnchorElement = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = "data.json";
+
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }, [files, meshTransforms]);
 
     const onDrop = useCallback(
         async (acceptedFiles: File[]) => {
