@@ -6,6 +6,7 @@ import {
     // ContactShadows,
     Environment,
     OrbitControls,
+    Preload,
     TransformControls,
 } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
@@ -139,6 +140,7 @@ const Viewer = () => {
                 />
                 <BakeShadows /> */}
             </Suspense>
+            <Preload all />
             <AdaptiveDpr pixelated />
         </Canvas>
     );
