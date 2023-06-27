@@ -1,15 +1,28 @@
 "use client";
 
-import { ChangeEventHandler, startTransition, useCallback, useEffect, useState } from "react";
+import {
+    ChangeEvent,
+    ChangeEventHandler,
+    startTransition,
+    useCallback,
+    useEffect,
+    useState,
+} from "react";
+
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 import ControlMenu from "./components/Controls/ControlMenu.jsx";
 import DirectoryTree from "./components/Sidebar/DirectoryTree.jsx";
-import FileUpload from "./components/FileUpload.jsx";
 import NavigationBar from "./components/NavigationBar.jsx";
+import Properties from "./components/Sidebar/Properties.jsx";
 import Viewer from "./components/Viewer.jsx";
 
 import useStore from "./utils/store.js";
-import blocker from "./utils/generateSceneBlocker.js";
+import globalObject from "./utils/globalObjects.ts";
+
+import { EXPORT_FILE_NAME, TRANSFORMS_FILE_NAME } from "./utils/constants.ts";
+import { generateRandomString } from "./utils/functions.ts";
 
 export default function Home() {
     const addMultipleFilesToStore = useStore(
@@ -25,61 +38,89 @@ export default function Home() {
     const clearAll = useStore((state) => state.clearAll);
 
     const meshTransforms = useStore((state) => state.meshTransforms);
-    const setMeshTransformsObject = useStore((state) => state.setMeshTransformsObject);
+    const setMeshTransformsObject = useStore(
+        (state) => state.setMeshTransformsObject
+    );
 
-    const readSceneData: ChangeEventHandler<HTMLInputElement> = (event) => {
-        if (event?.target?.files?.length === 0) return;
+    const readSceneData: (event: ChangeEvent<HTMLInputElement>) => Promise<void> =
+        useCallback(
+            async (event: ChangeEvent<HTMLInputElement>) => {
+                const file: File | undefined = event.target.files?.[0];
 
-        const file: File | undefined = event.target.files?.[0];
+                // Reset the input field to allow uploading the same file again
+                event.target.value = generateRandomString(Math.random() * 10);
 
-        if (!file) return;
+                if (!file) return;
 
-        const reader = new FileReader();
+                const binFilesMap: Record<string, ArrayBuffer> = {};
+                let parsedData: any;
+                try {
+                    const zip = new JSZip();
+                    const zipData = await zip.loadAsync(file);
 
-        reader.onload = (e) => {
-            const content = e?.target?.result;
-            const parsed = JSON.parse(content as string);
-            console.log(parsed);
+                    // Create a mapping of file names to ArrayBuffer data
+                    for (const entryName in zipData.files) {
+                        const entry = zipData.files[entryName];
 
-            setMeshTransformsObject(parsed.transforms);
-        };
+                        if (entry.name.endsWith(".bin")) {
+                            const binData = await entry.async("arraybuffer");
+                            binFilesMap[entry.name.replace(".bin", "")] = binData;
+                        }
+                    }
 
-        reader.readAsText(file);
-    };
+                    // Process .json file
+                    const jsonFile = zipData.files[TRANSFORMS_FILE_NAME];
+                    if (jsonFile) {
+                        const jsonData = await jsonFile.async("text");
+                        parsedData = JSON.parse(jsonData);
+                    } else {
+                        throw new Error(
+                            "No scene object transforms file found in the zip archive."
+                        );
+                    }
+                } catch (error) {
+                    console.error("Error handling file:", error);
+                }
 
-    const exportSceneData: () => void = useCallback(() => {
-        // const buffers: ArrayBuffer[] = files.map(({ buffer }: { buffer: ArrayBuffer }) => buffer);
+                // Add the files to the store
+                const readerResults = Object.values(binFilesMap);
+                const filenames = Object.keys(binFilesMap);
+                startTransition(() => {
+                    clearAll();
+                    addMultipleFilesToStore(readerResults, filenames);
+                    // set is import to let application set mesh transforms
+                    globalObject.isNotImport = false;
+                    setMeshTransformsObject(parsedData.transforms);
+                });
+            },
+            [addMultipleFilesToStore, clearAll, setMeshTransformsObject]
+        );
 
-        // const batchSize = 1000000; // Number of buffers to process in each batch
-        // const base64Strings: string[] = [];
-        // for (let i = 0; i < buffers.length; i += batchSize) {
-        //     const batch = buffers.slice(i, i + batchSize);
-        //     console.log(`Processing batch ${i / batchSize + 1} of ${Math.ceil(buffers.length / batchSize)}`);
+    const exportSceneData: () => Promise<void> = useCallback(async () => {
+        const zip = new JSZip();
 
-        //     const batchBase64Strings: string[] = batch.map((buffer: ArrayBuffer) => {
-        //         const uint8Array: Uint8Array = new Uint8Array(buffer);
-        //         return btoa(String.fromCharCode(...Array.from(uint8Array)));
-        //     });
-        //     base64Strings.push(...batchBase64Strings);
-        // }
+        // Add the JSON data to the zip file
+        const sceneData = { transforms: meshTransforms };
+        const jsonData = JSON.stringify(sceneData);
+        zip.file(TRANSFORMS_FILE_NAME, jsonData);
 
-        const sceneData = {
-            // buffersBase64: base64Strings,
-            transforms: meshTransforms,
-        };
-        const jsonString: string = JSON.stringify(sceneData, null, 2);
-        const blob: Blob = new Blob([jsonString], { type: "application/json" });
+        // Iterate over each ArrayBuffer and create a blob from it
+        for (let i = 0; i < Object.keys(files).length; i++) {
+            const { buffer, name } = files[Object.keys(files)[i]];
+            const blob = new Blob([buffer]);
 
-        const downloadLink: HTMLAnchorElement = document.createElement("a");
-        downloadLink.href = URL.createObjectURL(blob);
-        downloadLink.download = "data.json";
+            // Add the blob as a .bin file to the zip
+            zip.file(`${name}.bin`, blob);
+        }
 
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
+        // Generate the zip file
+        const zipContent = await zip.generateAsync({ type: "blob" });
+
+        // Save the file
+        saveAs(zipContent, `${EXPORT_FILE_NAME}.zip`);
     }, [files, meshTransforms]);
 
-    const onDrop = useCallback(
+    const onDrop: (acceptedFiles: File[]) => Promise<void> = useCallback(
         async (acceptedFiles: File[]) => {
             const readerResults = await Promise.all(
                 acceptedFiles.map((file) => {
@@ -121,26 +162,29 @@ export default function Home() {
         [files, results]
     );
 
-    const handleDeleteObject = useCallback(() => {
+    const handleDeleteObject: () => void = useCallback((): void => {
         if (!selectedMesh?.name) return;
 
-        blocker.canGenerate = false;
-        startTransition(() => {
-            deleteFromStore(selectedMesh.name);
-            deleteFromTransforms(selectedMesh.name);
-        });
+        if (window.confirm("Delete object from scene?")) {
+            globalObject.canGenerate = false;
+            startTransition(() => {
+                deleteFromStore(selectedMesh.name);
+                deleteFromTransforms(selectedMesh.name);
+            });
+        }
     }, [selectedMesh]);
 
-    const handleClearAll = useCallback(() => {
+    const handleClearAll: () => void = useCallback((): void => {
+        if (!files.length && !results.length) return;
         if (window.confirm("Remove all from scene?")) {
             startTransition(() => {
                 clearAll();
             });
         }
-    }, [clearAll]);
+    }, [clearAll, files, results]);
 
     useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
+        const handleKeyDown: (e: KeyboardEvent) => void = (e: KeyboardEvent) => {
             if (e.key === "Delete") {
                 handleDeleteObject();
             }
@@ -152,49 +196,41 @@ export default function Home() {
     return (
         <>
             <ControlMenu hidden={files.length < 1} />
-            {files.length > 0 ? (
-                <div className="flex flex-col h-screen max-h-screen w-screen max-w-screen">
-                    <div className="flex h-full max-h-full w-full max-w-full">
-                        {/* Scene */}
-                        <div className="flex flex-col h-screen w-full">
-                            <NavigationBar
-                                onDrop={onDrop}
-                                handleDeleteObject={handleDeleteObject}
-                                handleClearAll={handleClearAll}
-                                readSceneData={readSceneData}
-                                exportSceneData={exportSceneData}
+
+            <div className="flex flex-col h-screen max-h-screen w-screen max-w-screen">
+                <div className="flex h-full max-h-full w-full max-w-full">
+                    {/* Scene */}
+                    <div className="flex flex-col h-screen w-full">
+                        <NavigationBar
+                            onDrop={onDrop}
+                            handleDeleteObject={handleDeleteObject}
+                            handleClearAll={handleClearAll}
+                            readSceneData={readSceneData}
+                            exportSceneData={exportSceneData}
+                        />
+                        <div className="flex-grow overflow-y-auto">
+                            <Viewer />
+                        </div>
+                    </div>
+
+                    {/* Sidebar */}
+                    <div className="styled-scrollbar max-h-screen w-1/4 bg-gray-800 overflow-hidden">
+                        {/* Top Half */}
+                        <div className="h-1/3 overflow-y-scroll">
+                            <DirectoryTree
+                                results={results}
+                                selectedMesh={selectedMesh}
+                                setSelectedMesh={setSelectedMesh}
                             />
-                            <div className="flex-grow overflow-y-auto">
-                                <Viewer />
-                            </div>
                         </div>
 
-                        {/* Sidebar */}
-                        <div className="styled-scrollbar max-h-screen w-1/4 bg-gray-800 overflow-hidden">
-                            {/* Top Half */}
-                            <div className="h-1/3 overflow-y-scroll">
-                                <DirectoryTree
-                                    results={results}
-                                    selectedMesh={selectedMesh}
-                                    setSelectedMesh={setSelectedMesh}
-                                />
-                            </div>
-
-                            {/* Bottom Half */}
-                            <div className="h-2/3 overflow-y-scroll bg-gray-700"></div>
+                        {/* Bottom Half */}
+                        <div className="h-2/3 overflow-y-scroll bg-gray-700">
+                            <Properties />
                         </div>
                     </div>
                 </div>
-            ) : (
-                <div className="flex flex-col items-center justify-center h-screen">
-                    <main
-                        className="flex flex-col items-center justify-center flex-1"
-                        style={{ height: "calc(100vh - 56px)" }}
-                    >
-                        <FileUpload onDrop={onDrop} />
-                    </main>
-                </div>
-            )}
+            </div>
 
             <p
                 className="fixed bottom-2 right-2 cursor-default hover:cursor-pointer pointer-events-none"

@@ -1,6 +1,6 @@
 {
   "name": "3d-scene-maker",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -18,8 +18,10 @@
     "autoprefixer": "10.4.14",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.6",
+    "file-saver": "^2.0.5",
     "gltfjsx": "^6.2.3",
     "gsap": "^3.12.1",
+    "jszip": "^3.10.1",
     "leva": "^0.9.35",
     "next": "13.4.6",
     "postcss": "8.4.24",

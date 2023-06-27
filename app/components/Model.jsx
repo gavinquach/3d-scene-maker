@@ -7,7 +7,6 @@ import {
     useCallback,
     useEffect,
     useLayoutEffect,
-    useMemo,
     useRef,
 } from "react";
 import { Select } from "@react-three/postprocessing";
@@ -30,17 +29,13 @@ const Model = ({ gltf, name, ...props }) => {
     const rotation = meshTransforms[name]?.rotation;
     const scale = meshTransforms[name]?.scale;
 
-    const scene = useMemo(() => gltf.scene, [gltf.scene]);
-    const animations = useMemo(() => gltf.animations, [gltf.animations]);
-
     // TODO: Figure out how to effectively use nodes and materials like GLTFJSX https://github.com/pmndrs/gltfjsx/blob/master/src/utils/parser.js
     // so that users can add the same models to the scene many times without sacrificing performance
     // const { nodes, materials } = useGraph(scene);
 
-    const { actions } = useCallback(useAnimations(animations, mesh), [
-        animations,
-        mesh,
-    ]);
+    const scene = gltf.scene;
+    const animations = gltf.animations;
+    const { actions } = useAnimations(animations, mesh);
 
     const previousTransformRef = useRef({
         position: null,
@@ -48,7 +43,7 @@ const Model = ({ gltf, name, ...props }) => {
         scale: null,
     });
 
-    const handleSetLevaTransform = () => {
+    const handleSetLevaTransform = useCallback(() => {
         setLevaTransforms({
             position: {
                 x: mesh.current?.position.x,
@@ -66,7 +61,7 @@ const Model = ({ gltf, name, ...props }) => {
                 z: mesh.current?.scale.z,
             },
         });
-    };
+    }, [setLevaTransforms]);
 
     const handleTransformChange = () => {
         handleSetLevaTransform();
@@ -89,45 +84,55 @@ const Model = ({ gltf, name, ...props }) => {
         });
     };
 
-    const setOutline = (bool) => {
-        startTransition(() => {
-            if (bool) {
-                setSelectedMesh(mesh?.current, name);
-                if (
-                    mesh.current?.position.x !== 0 ||
-                    mesh.current?.position.y !== 0 ||
-                    mesh.current?.position.z !== 0 ||
-                    mesh.current?.rotation.x !== 0 ||
-                    mesh.current?.rotation.y !== 0 ||
-                    mesh.current?.rotation.z !== 0 ||
-                    mesh.current?.scale.x !== 1 ||
-                    mesh.current?.scale.y !== 1 ||
-                    mesh.current?.scale.z !== 1
-                ) {
-                    setTransforms(name, {
-                        position: {
-                            x: mesh.current?.position.x,
-                            y: mesh.current?.position.y,
-                            z: mesh.current?.position.z,
-                        },
-                        rotation: {
-                            x: mesh.current?.rotation.x,
-                            y: mesh.current?.rotation.y,
-                            z: mesh.current?.rotation.z,
-                        },
-                        scale: {
-                            x: mesh.current?.scale.x,
-                            y: mesh.current?.scale.y,
-                            z: mesh.current?.scale.z,
-                        },
-                    });
-                }
+    const meshIsMoved = useCallback(() => {
+        if (!mesh.current) return false;
+
+        return (
+            mesh.current?.position.x !== 0 ||
+            mesh.current?.position.y !== 0 ||
+            mesh.current?.position.z !== 0 ||
+            mesh.current?.rotation.x !== 0 ||
+            mesh.current?.rotation.y !== 0 ||
+            mesh.current?.rotation.z !== 0 ||
+            mesh.current?.scale.x !== 1 ||
+            mesh.current?.scale.y !== 1 ||
+            mesh.current?.scale.z !== 1
+        );
+    }, [mesh.current]);
+
+    const setOutline = useCallback(
+        (bool) => {
+            if (!bool) {
+                if (!selectedMesh.mesh || !selectedMesh.name) return;
+                else startTransition(() => setSelectedMesh(null, null));
             } else {
-                setSelectedMesh(null, null);
+                setSelectedMesh(mesh?.current, name);
+                startTransition(() => {
+                    if (meshIsMoved) {
+                        setTransforms(name, {
+                            position: {
+                                x: mesh.current?.position.x,
+                                y: mesh.current?.position.y,
+                                z: mesh.current?.position.z,
+                            },
+                            rotation: {
+                                x: mesh.current?.rotation.x,
+                                y: mesh.current?.rotation.y,
+                                z: mesh.current?.rotation.z,
+                            },
+                            scale: {
+                                x: mesh.current?.scale.x,
+                                y: mesh.current?.scale.y,
+                                z: mesh.current?.scale.z,
+                            },
+                        });
+                    }
+                });
+                handleSetLevaTransform();
             }
-            handleSetLevaTransform();
-        });
-    };
+        },
+        [setSelectedMesh, setTransforms, selectedMesh]
+    );
 
     // play animations
     useLayoutEffect(() => {

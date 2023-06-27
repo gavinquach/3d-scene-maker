@@ -24,15 +24,16 @@ import Model from "./Model.jsx";
 import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
 // import { schadowplatz_1k } from "../assets/images";
 
-import blocker from "../utils/generateSceneBlocker.js";
+import globalObject from "../utils/globalObjects.ts";
 
 const CheckMeshTransforms = () => {
     const meshTransforms = useStore((state) => state.meshTransforms);
     const scene = useThree((state) => state.scene);
 
     useEffect(() => {
-        console.log("meshTransforms:", meshTransforms);
-        console.log("scene:", scene);
+        if (globalObject.isNotImport) {
+            return;
+        }
 
         scene.children.forEach((child) => {
             if (child.type !== "Mesh") return;
@@ -43,14 +44,12 @@ const CheckMeshTransforms = () => {
                     child.position.set(objTransforms.position.x, objTransforms.position.y, objTransforms.position.z);
                     child.rotation.set(objTransforms.rotation.x, objTransforms.rotation.y, objTransforms.rotation.z);
                     child.scale.set(objTransforms.scale.x, objTransforms.scale.y, objTransforms.scale.z);
-
-                    console.log("Set transforms for:", obj);
                     return;
                 }
             });
         });
-    }, [meshTransforms]);
-    return null;
+        globalObject.isNotImport = true;
+    }, [globalObject.isNotImport, meshTransforms]);
 };
 
 const Viewer = () => {
@@ -72,8 +71,8 @@ const Viewer = () => {
     useEffect(() => {
         if (files.length === 0) return;
 
-        if (!blocker.canGenerate) {
-            blocker.canGenerate = true;
+        if (!globalObject.canGenerate) {
+            globalObject.canGenerate = true;
             return;
         }
 

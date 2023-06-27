@@ -29,7 +29,7 @@ const FileUpload = ({ small = false, onDrop }) => {
             >
                 <input {...getInputProps()} />
 
-                {files.length < 1 && <p className="text-5xl mb-8">Scene is empty! </p>}
+                {/* {files.length < 1 && <p className="text-5xl mb-8">Scene is empty! </p>} */}
 
                 {isDragActive ? (
                     <p>Drop the files here...</p>
