@@ -2,11 +2,9 @@
 
 import {
     ChangeEvent,
-    ChangeEventHandler,
     startTransition,
     useCallback,
     useEffect,
-    useState,
 } from "react";
 
 import JSZip from "jszip";
@@ -24,7 +22,7 @@ import globalObject from "./utils/globalObjects.ts";
 import { EXPORT_FILE_NAME, TRANSFORMS_FILE_NAME } from "./utils/constants.ts";
 import { generateRandomString } from "./utils/functions.ts";
 
-export default function Home() {
+export default function Home(): JSX.Element {
     const addMultipleFilesToStore = useStore(
         (state) => state.addMultipleFilesToStore
     );
