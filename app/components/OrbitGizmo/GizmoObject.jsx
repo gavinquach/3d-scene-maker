@@ -13,28 +13,28 @@ const GizmoObject = forwardRef(({ camera, controls, ...props }, ref) => {
     const handleClick = (axis) => {
         let pos;
 
-        if (axis === "x") {
-            if (camera.position.x === -8) {
-                pos = [8, 0, 0];
-            } else {
-                pos = [-8, 0, 0];
-            }
-        }
-        else if (axis === "y") {
-            if (camera.position.y === 8) {
-                console.log('called 1');
-                pos = [0, -8, 0];
-            } else {
-                console.log('called 2');
-                pos = [0, 8, 0];
-            }
-        }
-        else if (axis === "z") {
-            if (camera.position.z === -8) {
-                pos = [0, 0, 8];
-            } else {
-                pos = [0, 0, -8];
-            }
+        switch (axis) {
+            case "x":
+                pos = [camera.position.x === -8 ? 8 : -8, 0, 0];
+                break;
+            case "y":
+                pos = [0, camera.position.y === 8 ? -8 : 8, 0];
+                break;
+            case "z":
+                pos = [0, 0, camera.position.z === -8 ? 8 : -8];
+                break;
+            case "-x":
+                pos = [camera.position.x === 8 ? -8 : 8, 0, 0];
+                break;
+            case "-y":
+                pos = [0, camera.position.y === -8 ? 8 : -8, 0];
+                break;
+            case "-z":
+                pos = [0, 0, camera.position.z === 8 ? -8 : 8];
+                break;
+            default:
+                pos = [0, 0, 0];
+                break;
         }
 
         gsap.to(camera.position, {
@@ -61,9 +61,13 @@ const GizmoObject = forwardRef(({ camera, controls, ...props }, ref) => {
                     <cylinderGeometry args={[2, 2, 50, 32]} />
                     <meshBasicMaterial color="#78bd00" />
                 </mesh>
-                <mesh position={[0, 65, 0]}>
+                <mesh position={[0, 65, 0]} onClick={() => handleClick("y")}>
                     <sphereGeometry args={[16, 32, 32]} />
                     <meshBasicMaterial color="#78bd00" side={BackSide} />
+                </mesh>
+                <mesh position={[0, -65, 0]} onClick={() => handleClick("-y")}>
+                    <sphereGeometry args={[16, 32, 32]} />
+                    <meshBasicMaterial color="#639c00" side={BackSide} transparent opacity={0.5} />
                 </mesh>
             </group>
             <group name="X_Axis">
@@ -71,9 +75,13 @@ const GizmoObject = forwardRef(({ camera, controls, ...props }, ref) => {
                     <cylinderGeometry args={[2, 2, 50, 32]} />
                     <meshBasicMaterial color="#b73246" />
                 </mesh>
-                <mesh position={[-65, 0, 0]}>
+                <mesh position={[-65, 0, 0]} onClick={() => handleClick("x")}>
                     <sphereGeometry args={[16, 32, 32]} />
                     <meshBasicMaterial color="#b73246" side={BackSide} />
+                </mesh>
+                <mesh position={[65, 0, 0]} onClick={() => handleClick("-x")}>
+                    <sphereGeometry args={[16, 32, 32]} />
+                    <meshBasicMaterial color="#902737" side={BackSide} transparent opacity={0.5} />
                 </mesh>
             </group>
             <group name="Z_Axis">
@@ -81,9 +89,13 @@ const GizmoObject = forwardRef(({ camera, controls, ...props }, ref) => {
                     <cylinderGeometry args={[2, 2, 50, 32]} />
                     <meshBasicMaterial color="#2967ae" />
                 </mesh>
-                <mesh position={[0, 0, -65]}>
+                <mesh position={[0, 0, -65]} onClick={() => handleClick("z")}>
                     <sphereGeometry args={[16, 32, 32]} />
                     <meshBasicMaterial color="#2967ae" side={BackSide} />
+                </mesh>
+                <mesh position={[0, 0, 65]} onClick={() => handleClick("-z")}>
+                    <sphereGeometry args={[16, 32, 32]} />
+                    <meshBasicMaterial color="#215189" side={BackSide} transparent opacity={0.5} />
                 </mesh>
             </group>
 
@@ -92,7 +104,6 @@ const GizmoObject = forwardRef(({ camera, controls, ...props }, ref) => {
                     name="Text_Y"
                     onPointerEnter={(e) => handleHover(e, true)}
                     onPointerLeave={(e) => handleHover(e, false)}
-                    onClick={() => handleClick("y")}
                     color="#555"
                     characters="Y"
                     scale={22}
@@ -104,7 +115,6 @@ const GizmoObject = forwardRef(({ camera, controls, ...props }, ref) => {
                     name="Text_X"
                     onPointerEnter={(e) => handleHover(e, true)}
                     onPointerLeave={(e) => handleHover(e, false)}
-                    onClick={() => handleClick("x")}
                     color="#555"
                     characters="X"
                     scale={22}
@@ -116,7 +126,6 @@ const GizmoObject = forwardRef(({ camera, controls, ...props }, ref) => {
                     name="Text_Z"
                     onPointerEnter={(e) => handleHover(e, true)}
                     onPointerLeave={(e) => handleHover(e, false)}
-                    onClick={() => handleClick("z")}
                     color="#555"
                     characters="Z"
                     scale={22}
@@ -124,6 +133,40 @@ const GizmoObject = forwardRef(({ camera, controls, ...props }, ref) => {
                     rotation={[0, Math.PI, 0]}
                 >
                     Z
+                </Text>
+                <Text
+                    name="Text_-Y"
+                    onPointerEnter={(e) => e.object.visible = true}
+                    onPointerLeave={(e) => e.object.visible = false}
+                    color="#ddd"
+                    scale={22}
+                    position={[0, -63, 0]}
+                    visible={false}
+                >
+                    -Y
+                </Text>
+                <Text
+                    name="Text_-X"
+                    onPointerEnter={(e) => e.object.visible = true}
+                    onPointerLeave={(e) => e.object.visible = false}
+                    color="#ddd"
+                    scale={22}
+                    position={[65, 0, 0]}
+                    visible={false}
+                >
+                    -X
+                </Text>
+                <Text
+                    name="Text_-Z"
+                    onPointerEnter={(e) => e.object.visible = true}
+                    onPointerLeave={(e) => e.object.visible = false}
+                    color="#ddd"
+                    scale={22}
+                    position={[0, 0, 65]}
+                    rotation={[0, Math.PI, 0]}
+                    visible={false}
+                >
+                    -Z
                 </Text>
             </group>
         </group>
