@@ -119,7 +119,7 @@ const NavigationBar = ({
                                     className="py-1 px-4 hover:bg-gray-600"
                                     onClick={() => handleClearAll()}
                                 >
-                                    <span className="pointer-events-none">Delete all</span>
+                                    <span className="pointer-events-none">Clear all</span>
                                 </li>
                                 <li
                                     className="py-1 px-4 hover:bg-gray-600"
