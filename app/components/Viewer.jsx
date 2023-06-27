@@ -93,7 +93,7 @@ const Viewer = () => {
             <Perf position="bottom-left" />
 
             <OrbitGizmo />
-            <gridHelper args={[50, 50, 0x000000, 0x808080]} />
+            <gridHelper args={[1000, 1000, 0x000000, 0x808080]} />
 
             {/* <Environment background files={schadowplatz_1k} /> */}
             <Environment background preset={environment} />
