@@ -113,6 +113,12 @@ const useStore = create((set, get) => ({
     generateScene: async () => {
         const { files, results } = get();
 
+        // Preload models to avoid loading delay
+        for (let i = 0; i < files.length; i++) {
+            const buffer = files[i].buffer;
+            useLoader.preload(GLTFLoader, buffer);
+        }
+
         const gltfs = await Promise.all(
             files.map((file) => {
                 return new Promise((resolve, reject) =>
