@@ -2,6 +2,8 @@ import { memo, useRef, useState } from "react";
 import FileUpload from "./FileUpload.jsx";
 import NewTabLink from "./NewTabLink.jsx";
 
+// import { addLight } from "../utils/sceneUtils.ts";
+
 const NavigationBar = ({
     onDrop,
     handleDeleteObject,
@@ -14,27 +16,52 @@ const NavigationBar = ({
     const [isWindowOn, setIsWindowOn] = useState(false);
     const [isFileDropdownOpen, setIsFileDropdownOpen] = useState(false);
     const [isObjectDropdownOpen, setIsObjectDropdownOpen] = useState(false);
+    const [isAddDropdownOpen, setIsAddDropdownOpen] = useState(false);
+    const [isAddLightDropdownOpen, setIsAddLightDropdownOpen] = useState(false);
 
     // const closeAllDropdowns = () => {
     //     setIsWindowOn(false);
     //     setIsFileDropdownOpen(false);
     //     setIsObjectDropdownOpen(false);
+    //     setIsAddDropdownOpen(false);
+    //     setIsAddLightDropdownOpen(false);
     // };
 
     const toggleWindow = (bool = null) => {
         setIsWindowOn(bool === null ? !isWindowOn : bool);
         setIsFileDropdownOpen(false);
         setIsObjectDropdownOpen(false);
+        setIsAddDropdownOpen(false);
+        setIsAddLightDropdownOpen(false);
     };
 
     const toggleFileDropdown = () => {
         setIsFileDropdownOpen(!isFileDropdownOpen);
         setIsWindowOn(false);
         setIsObjectDropdownOpen(false);
+        setIsAddDropdownOpen(false);
+        setIsAddLightDropdownOpen(false);
     };
 
     const toggleObjectDropdown = () => {
         setIsObjectDropdownOpen(!isObjectDropdownOpen);
+        setIsFileDropdownOpen(false);
+        setIsWindowOn(false);
+        setIsAddDropdownOpen(false);
+        setIsAddLightDropdownOpen(false);
+    };
+
+    const toggleAddDropdown = () => {
+        setIsAddDropdownOpen(!isAddDropdownOpen);
+        setIsObjectDropdownOpen(false);
+        setIsFileDropdownOpen(false);
+        setIsWindowOn(false);
+        setIsAddLightDropdownOpen(false);
+    };
+
+    const toggleAddLightDropdown = () => {
+        setIsAddLightDropdownOpen(!isAddLightDropdownOpen);
+        setIsObjectDropdownOpen(false);
         setIsFileDropdownOpen(false);
         setIsWindowOn(false);
     };
@@ -50,8 +77,7 @@ const NavigationBar = ({
                     <li className="relative">
                         <div
                             className="text-white text-sm px-4 py-2 cursor-pointer"
-                            onClick={(e) => toggleFileDropdown(e)}
-                            onPointerMissed={() => setIsFileDropdownOpen(false)}
+                            onClick={() => toggleFileDropdown()}
                         >
                             File
                         </div>
@@ -96,7 +122,6 @@ const NavigationBar = ({
                                     }
                                 }, 600);
                             }}
-                            onPointerMissed={() => toggleWindow(false)}
                         >
                             Upload File
                         </div>
@@ -122,8 +147,53 @@ const NavigationBar = ({
                     <li className="relative">
                         <div
                             className="text-white text-sm px-4 py-2 cursor-pointer"
-                            onClick={toggleObjectDropdown}
-                            onPointerMissed={() => setIsObjectDropdownOpen(false)}
+                            onClick={() => toggleAddDropdown()}
+                        >
+                            Add
+                        </div>
+                        {isAddDropdownOpen && (
+                            <ul className="absolute w-28 top-full left-0 z-50 bg-gray-800 text-white rounded shadow-lg mt-1">
+                                <li
+                                    className="py-1 px-4 hover:bg-gray-600"
+                                    onClick={() => toggleAddLightDropdown()}
+                                >
+                                    <span>Light</span>
+                                </li>
+                                {isAddLightDropdownOpen && (
+                                    <ul className="absolute w-34 top-0 left-28 z-50 bg-gray-800 text-white rounded shadow-lg mt-1">
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                            onClick={() => addLight("directional")}
+                                        >
+                                            Directional Light
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                            onClick={() => addLight("hemi")}
+                                        >
+                                            HemisphereLight
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                            onClick={() => addLight("point")}
+                                        >
+                                            Point Light
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                            onClick={() => addLight("spot")}
+                                        >
+                                            Spot Light
+                                        </li>
+                                    </ul>
+                                )}
+                            </ul>
+                        )}
+                    </li>
+                    <li className="relative">
+                        <div
+                            className="text-white text-sm px-4 py-2 cursor-pointer"
+                            onClick={() => toggleObjectDropdown()}
                         >
                             Object
                         </div>

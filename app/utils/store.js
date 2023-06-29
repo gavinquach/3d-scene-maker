@@ -1,5 +1,7 @@
 import { create } from "zustand";
 
+import { useLoader } from "@react-three/fiber";
+
 import { REVISION, WebGLRenderer } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { KTX2Loader } from "three/examples/jsm/loaders/KTX2Loader.js";
@@ -27,6 +29,7 @@ if (typeof window !== "undefined") {
 const useStore = create((set, get) => ({
     files: [],
     results: [],
+    lights: [],
     selectedMesh: { mesh: null, name: null },
     meshTransforms: {},
     sameFiles: false,
@@ -108,6 +111,12 @@ const useStore = create((set, get) => ({
                 meshTransforms: updatedTransforms,
             };
         });
+    },
+
+    addLight: (light) => {
+        set((state) => ({
+            lights: [...state.lights, light],
+        }));
     },
 
     generateScene: async () => {

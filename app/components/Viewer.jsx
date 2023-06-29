@@ -20,15 +20,37 @@ import {
 
 import useControlParams from "./Controls/ControlParams.jsx";
 import useStore from "../utils/store.js";
+import Light from "./Light.jsx";
 import Model from "./Model.jsx";
 import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
 // import { schadowplatz_1k } from "../assets/images";
 
 import globalObject from "../utils/globalObjects.ts";
 
-const CheckMeshTransforms = () => {
+const CheckScene = () => {
     const meshTransforms = useStore((state) => state.meshTransforms);
     const scene = useThree((state) => state.scene);
+    const camera = useThree((state) => state.camera);
+    const controls = useThree((state) => state.controls);
+    const gl = useThree((state) => state.gl);
+
+    useEffect(() => {
+        // scene.traverse((child) => {
+        //     console.log("child", child);
+        // });
+        // console.log("End of child objects");
+        // console.log("================================================================");
+        globalObject.scene = scene;
+        globalObject.camera = camera;
+        globalObject.controls = controls;
+        globalObject.renderer = gl;
+        return () => {
+            globalObject.scene = null;
+            globalObject.camera = null;
+            globalObject.controls = null;
+            globalObject.renderer = null;
+        };
+    }, [camera, controls, gl, scene]);
 
     useEffect(() => {
         if (globalObject.isNotImport) {
@@ -41,9 +63,21 @@ const CheckMeshTransforms = () => {
             Object.keys(meshTransforms).forEach((obj) => {
                 const objTransforms = meshTransforms[obj];
                 if (obj === child.name) {
-                    child.position.set(objTransforms.position.x, objTransforms.position.y, objTransforms.position.z);
-                    child.rotation.set(objTransforms.rotation.x, objTransforms.rotation.y, objTransforms.rotation.z);
-                    child.scale.set(objTransforms.scale.x, objTransforms.scale.y, objTransforms.scale.z);
+                    child.position.set(
+                        objTransforms.position.x,
+                        objTransforms.position.y,
+                        objTransforms.position.z
+                    );
+                    child.rotation.set(
+                        objTransforms.rotation.x,
+                        objTransforms.rotation.y,
+                        objTransforms.rotation.z
+                    );
+                    child.scale.set(
+                        objTransforms.scale.x,
+                        objTransforms.scale.y,
+                        objTransforms.scale.z
+                    );
                     return;
                 }
             });
@@ -56,6 +90,7 @@ const Viewer = () => {
     const generateScene = useStore((state) => state.generateScene);
     const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
+    const lights = useStore((state) => state.lights);
     const selectedMesh = useStore((state) => state.selectedMesh);
 
     const { transformMode, environment } = useControlParams();
@@ -89,7 +124,7 @@ const Viewer = () => {
             camera={{ position: [0, 5, -10], fov: 50 }}
             performance={performanceSettings}
         >
-            <CheckMeshTransforms />
+            <CheckScene />
             <Perf position="bottom-left" />
 
             <OrbitGizmo />
@@ -98,12 +133,10 @@ const Viewer = () => {
             {/* <Environment background files={schadowplatz_1k} /> */}
             <Environment background preset={environment} />
             <ambientLight intensity={0.3} />
-            <directionalLight
-                position={[10, 10, 10]}
-                intensity={1}
-                castShadow
-                shadow-normalBias={0.06}
-            />
+
+            {lights.map((light) => (
+                <Light key={light.name} {...light} />
+            ))}
 
             <OrbitControls makeDefault name="OrbitControls" />
 

@@ -1,11 +1,7 @@
 "use client";
 
-import {
-    ChangeEvent,
-    startTransition,
-    useCallback,
-    useEffect,
-} from "react";
+import { ChangeEvent, startTransition, useCallback, useEffect } from "react";
+import { Scene } from "three";
 
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -34,11 +30,12 @@ export default function Home(): JSX.Element {
     const deleteFromTransforms = useStore((state) => state.deleteFromTransforms);
     const setSameFiles = useStore((state) => state.setSameFiles);
     const clearAll = useStore((state) => state.clearAll);
-
     const meshTransforms = useStore((state) => state.meshTransforms);
     const setMeshTransformsObject = useStore(
         (state) => state.setMeshTransformsObject
     );
+    const lights = useStore((state) => state.lights);
+    const addLight = useStore((state) => state.addLight);
 
     const readSceneData: (event: ChangeEvent<HTMLInputElement>) => Promise<void> =
         useCallback(
@@ -163,23 +160,47 @@ export default function Home(): JSX.Element {
     const handleDeleteObject: () => void = useCallback((): void => {
         if (!selectedMesh?.name) return;
 
-        if (window.confirm("Delete object from scene?")) {
-            globalObject.canGenerate = false;
-            startTransition(() => {
-                deleteFromStore(selectedMesh.name);
-                deleteFromTransforms(selectedMesh.name);
-            });
-        }
+        globalObject.canGenerate = false;
+        startTransition(() => {
+            deleteFromStore(selectedMesh.name);
+            deleteFromTransforms(selectedMesh.name);
+        });
     }, [selectedMesh]);
 
     const handleClearAll: () => void = useCallback((): void => {
-        if (!files.length && !results.length) return;
         if (window.confirm("Remove all from scene?")) {
             startTransition(() => {
                 clearAll();
             });
+            const sceneLength = (globalObject.scene as Scene).children?.length;
+            if (sceneLength) {
+                for (let i = sceneLength - 1; i >= 0; i--) {
+                    const obj = (globalObject.scene as Scene).children[i];
+                    if (
+                        obj.name === "r3f-perf" ||
+                        obj.type === "GridHelper" ||
+                        obj.type === "AmbientLight"
+                    ) {
+                        break;
+                    }
+                    (globalObject.scene as Scene).remove(obj);
+                }
+            }
         }
     }, [clearAll, files, results]);
+
+    const handleAddLight: (type: string) => void = useCallback(
+        (type: string): void => {
+            const defaultNames = ["PointLight", "SpotLight", "DirectionalLight"];
+
+            lights.forEach((light) => {
+            });
+            startTransition(() => {
+                addLight(type);
+            });
+        },
+        [addLight, lights]
+    );
 
     useEffect(() => {
         const handleKeyDown: (e: KeyboardEvent) => void = (e: KeyboardEvent) => {
