@@ -189,13 +189,14 @@ const Model = ({ gltf, name, ...props }) => {
             onPointerMissed={() => setOutline(false)}
             dispose={null}
         >
-            <Select enabled={selectedMesh?.name === name}>
+            <Select enabled={selectedMesh?.name === name} dispose={null}>
                 <primitive
                     ref={mesh}
                     object={scene}
                     position={position ? [position.x, position.y, position.z] : [0, 0, 0]}
                     rotation={rotation ? [rotation.x, rotation.y, rotation.z] : [0, 0, 0]}
                     scale={scale ? [scale.x, scale.y, scale.z] : [1, 1, 1]}
+                    dispose={null}
                     {...props}
                 />
             </Select>
