@@ -24,11 +24,9 @@ import { Select } from "@react-three/postprocessing";
 import useStore from "../utils/store.js";
 
 const Light = ({ type, ...props }) => {
-    const lightRef = useRef(null);
-
     return (
         <group dispose={null}>
-            <Select enabled={selectedMesh?.name === name}>
+            <Select>
 
             </Select>
         </group>

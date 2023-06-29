@@ -191,12 +191,28 @@ export default function Home(): JSX.Element {
 
     const handleAddLight: (type: string) => void = useCallback(
         (type: string): void => {
-            const defaultNames = ["PointLight", "SpotLight", "DirectionalLight"];
+            if (
+                type !== "PointLight" &&
+                type !== "SpotLight" &&
+                type !== "DirectionalLight"
+            )
+                return;
 
-            lights.forEach((light) => {
-            });
+            let lightName = type;
+            let lightNumber = 0;
+
+            while ((globalObject.scene as Scene).getObjectByName(lightName)) {
+                lightNumber++;
+                lightName = `${type}${lightNumber}`;
+            }
+
+            console.log("lightName:", lightName);
+            console.log("type:", type);
+
             startTransition(() => {
-                addLight(type);
+                addLight({
+                    [lightName]: { type: type, name: lightName, properties: {} },
+                });
             });
         },
         [addLight, lights]
@@ -226,6 +242,7 @@ export default function Home(): JSX.Element {
                             handleClearAll={handleClearAll}
                             readSceneData={readSceneData}
                             exportSceneData={exportSceneData}
+                            handleAddLight={handleAddLight}
                         />
                         <div className="flex-grow overflow-y-auto">
                             <Viewer />

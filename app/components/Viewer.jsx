@@ -134,8 +134,8 @@ const Viewer = () => {
             <Environment background preset={environment} />
             <ambientLight intensity={0.3} />
 
-            {lights.map((light) => (
-                <Light key={light.name} {...light} />
+            {lights.map(({name, type, properties}) => (
+                <Light key={name} name={name} type={type} properties={properties} />
             ))}
 
             <OrbitControls makeDefault name="OrbitControls" />

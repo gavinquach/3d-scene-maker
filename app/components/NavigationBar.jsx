@@ -2,7 +2,7 @@ import { memo, useRef, useState } from "react";
 import FileUpload from "./FileUpload.jsx";
 import NewTabLink from "./NewTabLink.jsx";
 
-// import { addLight } from "../utils/sceneUtils.ts";
+// import { handleAddLight } from "../utils/sceneUtils.ts";
 
 const NavigationBar = ({
     onDrop,
@@ -10,6 +10,7 @@ const NavigationBar = ({
     handleClearAll,
     readSceneData,
     exportSceneData,
+    handleAddLight,
 }) => {
     const fileInputRef = useRef(null);
     const isHoveringOverFileUpload = useRef(false);
@@ -163,25 +164,25 @@ const NavigationBar = ({
                                     <ul className="absolute w-34 top-0 left-28 z-50 bg-gray-800 text-white rounded shadow-lg mt-1">
                                         <li
                                             className="py-1 px-4 hover:bg-gray-600"
-                                            onClick={() => addLight("directional")}
+                                            onClick={() => handleAddLight("DirectionalLight")}
                                         >
                                             Directional Light
                                         </li>
-                                        <li
+                                        {/* <li
                                             className="py-1 px-4 hover:bg-gray-600"
-                                            onClick={() => addLight("hemi")}
+                                            onClick={() => handleAddLight("hemi")}
                                         >
                                             HemisphereLight
-                                        </li>
+                                        </li> */}
                                         <li
                                             className="py-1 px-4 hover:bg-gray-600"
-                                            onClick={() => addLight("point")}
+                                            onClick={() => handleAddLight("PointLight")}
                                         >
                                             Point Light
                                         </li>
                                         <li
                                             className="py-1 px-4 hover:bg-gray-600"
-                                            onClick={() => addLight("spot")}
+                                            onClick={() => handleAddLight("SpotLight")}
                                         >
                                             Spot Light
                                         </li>
