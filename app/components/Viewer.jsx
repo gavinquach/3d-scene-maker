@@ -40,6 +40,7 @@ const CheckScene = () => {
         // });
         // console.log("End of child objects");
         // console.log("================================================================");
+
         globalObject.scene = scene;
         globalObject.camera = camera;
         globalObject.controls = controls;
@@ -93,6 +94,10 @@ const Viewer = () => {
     const lights = useStore((state) => state.lights);
     const selectedMesh = useStore((state) => state.selectedMesh);
 
+    useEffect(() => {
+        console.log(lights);
+    }, [lights]);
+
     const { transformMode, environment } = useControlParams();
 
     const performanceSettings = {
@@ -134,9 +139,6 @@ const Viewer = () => {
             <Environment background preset={environment} />
             <ambientLight intensity={0.3} />
 
-            {lights.map(({name, type, properties}) => (
-                <Light key={name} name={name} type={type} properties={properties} />
-            ))}
 
             <OrbitControls makeDefault name="OrbitControls" />
 
@@ -150,6 +152,10 @@ const Viewer = () => {
                             width={1000}
                         />
                     </EffectComposer>
+                    {lights.length > 0 &&
+                        lights.map(({ name, type, properties }) => (
+                            <Light key={name} name={name} type={type} properties={properties} />
+                        ))}
                     {results.length > 0 &&
                         results.map(({ gltf, name }) => (
                             <Model key={name} gltf={gltf} name={name} />

@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, startTransition, useCallback, useEffect } from "react";
-import { Scene } from "three";
+import { Object3D, Scene } from "three";
 
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -172,18 +172,18 @@ export default function Home(): JSX.Element {
             startTransition(() => {
                 clearAll();
             });
-            const sceneLength = (globalObject.scene as Scene).children?.length;
+            const sceneLength = globalObject.scene?.children?.length;
             if (sceneLength) {
                 for (let i = sceneLength - 1; i >= 0; i--) {
-                    const obj = (globalObject.scene as Scene).children[i];
+                    const obj = globalObject.scene?.children[i];
                     if (
-                        obj.name === "r3f-perf" ||
-                        obj.type === "GridHelper" ||
-                        obj.type === "AmbientLight"
+                        (obj as Object3D).name === "r3f-perf" ||
+                        (obj as Object3D).type === "GridHelper" ||
+                        (obj as Object3D).type === "AmbientLight"
                     ) {
                         break;
                     }
-                    (globalObject.scene as Scene).remove(obj);
+                    globalObject.scene?.remove((obj as Object3D));
                 }
             }
         }
@@ -191,6 +191,10 @@ export default function Home(): JSX.Element {
 
     const handleAddLight: (type: string) => void = useCallback(
         (type: string): void => {
+            if (!globalObject.scene) {
+                console.error("No scene found.");
+                return;
+            }
             if (
                 type !== "PointLight" &&
                 type !== "SpotLight" &&
@@ -205,9 +209,6 @@ export default function Home(): JSX.Element {
                 lightNumber++;
                 lightName = `${type}${lightNumber}`;
             }
-
-            console.log("lightName:", lightName);
-            console.log("type:", type);
 
             startTransition(() => {
                 addLight({
