@@ -211,7 +211,13 @@ export default function Home(): JSX.Element {
             }
 
             startTransition(() => {
-                addLight(lightName, { type: type, name: lightName, properties: {} });
+                addLight(lightName, {
+                    type: type,
+                    name: lightName,
+                    properties: {
+                        color: "#ffffff",   // default color
+                        intensity: 1,       // default intensity
+                    } });
             });
         },
         [addLight, lights]
