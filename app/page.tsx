@@ -183,7 +183,7 @@ export default function Home(): JSX.Element {
                     ) {
                         break;
                     }
-                    globalObject.scene?.remove((obj as Object3D));
+                    globalObject.scene?.remove(obj as Object3D);
                 }
             }
         }
@@ -211,9 +211,7 @@ export default function Home(): JSX.Element {
             }
 
             startTransition(() => {
-                addLight({
-                    [lightName]: { type: type, name: lightName, properties: {} },
-                });
+                addLight(lightName, { type: type, name: lightName, properties: {} });
             });
         },
         [addLight, lights]

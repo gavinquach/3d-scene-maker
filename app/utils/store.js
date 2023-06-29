@@ -113,9 +113,12 @@ const useStore = create((set, get) => ({
         });
     },
 
-    addLight: (light) => {
+    addLight: (name, lightObject) => {
         set((state) => ({
-            lights: [...state.lights, light],
+            lights: {
+                ...state.lights, 
+                [name]: lightObject,
+            },
         }));
     },
 

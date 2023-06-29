@@ -1,12 +1,6 @@
 "use client";
 
-import {
-    memo,
-    startTransition,
-    useLayoutEffect,
-    useRef,
-    useState,
-} from "react";
+import { memo, useRef } from "react";
 import {
     DirectionalLightHelper,
     HemisphereLightHelper,
@@ -18,71 +12,58 @@ import { useHelper } from "@react-three/drei";
 
 const Light = ({ type, name, properties, ...props }) => {
     const lightRef = useRef(null);
-    const [lightComponent, setLightComponent] = useState(null);
 
-    console.log(type, name, properties);
+    if (type === "DirectionalLight") {
+        useHelper(lightRef, DirectionalLightHelper, 1);
+    } else if (type === "HemisphereLight") {
+        useHelper(lightRef, HemisphereLightHelper, 1);
+    } else if (type === "PointLight") {
+        useHelper(lightRef, PointLightHelper, 0.7, "white");
+    } else if (type === "SpotLight") {
+        useHelper(lightRef, SpotLightHelper, "white");
+    }
 
-    switch (type) {
-        case "DirectionalLight":
-            console.log("asdflk;jasdf;lkj");
-            startTransition(() => {
-                setLightComponent(
-                    <directionalLight
-                        ref={lightRef}
-                        name={name}
-                        position={[3, 3, 3]}
-                        {...props}
-                        dispose={null}
-                    />
-                );
-            });
-            useHelper(lightRef, DirectionalLightHelper, 1);
-            break;
-        case "HemisphereLight":
-            setLightComponent(
+    return (
+        <Select dispose={null}>
+            {type === "DirectionalLight" ? (
+                <directionalLight
+                    ref={lightRef}
+                    name={name}
+                    position={[3, 3, 3]}
+                    {...properties}
+                    {...props}
+                    dispose={null}
+                />
+            ) : type === "HemisphereLight" ? (
                 <hemisphereLight
                     ref={lightRef}
                     name={name}
                     position={[0, 10, 0]}
+                    {...properties}
                     {...props}
                     dispose={null}
                 />
-            );
-            useHelper(lightRef, HemisphereLightHelper, 1);
-            break;
-        case "PointLight":
-            setLightComponent(
+            ) : type === "PointLight" ? (
                 <pointLight
                     ref={lightRef}
                     name={name}
                     position={[3, 3, 3]}
+                    {...properties}
                     {...props}
                     dispose={null}
                 />
-            );
-            useHelper(lightRef, PointLightHelper, 0.7, "white");
-            break;
-        case "SpotLight":
-            setLightComponent(
+            ) : type === "SpotLight" ? (
                 <spotLight
                     ref={lightRef}
                     name={name}
                     position={[3, 3, 3]}
+                    {...properties}
                     {...props}
                     dispose={null}
                 />
-            );
-            useHelper(lightRef, SpotLightHelper, "white");
-            break;
-        default:
-            break;
-    }
-
-    useLayoutEffect(() => {
-        console.log(lightComponent);
-    }, [lightComponent]);
-
-    return <Select dispose={null}>{lightComponent}</Select>;
+            ) : null}
+        </Select>
+    );
 };
 
 export default memo(Light);

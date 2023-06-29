@@ -139,7 +139,6 @@ const Viewer = () => {
             <Environment background preset={environment} />
             <ambientLight intensity={0.3} />
 
-
             <OrbitControls makeDefault name="OrbitControls" />
 
             <Suspense fallback={null}>
@@ -152,10 +151,18 @@ const Viewer = () => {
                             width={1000}
                         />
                     </EffectComposer>
-                    {lights.length > 0 &&
-                        lights.map(({ name, type, properties }) => (
-                            <Light key={name} name={name} type={type} properties={properties} />
-                        ))}
+                    {Object.keys(lights).length > 0 &&
+                        Object.keys(lights).map((key) => {
+                            const { name, type, properties } = lights[key];
+                            return (
+                                <Light
+                                    key={name}
+                                    name={name}
+                                    type={type}
+                                    properties={properties}
+                                />
+                            );
+                        })}
                     {results.length > 0 &&
                         results.map(({ gltf, name }) => (
                             <Model key={name} gltf={gltf} name={name} />
