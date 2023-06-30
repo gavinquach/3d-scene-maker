@@ -34,94 +34,6 @@ const useStore = create((set, get) => ({
     objectTransforms: {},
     sameFiles: false,
 
-    addFileToStore: (newBuffer, name) => {
-        set((state) => ({
-            files: [...state.files, { buffer: newBuffer, name: name }],
-        }));
-    },
-
-    addMultipleFilesToStore: (newBuffers, newNames) => {
-        set((state) => ({
-            files: [
-                ...state.files,
-                ...newBuffers.map((newBuffer, index) => ({
-                    buffer: newBuffer,
-                    name: newNames[index],
-                })),
-            ],
-        }));
-    },
-
-    deleteFromStore: (meshName) => {
-        if (meshName === null) return;
-        set((state) => ({
-            files: state.files.filter(({ name }) => name !== meshName),
-            results: state.results.filter(({ name }) => name !== meshName),
-            selectedObject: { object: null, name: null },
-        }));
-    },
-
-    clearAll: () => {
-        set({
-            files: [],
-            results: [],
-            selectedObject: { object: null, name: null },
-            objectTransforms: {},
-            sameFiles: false,
-        });
-    },
-
-    setSelectedObject: (object, objectName) => {
-        if (object === null && objectName !== null) {
-            // get the object from the results
-            const { results } = get();
-            const result = results.find(({ name }) => name === objectName);
-            if (result) {
-                set({ selectedObject: { object: result.gltf.scene, name: objectName } });
-            }
-            return;
-        }
-        set({ selectedObject: { object: object, name: objectName } });
-    },
-
-    setHashMapValue: (key, value) => {
-        set((state) => ({
-            hashmap: {
-                ...state.hashmap,
-                [key]: value,
-            },
-        }));
-    },
-
-    setTransformsObject: (object) => {
-        set({ objectTransforms: object });
-    },
-    setTransforms: (name, transforms) => {
-        set((state) => ({
-            objectTransforms: {
-                ...state.objectTransforms,
-                [name]: transforms,
-            }
-        }));
-    },
-    deleteFromTransforms: (name) => {
-        set((state) => {
-            const { [name]: _, ...updatedTransforms } = state.objectTransforms;
-            return {
-                objectTransforms: updatedTransforms,
-            };
-        });
-    },
-
-    addLight: (name, lightObject) => {
-        set((state) => ({
-            lights: {
-                ...state.lights, 
-                [name]: lightObject,
-            },
-        }));
-    },
-
     loadGLTF: async () => {
         const { files, results } = get();
 
@@ -174,7 +86,78 @@ const useStore = create((set, get) => ({
             set({ results: [...results, ...remainingGltfs] });
         }
     },
-
+    addFileToStore: (newBuffer, name) => {
+        set((state) => ({
+            files: [...state.files, { buffer: newBuffer, name: name }],
+        }));
+    },
+    addMultipleFilesToStore: (newBuffers, newNames) => {
+        set((state) => ({
+            files: [
+                ...state.files,
+                ...newBuffers.map((newBuffer, index) => ({
+                    buffer: newBuffer,
+                    name: newNames[index],
+                })),
+            ],
+        }));
+    },
+    addLight: (name, lightObject) => {
+        set((state) => ({
+            lights: {
+                ...state.lights, 
+                [name]: lightObject,
+            },
+        }));
+    },
+    deleteObject: (meshName) => {
+        if (meshName === null) return;
+        set((state) => ({
+            files: state.files.filter(({ name }) => name !== meshName),
+            results: state.results.filter(({ name }) => name !== meshName),
+            selectedObject: { object: null, name: null },
+        }));
+    },
+    deleteFromTransforms: (name) => {
+        set((state) => {
+            const { [name]: _, ...updatedTransforms } = state.objectTransforms;
+            return {
+                objectTransforms: updatedTransforms,
+            };
+        });
+    },
+    clearAll: () => {
+        set({
+            files: [],
+            results: [],
+            selectedObject: { object: null, name: null },
+            objectTransforms: {},
+            sameFiles: false,
+        });
+    },
+    setSelectedObject: (object, objectName) => {
+        if (object === null && objectName !== null) {
+            // get the object from the results
+            const { results } = get();
+            const result = results.find(({ name }) => name === objectName);
+            if (result) {
+                set({ selectedObject: { object: result.gltf.scene, name: objectName } });
+            }
+            return;
+        }
+        set({ selectedObject: { object: object, name: objectName } });
+    },
+    setTransformsObject: (object) => {
+        set({ objectTransforms: object });
+    },
+    setTransforms: (name, transforms) => {
+        set((state) => ({
+            objectTransforms: {
+                ...state.objectTransforms,
+                [name]: transforms,
+            }
+        }));
+    },
     setSameFiles: (bool) => {
         set({ sameFiles: bool });
     },
