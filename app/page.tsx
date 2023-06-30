@@ -26,7 +26,7 @@ export default function Home(): JSX.Element {
     const results = useStore((state) => state.results);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
-    const deleteFromStore = useStore((state) => state.deleteFromStore);
+    const deleteObject = useStore((state) => state.deleteObject);
     const deleteFromTransforms = useStore((state) => state.deleteFromTransforms);
     const setSameFiles = useStore((state) => state.setSameFiles);
     const clearAll = useStore((state) => state.clearAll);
@@ -162,7 +162,7 @@ export default function Home(): JSX.Element {
 
         globalObject.canGenerate = false;
         startTransition(() => {
-            deleteFromStore(selectedObject.name);
+            deleteObject(selectedObject.name);
             deleteFromTransforms(selectedObject.name);
         });
     }, [selectedObject]);
