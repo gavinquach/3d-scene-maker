@@ -236,7 +236,7 @@ export default function Home(): JSX.Element {
 
     return (
         <>
-            <ControlMenu hidden={files.length < 1} />
+            <ControlMenu />
 
             <div className="flex flex-col h-screen max-h-screen w-screen max-w-screen">
                 <div className="flex h-full max-h-full w-full max-w-full">
