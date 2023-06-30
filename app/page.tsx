@@ -275,7 +275,8 @@ export default function Home(): JSX.Element {
             </div>
 
             <p
-                className="fixed bottom-2 right-2 cursor-default hover:cursor-pointer pointer-events-none"
+                style={{ zIndex: 1000 }}
+                className="fixed bottom-2 right-2 cursor-default hover:cursor-pointer select-none"
                 onClick={(e) => {
                     e.stopPropagation();
                     window.open("https://github.com/gavinquach/", "_blank", "noreferrer");
