@@ -28,7 +28,7 @@ import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
 import globalObject from "../utils/globalObjects.ts";
 
 const CheckScene = () => {
-    const meshTransforms = useStore((state) => state.meshTransforms);
+    const objectTransforms = useStore((state) => state.objectTransforms);
     const scene = useThree((state) => state.scene);
     const camera = useThree((state) => state.camera);
     const controls = useThree((state) => state.controls);
@@ -61,8 +61,8 @@ const CheckScene = () => {
         scene.children.forEach((child) => {
             if (child.type !== "Mesh") return;
 
-            Object.keys(meshTransforms).forEach((obj) => {
-                const objTransforms = meshTransforms[obj];
+            Object.keys(objectTransforms).forEach((obj) => {
+                const objTransforms = objectTransforms[obj];
                 if (obj === child.name) {
                     child.position.set(
                         objTransforms.position.x,
@@ -84,19 +84,15 @@ const CheckScene = () => {
             });
         });
         globalObject.isNotImport = true;
-    }, [globalObject.isNotImport, meshTransforms]);
+    }, [globalObject.isNotImport, objectTransforms]);
 };
 
 const Viewer = () => {
-    const generateScene = useStore((state) => state.generateScene);
+    const loadGLTF = useStore((state) => state.loadGLTF);
     const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
     const lights = useStore((state) => state.lights);
-    const selectedMesh = useStore((state) => state.selectedMesh);
-
-    useEffect(() => {
-        console.log(lights);
-    }, [lights]);
+    const selectedObject = useStore((state) => state.selectedObject);
 
     const { transformMode, environment } = useControlParams();
 
@@ -117,16 +113,16 @@ const Viewer = () => {
         }
 
         startTransition(() => {
-            generateScene();
+            loadGLTF();
         });
-    }, [files, generateScene]);
+    }, [files, loadGLTF]);
 
     return (
         <Canvas
             gl={{ preserveDrawingBuffer: true }}
             shadows
             dpr={[1, 1.5]}
-            camera={{ position: [0, 5, -10], fov: 50 }}
+            camera={{ position: [6, 5, -10], fov: 50 }}
             performance={performanceSettings}
         >
             <CheckScene />
@@ -167,10 +163,10 @@ const Viewer = () => {
                         results.map(({ gltf, name }) => (
                             <Model key={name} gltf={gltf} name={name} />
                         ))}
-                    {selectedMesh?.mesh && (
+                    {selectedObject?.object && (
                         <TransformControls
-                            object={selectedMesh?.mesh || null}
-                            enabled={selectedMesh?.mesh ? true : false}
+                            object={selectedObject?.object || null}
+                            enabled={selectedObject?.object ? true : false}
                             mode={transformMode}
                         />
                     )}

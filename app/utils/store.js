@@ -30,8 +30,8 @@ const useStore = create((set, get) => ({
     files: [],
     results: [],
     lights: [],
-    selectedMesh: { mesh: null, name: null },
-    meshTransforms: {},
+    selectedObject: { object: null, name: null },
+    objectTransforms: {},
     sameFiles: false,
 
     addFileToStore: (newBuffer, name) => {
@@ -57,7 +57,7 @@ const useStore = create((set, get) => ({
         set((state) => ({
             files: state.files.filter(({ name }) => name !== meshName),
             results: state.results.filter(({ name }) => name !== meshName),
-            selectedMesh: { mesh: null, name: null },
+            selectedObject: { object: null, name: null },
         }));
     },
 
@@ -65,23 +65,23 @@ const useStore = create((set, get) => ({
         set({
             files: [],
             results: [],
-            selectedMesh: { mesh: null, name: null },
-            meshTransforms: {},
+            selectedObject: { object: null, name: null },
+            objectTransforms: {},
             sameFiles: false,
         });
     },
 
-    setSelectedMesh: (mesh, meshName) => {
-        if (mesh === null && meshName !== null) {
-            // get the mesh from the results
+    setSelectedObject: (object, objectName) => {
+        if (object === null && objectName !== null) {
+            // get the object from the results
             const { results } = get();
-            const result = results.find(({ name }) => name === meshName);
+            const result = results.find(({ name }) => name === objectName);
             if (result) {
-                set({ selectedMesh: { mesh: result.gltf.scene, name: meshName } });
+                set({ selectedObject: { object: result.gltf.scene, name: objectName } });
             }
             return;
         }
-        set({ selectedMesh: { mesh: mesh, name: meshName } });
+        set({ selectedObject: { object: object, name: objectName } });
     },
 
     setHashMapValue: (key, value) => {
@@ -93,22 +93,22 @@ const useStore = create((set, get) => ({
         }));
     },
 
-    setMeshTransformsObject: (object) => {
-        set({ meshTransforms: object });
+    setTransformsObject: (object) => {
+        set({ objectTransforms: object });
     },
     setTransforms: (name, transforms) => {
         set((state) => ({
-            meshTransforms: {
-                ...state.meshTransforms,
+            objectTransforms: {
+                ...state.objectTransforms,
                 [name]: transforms,
             }
         }));
     },
     deleteFromTransforms: (name) => {
         set((state) => {
-            const { [name]: _, ...updatedTransforms } = state.meshTransforms;
+            const { [name]: _, ...updatedTransforms } = state.objectTransforms;
             return {
-                meshTransforms: updatedTransforms,
+                objectTransforms: updatedTransforms,
             };
         });
     },
@@ -122,7 +122,7 @@ const useStore = create((set, get) => ({
         }));
     },
 
-    generateScene: async () => {
+    loadGLTF: async () => {
         const { files, results } = get();
 
         // Preload models to avoid loading delay

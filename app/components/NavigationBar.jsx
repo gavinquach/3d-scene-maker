@@ -168,12 +168,6 @@ const NavigationBar = ({
                                         >
                                             Directional Light
                                         </li>
-                                        {/* <li
-                                            className="py-1 px-4 hover:bg-gray-600"
-                                            onClick={() => handleAddLight("hemi")}
-                                        >
-                                            HemisphereLight
-                                        </li> */}
                                         <li
                                             className="py-1 px-4 hover:bg-gray-600"
                                             onClick={() => handleAddLight("PointLight")}

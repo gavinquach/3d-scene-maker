@@ -2,7 +2,7 @@ import { memo } from "react";
 
 const Properties = (props) => {
     return (
-        <div>
+        <div className="select-none">
             <h1>Properties</h1>
         </div>
     );

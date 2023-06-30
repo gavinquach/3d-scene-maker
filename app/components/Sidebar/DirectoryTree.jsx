@@ -1,12 +1,12 @@
 import { memo } from "react";
 
-const DirectoryTree = ({ results, selectedMesh, setSelectedMesh }) => {
+const DirectoryTree = ({ results, selectedObject, setSelectedObject }) => {
     const handleToggle = (e) => {
         e.currentTarget.nextElementSibling.classList.toggle("hidden");
     };
 
     const handleClickObjectName = (e) => {
-        setSelectedMesh(null, e.target.innerText);
+        setSelectedObject(null, e.target.innerText);
     };
 
     return (
@@ -23,7 +23,7 @@ const DirectoryTree = ({ results, selectedMesh, setSelectedMesh }) => {
                         <li
                             key={name}
                             className={`mb-2 py-0.4 pl-4 cursor-default hover:cursor-default
-                            ${selectedMesh?.name === name ? "active-item" : ""
+                            ${selectedObject?.name === name ? "active-item" : ""
                                 }`}
                             onClick={handleClickObjectName}
                         >

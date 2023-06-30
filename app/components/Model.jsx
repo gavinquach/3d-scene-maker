@@ -18,16 +18,16 @@ import useControlParams from "./Controls/ControlParams.jsx";
 const Model = ({ gltf, name, ...props }) => {
     const mesh = useRef(null);
 
-    const selectedMesh = useStore((state) => state.selectedMesh);
-    const setSelectedMesh = useStore((state) => state.setSelectedMesh);
+    const selectedObject = useStore((state) => state.selectedObject);
+    const setSelectedObject = useStore((state) => state.setSelectedObject);
     const setTransforms = useStore((state) => state.setTransforms);
-    const meshTransforms = useStore((state) => state.meshTransforms);
+    const objectTransforms = useStore((state) => state.objectTransforms);
 
     const { setLevaTransforms, envIntensity } = useControlParams();
 
-    const position = meshTransforms[name]?.position;
-    const rotation = meshTransforms[name]?.rotation;
-    const scale = meshTransforms[name]?.scale;
+    const position = objectTransforms[name]?.position;
+    const rotation = objectTransforms[name]?.rotation;
+    const scale = objectTransforms[name]?.scale;
 
     // TODO: Figure out how to effectively use nodes and materials like GLTFJSX https://github.com/pmndrs/gltfjsx/blob/master/src/utils/parser.js
     // so that users can add the same models to the scene many times without sacrificing performance
@@ -103,10 +103,10 @@ const Model = ({ gltf, name, ...props }) => {
     const setOutline = useCallback(
         (bool) => {
             if (!bool) {
-                if (!selectedMesh.mesh || !selectedMesh.name) return;
-                else startTransition(() => setSelectedMesh(null, null));
+                if (!selectedObject.object || !selectedObject.name) return;
+                else startTransition(() => setSelectedObject(null, null));
             } else {
-                setSelectedMesh(mesh?.current, name);
+                setSelectedObject(mesh?.current, name);
                 startTransition(() => {
                     if (meshIsMoved) {
                         setTransforms(name, {
@@ -131,7 +131,7 @@ const Model = ({ gltf, name, ...props }) => {
                 handleSetLevaTransform();
             }
         },
-        [setSelectedMesh, setTransforms, selectedMesh]
+        [setSelectedObject, setTransforms, selectedObject]
     );
 
     // play animations
@@ -157,7 +157,7 @@ const Model = ({ gltf, name, ...props }) => {
 
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
-        if (mesh.current && selectedMesh?.name === name) {
+        if (mesh.current && selectedObject?.name === name) {
             const { position, rotation, scale } = mesh.current;
             const previousTransform = previousTransformRef.current;
 
@@ -189,7 +189,7 @@ const Model = ({ gltf, name, ...props }) => {
             onPointerMissed={() => setOutline(false)}
             dispose={null}
         >
-            <Select enabled={selectedMesh?.name === name} dispose={null}>
+            <Select enabled={selectedObject?.name === name} dispose={null}>
                 <primitive
                     ref={mesh}
                     object={scene}

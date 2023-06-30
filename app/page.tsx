@@ -24,15 +24,15 @@ export default function Home(): JSX.Element {
     );
     const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
-    const selectedMesh = useStore((state) => state.selectedMesh);
-    const setSelectedMesh = useStore((state) => state.setSelectedMesh);
+    const selectedObject = useStore((state) => state.selectedObject);
+    const setSelectedObject = useStore((state) => state.setSelectedObject);
     const deleteFromStore = useStore((state) => state.deleteFromStore);
     const deleteFromTransforms = useStore((state) => state.deleteFromTransforms);
     const setSameFiles = useStore((state) => state.setSameFiles);
     const clearAll = useStore((state) => state.clearAll);
-    const meshTransforms = useStore((state) => state.meshTransforms);
-    const setMeshTransformsObject = useStore(
-        (state) => state.setMeshTransformsObject
+    const objectTransforms = useStore((state) => state.objectTransforms);
+    const setTransformsObject = useStore(
+        (state) => state.setTransformsObject
     );
     const lights = useStore((state) => state.lights);
     const addLight = useStore((state) => state.addLight);
@@ -85,17 +85,17 @@ export default function Home(): JSX.Element {
                     addMultipleFilesToStore(readerResults, filenames);
                     // set is import to let application set mesh transforms
                     globalObject.isNotImport = false;
-                    setMeshTransformsObject(parsedData.transforms);
+                    setTransformsObject(parsedData.transforms);
                 });
             },
-            [addMultipleFilesToStore, clearAll, setMeshTransformsObject]
+            [addMultipleFilesToStore, clearAll, setTransformsObject]
         );
 
     const exportSceneData: () => Promise<void> = useCallback(async () => {
         const zip = new JSZip();
 
         // Add the JSON data to the zip file
-        const sceneData = { transforms: meshTransforms };
+        const sceneData = { transforms: objectTransforms };
         const jsonData = JSON.stringify(sceneData);
         zip.file(TRANSFORMS_FILE_NAME, jsonData);
 
@@ -113,7 +113,7 @@ export default function Home(): JSX.Element {
 
         // Save the file
         saveAs(zipContent, `${EXPORT_FILE_NAME}.zip`);
-    }, [files, meshTransforms]);
+    }, [files, objectTransforms]);
 
     const onDrop: (acceptedFiles: File[]) => Promise<void> = useCallback(
         async (acceptedFiles: File[]) => {
@@ -158,14 +158,14 @@ export default function Home(): JSX.Element {
     );
 
     const handleDeleteObject: () => void = useCallback((): void => {
-        if (!selectedMesh?.name) return;
+        if (!selectedObject?.name) return;
 
         globalObject.canGenerate = false;
         startTransition(() => {
-            deleteFromStore(selectedMesh.name);
-            deleteFromTransforms(selectedMesh.name);
+            deleteFromStore(selectedObject.name);
+            deleteFromTransforms(selectedObject.name);
         });
-    }, [selectedMesh]);
+    }, [selectedObject]);
 
     const handleClearAll: () => void = useCallback((): void => {
         if (window.confirm("Remove all from scene?")) {
@@ -191,21 +191,21 @@ export default function Home(): JSX.Element {
 
     const handleAddLight: (type: string) => void = useCallback(
         (type: string): void => {
-            if (!globalObject.scene) {
-                console.error("No scene found.");
-                return;
-            }
             if (
                 type !== "PointLight" &&
                 type !== "SpotLight" &&
                 type !== "DirectionalLight"
             )
                 return;
+            if (!globalObject.scene) {
+                console.error("No scene found.");
+                return;
+            }
 
             let lightName = type;
             let lightNumber = 0;
 
-            while ((globalObject.scene as Scene).getObjectByName(lightName)) {
+            while (Object.keys(lights).includes(lightName)) {
                 lightNumber++;
                 lightName = `${type}${lightNumber}`;
             }
@@ -215,8 +215,9 @@ export default function Home(): JSX.Element {
                     type: type,
                     name: lightName,
                     properties: {
-                        color: "#ffffff",   // default color
-                        intensity: 1,       // default intensity
+                        color: "#ffffff",
+                        intensity: 1,
+                        castShadow: false,
                     } });
             });
         },
@@ -260,8 +261,8 @@ export default function Home(): JSX.Element {
                         <div className="h-1/3 overflow-y-scroll">
                             <DirectoryTree
                                 results={results}
-                                selectedMesh={selectedMesh}
-                                setSelectedMesh={setSelectedMesh}
+                                selectedObject={selectedObject}
+                                setSelectedObject={setSelectedObject}
                             />
                         </div>
 
