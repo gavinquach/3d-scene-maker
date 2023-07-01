@@ -122,9 +122,11 @@ const Viewer = () => {
             gl={{ preserveDrawingBuffer: true }}
             shadows
             dpr={[1, 1.5]}
-            camera={{ position: [6, 5, -10], fov: 50 }}
+            camera={{ position: [6, 5, -10], fov: 50, near: 0.001, far: 1000 }}
             performance={performanceSettings}
         >
+            <color attach="background" args={["#3B3B3B"]} />
+
             <CheckScene />
             <Perf position="bottom-left" />
 
