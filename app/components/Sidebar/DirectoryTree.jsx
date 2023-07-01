@@ -1,6 +1,6 @@
 import { memo } from "react";
 
-const DirectoryTree = ({ results, selectedObject, setSelectedObject }) => {
+const DirectoryTree = ({ sceneCollection, selectedObject, setSelectedObject }) => {
     const handleToggle = (e) => {
         e.currentTarget.nextElementSibling.classList.toggle("hidden");
     };
@@ -19,7 +19,7 @@ const DirectoryTree = ({ results, selectedObject, setSelectedObject }) => {
                     Scene Collection
                 </span>
                 <ul className="pl-8">
-                    {results.map(({ name }) => (
+                    {Object.keys(sceneCollection).map((name) => (
                         <li
                             key={name}
                             className={`mb-2 py-0.4 pl-4 cursor-default hover:cursor-default

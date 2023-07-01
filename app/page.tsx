@@ -23,6 +23,7 @@ export default function Home(): JSX.Element {
         (state) => state.addMultipleFilesToStore
     );
     const files = useStore((state) => state.files);
+    const sceneCollection = useStore((state) => state.sceneCollection);
     const results = useStore((state) => state.results);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
@@ -31,9 +32,7 @@ export default function Home(): JSX.Element {
     const setSameFiles = useStore((state) => state.setSameFiles);
     const clearAll = useStore((state) => state.clearAll);
     const objectTransforms = useStore((state) => state.objectTransforms);
-    const setTransformsObject = useStore(
-        (state) => state.setTransformsObject
-    );
+    const setTransformsObject = useStore((state) => state.setTransformsObject);
     const lights = useStore((state) => state.lights);
     const addLight = useStore((state) => state.addLight);
 
@@ -133,8 +132,8 @@ export default function Home(): JSX.Element {
             );
 
             // remove duplicates
-            for (const result of results) {
-                const index = filenames.indexOf(result.name);
+            for (let i = 0; i < Object.keys(results).length; i++) {
+                const index = filenames.indexOf(results[Object.keys(results)[i]].name);
                 if (index > -1) {
                     filenames.splice(index, 1);
                     readerResults.splice(index, 1);
@@ -154,7 +153,7 @@ export default function Home(): JSX.Element {
                 addMultipleFilesToStore(readerResults, filenames);
             });
         },
-        [files, results]
+        [results]
     );
 
     const handleDeleteObject: () => void = useCallback((): void => {
@@ -187,7 +186,7 @@ export default function Home(): JSX.Element {
                 }
             }
         }
-    }, [clearAll, files, results]);
+    }, [clearAll]);
 
     const handleAddLight: (type: string) => void = useCallback(
         (type: string): void => {
@@ -218,7 +217,8 @@ export default function Home(): JSX.Element {
                         color: "#ffffff",
                         intensity: 1,
                         castShadow: false,
-                    } });
+                    },
+                });
             });
         },
         [addLight, lights]
@@ -260,7 +260,7 @@ export default function Home(): JSX.Element {
                         {/* Top Half */}
                         <div className="h-1/3 overflow-y-scroll">
                             <DirectoryTree
-                                results={results}
+                                sceneCollection={sceneCollection}
                                 selectedObject={selectedObject}
                                 setSelectedObject={setSelectedObject}
                             />

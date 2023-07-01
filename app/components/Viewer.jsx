@@ -161,9 +161,13 @@ const Viewer = () => {
                                 />
                             );
                         })}
-                    {results.length > 0 &&
-                        results.map(({ gltf, name }) => (
-                            <Model key={name} gltf={gltf} name={name} />
+                    {Object.keys(results).length > 0 &&
+                        Object.keys(results).map((name, i) => (
+                            <Model
+                                key={name}
+                                name={name}
+                                gltf={results[Object.keys(results)[i]].gltf}
+                            />
                         ))}
                     {selectedObject?.object && (
                         <TransformControls
