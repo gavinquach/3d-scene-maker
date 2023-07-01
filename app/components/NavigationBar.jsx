@@ -19,6 +19,7 @@ const NavigationBar = ({
     const [isObjectDropdownOpen, setIsObjectDropdownOpen] = useState(false);
     const [isAddDropdownOpen, setIsAddDropdownOpen] = useState(false);
     const [isAddLightDropdownOpen, setIsAddLightDropdownOpen] = useState(false);
+    const [isAddMeshDropdownOpen, setIsAddMeshDropdownOpen] = useState(false);
 
     // const closeAllDropdowns = () => {
     //     setIsWindowOn(false);
@@ -26,6 +27,7 @@ const NavigationBar = ({
     //     setIsObjectDropdownOpen(false);
     //     setIsAddDropdownOpen(false);
     //     setIsAddLightDropdownOpen(false);
+    //     setIsAddMeshDropdownOpen(false);
     // };
 
     const toggleWindow = (bool = null) => {
@@ -34,6 +36,7 @@ const NavigationBar = ({
         setIsObjectDropdownOpen(false);
         setIsAddDropdownOpen(false);
         setIsAddLightDropdownOpen(false);
+        setIsAddMeshDropdownOpen(false);
     };
 
     const toggleFileDropdown = () => {
@@ -42,6 +45,7 @@ const NavigationBar = ({
         setIsObjectDropdownOpen(false);
         setIsAddDropdownOpen(false);
         setIsAddLightDropdownOpen(false);
+        setIsAddMeshDropdownOpen(false);
     };
 
     const toggleObjectDropdown = () => {
@@ -50,6 +54,7 @@ const NavigationBar = ({
         setIsWindowOn(false);
         setIsAddDropdownOpen(false);
         setIsAddLightDropdownOpen(false);
+        setIsAddMeshDropdownOpen(false);
     };
 
     const toggleAddDropdown = () => {
@@ -58,6 +63,7 @@ const NavigationBar = ({
         setIsFileDropdownOpen(false);
         setIsWindowOn(false);
         setIsAddLightDropdownOpen(false);
+        setIsAddMeshDropdownOpen(false);
     };
 
     const toggleAddLightDropdown = () => {
@@ -65,6 +71,15 @@ const NavigationBar = ({
         setIsObjectDropdownOpen(false);
         setIsFileDropdownOpen(false);
         setIsWindowOn(false);
+        setIsAddMeshDropdownOpen(false);
+    };
+
+    const toggleAddMeshDropdown = () => {
+        setIsAddMeshDropdownOpen(!isAddMeshDropdownOpen);
+        setIsObjectDropdownOpen(false);
+        setIsFileDropdownOpen(false);
+        setIsWindowOn(false);
+        setIsAddLightDropdownOpen(false);
     };
 
     const handleImportClick = () => {
@@ -96,6 +111,7 @@ const NavigationBar = ({
                                 >
                                     <input
                                         type="file"
+                                        accept=".zip"
                                         ref={fileInputRef}
                                         style={{ display: "none" }}
                                         onChange={readSceneData}
@@ -179,6 +195,142 @@ const NavigationBar = ({
                                             onClick={() => handleAddLight("SpotLight")}
                                         >
                                             Spot Light
+                                        </li>
+                                    </ul>
+                                )}
+                                <li
+                                    className="py-1 px-4 hover:bg-gray-600"
+                                    onClick={() => toggleAddMeshDropdown()}
+                                >
+                                    <span>Mesh</span>
+                                </li>
+                                {isAddMeshDropdownOpen && (
+                                    <ul className="absolute w-34 top-0 left-28 z-50 bg-gray-800 text-white rounded shadow-lg mt-1">
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Box
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Capsule
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Circle
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Cone
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Cylinder
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Dodecahedron
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Edges
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Extrude
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Icosahedron
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Lathe
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Octahedron
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Plane
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Polyhedron
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Ring
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Shape
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Sphere
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Tetrahedron
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Torus
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            TorusKnot
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Tube
+                                        </li>
+                                        <li
+                                            className="py-1 px-4 hover:bg-gray-600"
+                                        // onClick={() => handleAddMesh("")}
+                                        >
+                                            Wireframe
                                         </li>
                                     </ul>
                                 )}
