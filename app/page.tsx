@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, startTransition, useCallback, useEffect } from "react";
-import { Object3D, Scene } from "three";
+import { Object3D } from "three";
 
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
@@ -10,6 +10,7 @@ import ControlMenu from "./components/Controls/ControlMenu.jsx";
 import DirectoryTree from "./components/Sidebar/DirectoryTree.jsx";
 import NavigationBar from "./components/NavigationBar.jsx";
 import Properties from "./components/Sidebar/Properties.jsx";
+import ToolShelf from "./components/HUD/ToolShelf.jsx";
 import Viewer from "./components/Viewer.jsx";
 
 import useStore from "./utils/store.js";
@@ -35,6 +36,7 @@ export default function Home(): JSX.Element {
     const setTransformsObject = useStore((state) => state.setTransformsObject);
     const lights = useStore((state) => state.lights);
     const addLight = useStore((state) => state.addLight);
+    const setTransformMode = useStore((state) => state.setTransformMode);
 
     const readSceneData: (event: ChangeEvent<HTMLInputElement>) => Promise<void> =
         useCallback(
@@ -237,6 +239,8 @@ export default function Home(): JSX.Element {
     return (
         <>
             <ControlMenu />
+
+            <ToolShelf setTransformMode={setTransformMode} />
 
             <div className="flex flex-col h-screen max-h-screen w-screen max-w-screen">
                 <div className="flex h-full max-h-full w-full max-w-full">

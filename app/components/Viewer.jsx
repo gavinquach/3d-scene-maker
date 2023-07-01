@@ -93,8 +93,9 @@ const Viewer = () => {
     const results = useStore((state) => state.results);
     const lights = useStore((state) => state.lights);
     const selectedObject = useStore((state) => state.selectedObject);
+    const transformMode = useStore((state) => state.transformMode);
 
-    const { transformMode, environment } = useControlParams();
+    const { environment } = useControlParams();
 
     const performanceSettings = {
         current: 1,

@@ -6,13 +6,8 @@ const useControlParams = () => {
     const selectedObject = useStore((state) => state.selectedObject);
     const objectTransforms = useStore((state) => state.objectTransforms);
 
-    const [{ transformMode, position, rotation, scale }, setLevaTransforms] =
+    const [{ position, rotation, scale }, setLevaTransforms] =
         useControls(() => ({
-            transformMode: {
-                value: "translate",
-                options: ["translate", "rotate", "scale"],
-                label: "Transform mode",
-            },
             position: {
                 x: objectTransforms[selectedObject.name]?.position?.x || 0,
                 y: objectTransforms[selectedObject.name]?.position?.y || 0,
@@ -62,7 +57,6 @@ const useControlParams = () => {
     return {
         envIntensity,
         environment,
-        transformMode,
         position,
         rotation,
         scale,

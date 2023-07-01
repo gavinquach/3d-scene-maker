@@ -15,6 +15,7 @@ const useStore = create((set, get) => ({
     selectedObject: { object: null, name: null, properties: null },
     objectTransforms: {},
     sameFiles: false,
+    transformMode: "translate",
 
     loadGLTF: async () => {
         const { files, results } = get();
@@ -194,6 +195,9 @@ const useStore = create((set, get) => ({
                 [name]: transforms,
             },
         }));
+    },
+    setTransformMode: (mode) => {
+        set({ transformMode: mode });
     },
     setSameFiles: (bool) => {
         set({ sameFiles: bool });
