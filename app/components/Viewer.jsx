@@ -4,7 +4,7 @@ import {
     AdaptiveDpr,
     // BakeShadows,
     // ContactShadows,
-    Environment,
+    // Environment,
     OrbitControls,
     Preload,
     TransformControls,
@@ -134,7 +134,7 @@ const Viewer = () => {
             <gridHelper args={[1000, 1000, 0x000000, 0x808080]} />
 
             {/* <Environment background files={schadowplatz_1k} /> */}
-            <Environment background preset={environment} />
+            {/* <Environment background preset={environment} /> */}
             <ambientLight intensity={0.3} />
 
             <OrbitControls makeDefault name="OrbitControls" />
