@@ -10,15 +10,13 @@ import { DRACO_LOADER, KTX2_LOADER } from "./constants.ts";
 const useStore = create((set, get) => ({
     files: [],
     sceneCollection: {},
-    results: {},
-    lights: {},
     selectedObject: { object: null, name: null, properties: null },
     objectTransforms: {},
     sameFiles: false,
     transformMode: "translate",
 
     loadGLTF: async () => {
-        const { files, results } = get();
+        const { files, sceneCollection } = get();
 
         // Preload models to avoid loading delay
         for (const file of files) {
@@ -57,7 +55,7 @@ const useStore = create((set, get) => ({
         );
 
         // generate scene for the first time
-        if (Object.keys(results).length === 0) {
+        if (Object.keys(files).length === 0) {
             // Create an object with gltf objects, using file names as keys
             const gltfObjects = gltfs.reduce((acc, gltf, index) => {
                 acc[files[index].name] = {
@@ -70,7 +68,6 @@ const useStore = create((set, get) => ({
             }, {});
 
             set((state) => ({
-                results: { ...state.results, ...gltfObjects },
                 sceneCollection: { ...state.sceneCollection, ...gltfObjects },
             }));
         }
@@ -87,19 +84,18 @@ const useStore = create((set, get) => ({
                 return acc;
             }, {});
 
-            // Create a set of existing keys from results
-            const existingKeys = new Set(Object.keys(results));
+            // Create a set of existing keys from sceneCollection
+            const existingNames = new Set(Object.keys(sceneCollection));
 
             // Filter out duplicate keys from gltfObjects
             const filteredGltfObjects = {};
             for (const key in gltfObjects) {
-                if (!existingKeys.has(key)) {
+                if (!existingNames.has(key)) {
                     filteredGltfObjects[key] = gltfObjects[key];
                 }
             }
 
             set((state) => ({
-                results: { ...state.results, ...filteredGltfObjects },
                 sceneCollection: { ...state.sceneCollection, ...filteredGltfObjects },
             }));
         }
@@ -122,10 +118,6 @@ const useStore = create((set, get) => ({
     },
     addLight: (name, lightObject) => {
         set((state) => ({
-            lights: {
-                ...state.lights,
-                [name]: { category: "light", ...lightObject },
-            },
             sceneCollection: {
                 ...state.sceneCollection,
                 [name]: { category: "light", ...lightObject },
@@ -137,12 +129,6 @@ const useStore = create((set, get) => ({
         set((state) => ({
             selectedObject: { object: null, name: null, properties: null },
             files: state.files.filter(({ name }) => name !== objectName),
-            lights: Object.fromEntries(
-                Object.entries(state.lights).filter(([key]) => key !== objectName)
-            ),
-            results: Object.fromEntries(
-                Object.entries(state.results).filter(([key]) => key !== objectName)
-            ),
             sceneCollection: Object.fromEntries(
                 Object.entries(state.sceneCollection).filter(
                     ([key]) => key !== objectName
@@ -162,9 +148,7 @@ const useStore = create((set, get) => ({
         set({
             selectedObject: { object: null, name: null, properties: null },
             files: [],
-            results: {},
             sceneCollection: {},
-            lights: {},
             objectTransforms: {},
             sameFiles: false,
         });

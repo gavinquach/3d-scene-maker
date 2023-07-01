@@ -25,7 +25,6 @@ export default function Home(): JSX.Element {
     );
     const files = useStore((state) => state.files);
     const sceneCollection = useStore((state) => state.sceneCollection);
-    const results = useStore((state) => state.results);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const deleteObject = useStore((state) => state.deleteObject);
@@ -34,7 +33,6 @@ export default function Home(): JSX.Element {
     const clearAll = useStore((state) => state.clearAll);
     const objectTransforms = useStore((state) => state.objectTransforms);
     const setTransformsObject = useStore((state) => state.setTransformsObject);
-    const lights = useStore((state) => state.lights);
     const addLight = useStore((state) => state.addLight);
     const setTransformMode = useStore((state) => state.setTransformMode);
 
@@ -133,10 +131,17 @@ export default function Home(): JSX.Element {
                 name.replace(/ /g, "_").replace(/\.glb|gltf/g, "")
             );
 
+            // Build the filenameIndices hash map
+            const filenameIndices: Record<string, number> = {};
+            for (let i = 0; i < filenames.length; i++) {
+                filenameIndices[filenames[i]] = i;
+            }
+
             // remove duplicates
-            for (let i = 0; i < Object.keys(results).length; i++) {
-                const index = filenames.indexOf(results[Object.keys(results)[i]].name);
-                if (index > -1) {
+            for (const sceneKey of Object.keys(sceneCollection)) {
+                const sceneName: string = sceneCollection[sceneKey].name;
+                const index: number | undefined = filenameIndices[sceneName];
+                if (index !== undefined) {
                     filenames.splice(index, 1);
                     readerResults.splice(index, 1);
                 }
@@ -155,7 +160,7 @@ export default function Home(): JSX.Element {
                 addMultipleFilesToStore(readerResults, filenames);
             });
         },
-        [addMultipleFilesToStore, results, setSameFiles]
+        [addMultipleFilesToStore, sceneCollection, setSameFiles]
     );
 
     const handleDeleteObject: () => void = useCallback((): void => {
@@ -206,7 +211,7 @@ export default function Home(): JSX.Element {
             let lightName = type;
             let lightNumber = 0;
 
-            while (Object.keys(lights).includes(lightName)) {
+            while (Object.keys(sceneCollection).includes(lightName)) {
                 lightNumber++;
                 lightName = `${type}${lightNumber}`;
             }
@@ -223,7 +228,7 @@ export default function Home(): JSX.Element {
                 });
             });
         },
-        [addLight, lights]
+        [addLight, sceneCollection]
     );
 
     useEffect(() => {

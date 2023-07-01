@@ -90,10 +90,9 @@ const CheckScene = () => {
 const Viewer = () => {
     const loadGLTF = useStore((state) => state.loadGLTF);
     const files = useStore((state) => state.files);
-    const results = useStore((state) => state.results);
-    const lights = useStore((state) => state.lights);
     const selectedObject = useStore((state) => state.selectedObject);
     const transformMode = useStore((state) => state.transformMode);
+    const sceneCollection = useStore((state) => state.sceneCollection);
 
     const { environment } = useControlParams();
 
@@ -150,26 +149,28 @@ const Viewer = () => {
                             width={1000}
                         />
                     </EffectComposer>
-                    {Object.keys(lights).length > 0 &&
-                        Object.keys(lights).map((key) => {
-                            const { name, type, properties } = lights[key];
-                            return (
-                                <Light
-                                    key={name}
-                                    name={name}
-                                    type={type}
-                                    properties={properties}
-                                />
-                            );
+                    {Object.keys(sceneCollection).length > 0 &&
+                        Object.keys(sceneCollection).map((name) => {
+                            if (sceneCollection[name].category === "light") {
+                                const { type, properties } = sceneCollection[name];
+                                return (
+                                    <Light
+                                        key={name}
+                                        name={name}
+                                        type={type}
+                                        properties={properties}
+                                    />
+                                );
+                            } else if (sceneCollection[name].category === "gltf") {
+                                return (
+                                    <Model
+                                        key={name}
+                                        name={name}
+                                        gltf={sceneCollection[name].gltf}
+                                    />
+                                );
+                            }
                         })}
-                    {Object.keys(results).length > 0 &&
-                        Object.keys(results).map((name, i) => (
-                            <Model
-                                key={name}
-                                name={name}
-                                gltf={results[Object.keys(results)[i]].gltf}
-                            />
-                        ))}
                     {selectedObject?.object && (
                         <TransformControls
                             object={selectedObject?.object || null}
