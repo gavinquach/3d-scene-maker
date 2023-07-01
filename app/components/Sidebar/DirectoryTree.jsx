@@ -5,8 +5,8 @@ const DirectoryTree = ({ results, selectedObject, setSelectedObject }) => {
         e.currentTarget.nextElementSibling.classList.toggle("hidden");
     };
 
-    const handleClickObjectName = (e) => {
-        setSelectedObject(null, e.target.innerText);
+    const handleClickObjectName = (name) => {
+        setSelectedObject(null, name);
     };
 
     return (
@@ -25,7 +25,7 @@ const DirectoryTree = ({ results, selectedObject, setSelectedObject }) => {
                             className={`mb-2 py-0.4 pl-4 cursor-default hover:cursor-default
                             ${selectedObject?.name === name ? "active-item" : ""
                                 }`}
-                            onClick={handleClickObjectName}
+                            onClick={() => handleClickObjectName(name)}
                         >
                             {name}
                         </li>
