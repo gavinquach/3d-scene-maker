@@ -153,7 +153,7 @@ export default function Home(): JSX.Element {
                 addMultipleFilesToStore(readerResults, filenames);
             });
         },
-        [results]
+        [addMultipleFilesToStore, results, setSameFiles]
     );
 
     const handleDeleteObject: () => void = useCallback((): void => {
@@ -164,7 +164,7 @@ export default function Home(): JSX.Element {
             deleteObject(selectedObject.name);
             deleteFromTransforms(selectedObject.name);
         });
-    }, [selectedObject]);
+    }, [deleteObject, deleteFromTransforms, selectedObject]);
 
     const handleClearAll: () => void = useCallback((): void => {
         if (window.confirm("Remove all from scene?")) {

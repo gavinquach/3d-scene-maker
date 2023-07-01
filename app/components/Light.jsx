@@ -37,7 +37,7 @@ const Light = ({ type, name, properties, ...props }) => {
         rotation: null,
     });
 
-    const isMoved = useCallback(() => {
+    const isMoved = () => {
         if (!lightRef.current) return false;
 
         return (
@@ -48,7 +48,7 @@ const Light = ({ type, name, properties, ...props }) => {
             lightRef.current?.rotation.y !== 0 ||
             lightRef.current?.rotation.z !== 0
         );
-    }, [lightRef.current]);
+    };
 
     const setOutline = useCallback(
         (bool) => {

@@ -84,7 +84,7 @@ const CheckScene = () => {
             });
         });
         globalObject.isNotImport = true;
-    }, [globalObject.isNotImport, objectTransforms]);
+    }, [objectTransforms]);
 };
 
 const Viewer = () => {

@@ -84,7 +84,7 @@ const Model = ({ gltf, name, ...props }) => {
         });
     };
 
-    const meshIsMoved = useCallback(() => {
+    const meshIsMoved = () => {
         if (!mesh.current) return false;
 
         return (
@@ -98,7 +98,7 @@ const Model = ({ gltf, name, ...props }) => {
             mesh.current?.scale.y !== 1 ||
             mesh.current?.scale.z !== 1
         );
-    }, [mesh.current]);
+    };
 
     const setOutline = useCallback(
         (bool) => {
@@ -144,7 +144,7 @@ const Model = ({ gltf, name, ...props }) => {
                 obj.material.envMapIntensity = envIntensity;
             }
         });
-    }, [actions, scene]);
+    }, []);
 
     useEffect(() => {
         scene.traverse((obj) => {
