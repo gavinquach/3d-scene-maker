@@ -1,4 +1,12 @@
-const TopButton = ({ children, ...props }) => (
+interface ShelfButton {
+    children: any;
+    [x: string]: any;
+}
+
+const TopButton: ({ children, ...props }: ShelfButton) => JSX.Element = ({
+    children,
+    ...props
+}: ShelfButton) => (
     <button
         className="h-16 w-16 py-2 px-4 bg-gray-900 hover:bg-gray-800 outline outline-1 outline-gray-600 text-white rounded-t-md rounded-b-none cursor-default"
         {...props}
@@ -6,7 +14,10 @@ const TopButton = ({ children, ...props }) => (
         {children}
     </button>
 );
-const MiddleButton = ({ children, ...props }) => (
+const MiddleButton: ({ children, ...props }: ShelfButton) => JSX.Element = ({
+    children,
+    ...props
+}: ShelfButton) => (
     <button
         className="h-16 w-16 py-2 px-4 bg-gray-900 hover:bg-gray-800 outline outline-1 outline-gray-600 text-white cursor-default"
         {...props}
@@ -14,7 +25,10 @@ const MiddleButton = ({ children, ...props }) => (
         {children}
     </button>
 );
-const BottomButton = ({ children, ...props }) => (
+const BottomButton: ({ children, ...props }: ShelfButton) => JSX.Element = ({
+    children,
+    ...props
+}: ShelfButton) => (
     <button
         className="h-16 w-16 py-2 px-4 bg-gray-900 hover:bg-gray-800 outline outline-1 outline-gray-600 text-white rounded-t-none rounded-b-md cursor-default"
         {...props}
@@ -23,12 +37,20 @@ const BottomButton = ({ children, ...props }) => (
     </button>
 );
 
-const SmallGap = () => <div className="mb-2" />;
+const SmallGap: () => JSX.Element = () => <div className="mb-2" />;
 
-const ToolShelf = ({ setTransformMode }) => {
+const ToolShelf: ({
+    setTransformMode,
+}: {
+    setTransformMode: (mode: string) => void;
+}) => JSX.Element = ({ setTransformMode }) => {
     return (
         <div className="fixed top-20 left-0 h-full w-28 p-4 z-10">
-            <TopButton onClick={() => { setTransformMode("translate") }}>
+            <TopButton
+                onClick={() => {
+                    setTransformMode("translate");
+                }}
+            >
                 <svg fill="white" viewBox="0 0 16 16" height="2.2em" width="2.2em">
                     <path
                         fillRule="evenodd"
@@ -36,7 +58,11 @@ const ToolShelf = ({ setTransformMode }) => {
                     />
                 </svg>
             </TopButton>
-            <MiddleButton onClick={() => { setTransformMode("rotate") }}>
+            <MiddleButton
+                onClick={() => {
+                    setTransformMode("rotate");
+                }}
+            >
                 <svg
                     fill="none"
                     stroke="white"
@@ -52,7 +78,11 @@ const ToolShelf = ({ setTransformMode }) => {
                     <path d="M13 12 A1 1 0 0 1 12 13 A1 1 0 0 1 11 12 A1 1 0 0 1 13 12 z" />
                 </svg>
             </MiddleButton>
-            <BottomButton onClick={() => { setTransformMode("scale") }}>
+            <BottomButton
+                onClick={() => {
+                    setTransformMode("scale");
+                }}
+            >
                 <svg viewBox="0 0 64 64" fill="white" height="2em" width="2em">
                     <path
                         fill="none"
