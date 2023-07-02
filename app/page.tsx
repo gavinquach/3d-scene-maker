@@ -10,8 +10,9 @@ import ControlMenu from "./components/Controls/ControlMenu.jsx";
 import DirectoryTree from "./components/Sidebar/DirectoryTree.jsx";
 import NavigationBar from "./components/NavigationBar.jsx";
 import Properties from "./components/Sidebar/Properties.jsx";
-import ToolShelf from "./components/HUD/ToolShelf.jsx";
+import ToolShelf from "./components/HUD/ToolShelf.tsx";
 import Viewer from "./components/Viewer.jsx";
+import ViewportShadingSelector from "./components/HUD/ViewportShadingSelector.tsx";
 
 import useStore from "./utils/store.js";
 import globalObject from "./utils/globalObjects.ts";
@@ -243,14 +244,12 @@ export default function Home(): JSX.Element {
 
     return (
         <>
-            <ControlMenu />
+            {/* <ControlMenu /> */}
 
-            <ToolShelf setTransformMode={setTransformMode} />
-
-            <div className="flex flex-col h-screen max-h-screen w-screen max-w-screen">
+            <div className="max-w-screen flex h-screen max-h-screen w-screen flex-col">
                 <div className="flex h-full max-h-full w-full max-w-full">
                     {/* Scene */}
-                    <div className="flex flex-col h-screen w-full">
+                    <div className="flex h-screen w-full flex-col">
                         <NavigationBar
                             onDrop={onDrop}
                             handleDeleteObject={handleDeleteObject}
@@ -260,12 +259,14 @@ export default function Home(): JSX.Element {
                             handleAddLight={handleAddLight}
                         />
                         <div className="flex-grow overflow-y-auto">
+                            <ToolShelf setTransformMode={setTransformMode} />
+                            <ViewportShadingSelector />
                             <Viewer />
                         </div>
                     </div>
 
                     {/* Sidebar */}
-                    <div className="styled-scrollbar max-h-screen w-1/4 bg-gray-800 overflow-hidden">
+                    <div className="styled-scrollbar max-h-screen w-1/4 overflow-hidden bg-gray-800">
                         {/* Top Half */}
                         <div className="h-1/3 overflow-y-scroll">
                             <DirectoryTree
@@ -285,7 +286,7 @@ export default function Home(): JSX.Element {
 
             <p
                 style={{ zIndex: 1000 }}
-                className="fixed bottom-2 right-2 cursor-default hover:cursor-pointer select-none"
+                className="fixed bottom-2 right-2 cursor-default select-none hover:cursor-pointer"
                 onClick={(e) => {
                     e.stopPropagation();
                     window.open("https://github.com/gavinquach/", "_blank", "noreferrer");

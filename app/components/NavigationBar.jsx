@@ -1,6 +1,6 @@
 import { memo, useRef, useState } from "react";
 import FileUpload from "./FileUpload.jsx";
-import NewTabLink from "./NewTabLink.jsx";
+import NewTabLink from "./NewTabLink.tsx";
 
 // import { handleAddLight } from "../utils/sceneUtils.ts";
 

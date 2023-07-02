@@ -1,43 +1,36 @@
-interface ShelfButton {
-    children: any;
+import { FC, ReactNode } from "react";
+
+interface IShelfButton {
+    children: ReactNode;
     [x: string]: any;
 }
 
-const TopButton: ({ children, ...props }: ShelfButton) => JSX.Element = ({
-    children,
-    ...props
-}: ShelfButton) => (
+const TopButton: FC<IShelfButton> = ({ children, ...props }) => (
     <button
-        className="h-16 w-16 py-2 px-4 bg-gray-900 hover:bg-gray-800 outline outline-1 outline-gray-600 text-white rounded-t-md rounded-b-none cursor-default"
+        className="h-16 w-16 cursor-default rounded-b-none rounded-t-md bg-gray-900 px-4 py-2 text-white outline outline-1 outline-gray-600 hover:bg-gray-700"
         {...props}
     >
         {children}
     </button>
 );
-const MiddleButton: ({ children, ...props }: ShelfButton) => JSX.Element = ({
-    children,
-    ...props
-}: ShelfButton) => (
+const MiddleButton: FC<IShelfButton> = ({ children, ...props }) => (
     <button
-        className="h-16 w-16 py-2 px-4 bg-gray-900 hover:bg-gray-800 outline outline-1 outline-gray-600 text-white cursor-default"
+        className="h-16 w-16 cursor-default bg-gray-900 px-4 py-2 text-white outline outline-1 outline-gray-600 hover:bg-gray-700"
         {...props}
     >
         {children}
     </button>
 );
-const BottomButton: ({ children, ...props }: ShelfButton) => JSX.Element = ({
-    children,
-    ...props
-}: ShelfButton) => (
+const BottomButton: FC<IShelfButton> = ({ children, ...props }) => (
     <button
-        className="h-16 w-16 py-2 px-4 bg-gray-900 hover:bg-gray-800 outline outline-1 outline-gray-600 text-white rounded-t-none rounded-b-md cursor-default"
+        className="h-16 w-16 cursor-default rounded-b-md rounded-t-none bg-gray-900 px-4 py-2 text-white outline outline-1 outline-gray-600 hover:bg-gray-700"
         {...props}
     >
         {children}
     </button>
 );
 
-const SmallGap: () => JSX.Element = () => <div className="mb-2" />;
+// const SmallGap: () => JSX.Element = () => <div className="mb-2" />;
 
 const ToolShelf: ({
     setTransformMode,
@@ -45,7 +38,7 @@ const ToolShelf: ({
     setTransformMode: (mode: string) => void;
 }) => JSX.Element = ({ setTransformMode }) => {
     return (
-        <div className="fixed top-20 left-0 h-full w-28 p-4 z-10">
+        <div className="absolute left-0 top-20 z-10 h-max w-28 p-4">
             <TopButton
                 onClick={() => {
                     setTransformMode("translate");
