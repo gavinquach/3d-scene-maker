@@ -31,10 +31,7 @@ export default function Home(): JSX.Element {
     const clearAll = useStore((state) => state.clearAll);
     const loadGLTF = useStore((state) => state.loadGLTF);
     const addLight = useStore((state) => state.addLight);
-    const setTransformMode = useStore((state) => state.setTransformMode);
-
-    console.log(selectedObject);
-    
+    const setTransformMode = useStore((state) => state.setTransformMode);    
 
     const readSceneData: (event: ChangeEvent<HTMLInputElement>) => Promise<void> =
         useCallback(
