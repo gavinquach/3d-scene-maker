@@ -18,7 +18,7 @@ import {
     Outline,
 } from "@react-three/postprocessing";
 
-import useControlParams from "./Controls/ControlParams.jsx";
+// import useControlParams from "./Controls/ControlParams.jsx";
 import useStore from "../utils/store.js";
 import Light from "./Light.jsx";
 import Model from "./Model.jsx";
@@ -28,7 +28,6 @@ import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
 import globalObject from "../utils/globalObjects.ts";
 
 const CheckScene = () => {
-    const objectTransforms = useStore((state) => state.objectTransforms);
     const scene = useThree((state) => state.scene);
     const camera = useThree((state) => state.camera);
     const controls = useThree((state) => state.controls);
@@ -52,49 +51,17 @@ const CheckScene = () => {
             globalObject.renderer = null;
         };
     }, [camera, controls, gl, scene]);
-
-    useEffect(() => {
-        if (globalObject.isNotImport) {
-            return;
-        }
-
-        scene.children.forEach((child) => {
-            if (child.type !== "Mesh") return;
-
-            Object.keys(objectTransforms).forEach((obj) => {
-                const objTransforms = objectTransforms[obj];
-                if (obj === child.name) {
-                    child.position.set(
-                        objTransforms.position.x,
-                        objTransforms.position.y,
-                        objTransforms.position.z
-                    );
-                    child.rotation.set(
-                        objTransforms.rotation.x,
-                        objTransforms.rotation.y,
-                        objTransforms.rotation.z
-                    );
-                    child.scale.set(
-                        objTransforms.scale.x,
-                        objTransforms.scale.y,
-                        objTransforms.scale.z
-                    );
-                    return;
-                }
-            });
-        });
-        globalObject.isNotImport = true;
-    }, [objectTransforms]);
 };
 
 const Viewer = () => {
     const loadGLTF = useStore((state) => state.loadGLTF);
     const files = useStore((state) => state.files);
+    const results = useStore((state) => state.results);
     const selectedObject = useStore((state) => state.selectedObject);
     const transformMode = useStore((state) => state.transformMode);
     const sceneCollection = useStore((state) => state.sceneCollection);
 
-    const { environment } = useControlParams();
+    // const { environment } = useControlParams();
 
     const performanceSettings = {
         current: 1,
@@ -149,36 +116,42 @@ const Viewer = () => {
                             width={1000}
                         />
                     </EffectComposer>
+
                     {Object.keys(sceneCollection).length > 0 &&
                         Object.keys(sceneCollection).map((name) => {
+                            const { attributes, properties } = sceneCollection[name];
                             if (sceneCollection[name].category === "light") {
-                                const { type, properties } = sceneCollection[name];
                                 return (
                                     <Light
                                         key={name}
                                         name={name}
-                                        type={type}
+                                        attributes={attributes}
                                         properties={properties}
-                                    />
-                                );
-                            } else if (sceneCollection[name].category === "gltf") {
-                                return (
-                                    <Model
-                                        key={name}
-                                        name={name}
-                                        gltf={sceneCollection[name].gltf}
                                     />
                                 );
                             }
                         })}
-                    {selectedObject?.object && (
-                        <TransformControls
-                            object={selectedObject?.object || null}
-                            enabled={selectedObject?.object ? true : false}
-                            mode={transformMode}
-                        />
-                    )}
+
+                    {Object.keys(results).length > 0 &&
+                        Object.keys(results).map((name) => {
+                            return (
+                                <Model
+                                    key={name}
+                                    name={name}
+                                    gltf={results[name]}
+                                    properties={sceneCollection[name].properties}
+                                />
+                            );
+                        })}
                 </Selection>
+
+                {selectedObject?.object && (
+                    <TransformControls
+                        object={selectedObject.objRef || null}
+                        enabled={selectedObject.objRef ? true : false}
+                        mode={transformMode || "translate"}
+                    />
+                )}
 
                 {/* <ContactShadows
                     frames={1}

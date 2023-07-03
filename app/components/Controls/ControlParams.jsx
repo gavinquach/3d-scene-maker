@@ -4,24 +4,23 @@ import useStore from "../../utils/store.js";
 
 const useControlParams = () => {
     const selectedObject = useStore((state) => state.selectedObject);
-    const objectTransforms = useStore((state) => state.objectTransforms);
 
     const [{ position, rotation, scale }, setLevaTransforms] =
         useControls(() => ({
             position: {
-                x: objectTransforms[selectedObject.name]?.position?.x || 0,
-                y: objectTransforms[selectedObject.name]?.position?.y || 0,
-                z: objectTransforms[selectedObject.name]?.position?.z || 0,
+                x: selectedObject.object?.transforms?.position?.x || 0,
+                y: selectedObject.object?.transforms?.position?.y || 0,
+                z: selectedObject.object?.transforms?.position?.z || 0,
             },
             rotation: {
-                x: objectTransforms[selectedObject.name]?.rotation?.x || 0,
-                y: objectTransforms[selectedObject.name]?.rotation?.y || 0,
-                z: objectTransforms[selectedObject.name]?.rotation?.z || 0,
+                x: selectedObject.object?.transforms?.rotation?.x || 0,
+                y: selectedObject.object?.transforms?.rotation?.y || 0,
+                z: selectedObject.object?.transforms?.rotation?.z || 0,
             },
             scale: {
-                x: objectTransforms[selectedObject.name]?.scale?.x || 1,
-                y: objectTransforms[selectedObject.name]?.scale?.y || 1,
-                z: objectTransforms[selectedObject.name]?.scale?.z || 1,
+                x: selectedObject.object?.transforms?.scale?.x || 1,
+                y: selectedObject.object?.transforms?.scale?.y || 1,
+                z: selectedObject.object?.transforms?.scale?.z || 1,
             },
         }));
 

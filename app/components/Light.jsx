@@ -20,17 +20,19 @@ import useStore from "../utils/store.js";
 
 extend({ DirectionalLightHelper, PointLightHelper, SpotLightHelper });
 
-const Light = ({ type, name, properties, ...props }) => {
+const Light = ({ name, transforms, attributes, properties, ...props }) => {
+    const { type } = attributes;
+
     const [hasLight, setHasLight] = useState(false);
     const lightRef = useRef(null);
 
     const selectedObject = useStore((state) => state.selectedObject);
+    const sceneCollection = useStore((state) => state.sceneCollection);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const setTransforms = useStore((state) => state.setTransforms);
-    const objectTransforms = useStore((state) => state.objectTransforms);
 
-    const position = objectTransforms[name]?.position;
-    const rotation = objectTransforms[name]?.rotation;
+    const position = sceneCollection[name]?.transforms?.position;
+    const rotation = sceneCollection[name]?.transforms?.rotation;
 
     const previousTransformRef = useRef({
         position: null,
@@ -55,9 +57,9 @@ const Light = ({ type, name, properties, ...props }) => {
             if (!bool) {
                 if (selectedObject.object === null || selectedObject.name === null)
                     return;
-                else startTransition(() => setSelectedObject(null, null));
+                else startTransition(() => setSelectedObject(null));
             } else {
-                setSelectedObject(lightRef.current, name);
+                setSelectedObject(name, lightRef.current);
                 if (isMoved) {
                     startTransition(() => {
                         setTransforms(name, {
@@ -133,12 +135,8 @@ const Light = ({ type, name, properties, ...props }) => {
                     <directionalLight
                         ref={lightRef}
                         name={name}
-                        position={
-                            position ? [position.x, position.y, position.z] : [3, 3, 3]
-                        }
-                        rotation={
-                            rotation ? [rotation.x, rotation.y, rotation.z] : [0, 0, 0]
-                        }
+                        position={position && [position.x, position.y, position.z]}
+                        rotation={rotation && [rotation.x, rotation.y, rotation.z]}
                         {...properties}
                         {...props}
                         dispose={null}
@@ -148,6 +146,7 @@ const Light = ({ type, name, properties, ...props }) => {
                             args={[lightRef.current, 1]}
                             onClick={() => setOutline(true)}
                             onPointerMissed={() => setOutline(false)}
+                            dispose={null}
                         />
                     )}
                 </>
@@ -156,12 +155,8 @@ const Light = ({ type, name, properties, ...props }) => {
                     <pointLight
                         ref={lightRef}
                         name={name}
-                        position={
-                            position ? [position.x, position.y, position.z] : [3, 3, 3]
-                        }
-                        rotation={
-                            rotation ? [rotation.x, rotation.y, rotation.z] : [0, 0, 0]
-                        }
+                        position={position && [position.x, position.y, position.z]}
+                        rotation={rotation && [rotation.x, rotation.y, rotation.z]}
                         {...properties}
                         {...props}
                         dispose={null}
@@ -171,6 +166,7 @@ const Light = ({ type, name, properties, ...props }) => {
                             args={[lightRef.current, 0.7, "white"]}
                             onClick={() => setOutline(true)}
                             onPointerMissed={() => setOutline(false)}
+                            dispose={null}
                         />
                     )}
                 </>
@@ -179,12 +175,8 @@ const Light = ({ type, name, properties, ...props }) => {
                     <spotLight
                         ref={lightRef}
                         name={name}
-                        position={
-                            position ? [position.x, position.y, position.z] : [3, 3, 3]
-                        }
-                        rotation={
-                            rotation ? [rotation.x, rotation.y, rotation.z] : [0, 0, 0]
-                        }
+                        position={position && [position.x, position.y, position.z]}
+                        rotation={rotation && [rotation.x, rotation.y, rotation.z]}
                         {...properties}
                         {...props}
                         dispose={null}
@@ -194,6 +186,7 @@ const Light = ({ type, name, properties, ...props }) => {
                             args={[lightRef.current, "white"]}
                             onClick={() => setOutline(true)}
                             onPointerMissed={() => setOutline(false)}
+                            dispose={null}
                         />
                     )}
                 </>

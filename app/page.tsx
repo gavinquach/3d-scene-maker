@@ -6,7 +6,7 @@ import { Object3D } from "three";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
-import ControlMenu from "./components/Controls/ControlMenu.jsx";
+// import ControlMenu from "./components/Controls/ControlMenu.jsx";
 import DirectoryTree from "./components/Sidebar/DirectoryTree.jsx";
 import NavigationBar from "./components/NavigationBar.jsx";
 import Properties from "./components/Sidebar/Properties.jsx";
@@ -17,25 +17,24 @@ import ViewportShadingSelector from "./components/HUD/ViewportShadingSelector.ts
 import useStore from "./utils/store.js";
 import globalObject from "./utils/globalObjects.ts";
 
-import { EXPORT_FILE_NAME, TRANSFORMS_FILE_NAME } from "./utils/constants.ts";
+import { EXPORT_FILE_NAME, SCENE_DATA_FILE_NAME } from "./utils/constants.ts";
 import { generateRandomString } from "./utils/functions.ts";
 
 export default function Home(): JSX.Element {
-    const addMultipleFilesToStore = useStore(
-        (state) => state.addMultipleFilesToStore
-    );
+    const addFiles = useStore((state) => state.addFiles);
     const files = useStore((state) => state.files);
     const sceneCollection = useStore((state) => state.sceneCollection);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const deleteObject = useStore((state) => state.deleteObject);
-    const deleteFromTransforms = useStore((state) => state.deleteFromTransforms);
     const setSameFiles = useStore((state) => state.setSameFiles);
     const clearAll = useStore((state) => state.clearAll);
-    const objectTransforms = useStore((state) => state.objectTransforms);
-    const setTransformsObject = useStore((state) => state.setTransformsObject);
+    const loadGLTF = useStore((state) => state.loadGLTF);
     const addLight = useStore((state) => state.addLight);
     const setTransformMode = useStore((state) => state.setTransformMode);
+
+    console.log(selectedObject);
+    
 
     const readSceneData: (event: ChangeEvent<HTMLInputElement>) => Promise<void> =
         useCallback(
@@ -48,7 +47,7 @@ export default function Home(): JSX.Element {
                 if (!file) return;
 
                 const binFilesMap: Record<string, ArrayBuffer> = {};
-                let parsedData: any;
+                let parsedData: any = {};
                 try {
                     const zip = new JSZip();
                     const zipData = await zip.loadAsync(file);
@@ -64,64 +63,61 @@ export default function Home(): JSX.Element {
                     }
 
                     // Process .json file
-                    const jsonFile = zipData.files[TRANSFORMS_FILE_NAME];
+                    const jsonFile = zipData.files[SCENE_DATA_FILE_NAME];
                     if (jsonFile) {
                         const jsonData = await jsonFile.async("text");
                         parsedData = JSON.parse(jsonData);
                     } else {
                         throw new Error(
-                            "No scene object transforms file found in the zip archive."
+                            "No scene data file found in the zip archive."
                         );
                     }
                 } catch (error) {
                     console.error("Error handling file:", error);
                 }
 
-                // Add the files to the store
-                const readerResults = Object.values(binFilesMap);
-                const filenames = Object.keys(binFilesMap);
+                globalObject.canGenerate = false;
                 startTransition(() => {
                     clearAll();
-                    addMultipleFilesToStore(readerResults, filenames);
-                    // set is import to let application set mesh transforms
-                    globalObject.isNotImport = false;
-                    setTransformsObject(parsedData.transforms);
+                    addFiles(binFilesMap);
+                    loadGLTF(parsedData.data);
                 });
             },
-            [addMultipleFilesToStore, clearAll, setTransformsObject]
+            [addFiles, clearAll, loadGLTF]
         );
 
     const exportSceneData: () => Promise<void> = useCallback(async () => {
         const zip = new JSZip();
 
         // Add the JSON data to the zip file
-        const sceneData = { transforms: objectTransforms };
-        const jsonData = JSON.stringify(sceneData);
-        zip.file(TRANSFORMS_FILE_NAME, jsonData);
+        const sceneData = { data: sceneCollection };
+        const jsonData = JSON.stringify(sceneData, null, 2);
+        zip.file(SCENE_DATA_FILE_NAME, jsonData, { compression: 'DEFLATE' });
 
         // Iterate over each ArrayBuffer and create a blob from it
-        for (let i = 0; i < Object.keys(files).length; i++) {
-            const { buffer, name } = files[Object.keys(files)[i]];
-            const blob = new Blob([buffer]);
-
+        for (const [filename, buffer] of Object.entries(files)) {
             // Add the blob as a .bin file to the zip
-            zip.file(`${name}.bin`, blob);
-        }
+            const blob = new Blob([buffer as BlobPart]);
+            zip.file(`${filename}.bin`, blob, { compression: 'DEFLATE' });
+        };
 
         // Generate the zip file
         const zipContent = await zip.generateAsync({ type: "blob" });
 
         // Save the file
         saveAs(zipContent, `${EXPORT_FILE_NAME}.zip`);
-    }, [files, objectTransforms]);
+    }, [files, sceneCollection]);
 
     const onDrop: (acceptedFiles: File[]) => Promise<void> = useCallback(
         async (acceptedFiles: File[]) => {
-            const readerResults = await Promise.all(
-                acceptedFiles.map((file) => {
-                    return new Promise((resolve, reject) => {
+            const readerResults: ArrayBuffer[] = await Promise.all(
+                acceptedFiles.map((file: File) => {
+                    return new Promise<ArrayBuffer>((resolve, reject) => {
                         const reader = new FileReader();
-                        reader.onload = () => resolve(reader.result);
+                        reader.onload = () => {
+                            const arrayBuffer = reader.result as ArrayBuffer;
+                            resolve(arrayBuffer);
+                        };
                         reader.onerror = () => reject(reader);
                         reader.readAsArrayBuffer(file);
                     });
@@ -157,11 +153,17 @@ export default function Home(): JSX.Element {
                 return;
             }
 
+            const files: Record<string, ArrayBuffer> = {};
+
+            for (let i = 0; i < filenames.length; i++) {
+                files[filenames[i]] = readerResults[i];
+            }
+
             startTransition(() => {
-                addMultipleFilesToStore(readerResults, filenames);
+                addFiles(files);
             });
         },
-        [addMultipleFilesToStore, sceneCollection, setSameFiles]
+        [addFiles, sceneCollection, setSameFiles]
     );
 
     const handleDeleteObject: () => void = useCallback((): void => {
@@ -170,9 +172,8 @@ export default function Home(): JSX.Element {
         globalObject.canGenerate = false;
         startTransition(() => {
             deleteObject(selectedObject.name);
-            deleteFromTransforms(selectedObject.name);
         });
-    }, [deleteObject, deleteFromTransforms, selectedObject]);
+    }, [deleteObject, selectedObject]);
 
     const handleClearAll: () => void = useCallback((): void => {
         if (window.confirm("Remove all from scene?")) {
@@ -219,8 +220,16 @@ export default function Home(): JSX.Element {
 
             startTransition(() => {
                 addLight(lightName, {
-                    type: type,
+                    category: "light",
                     name: lightName,
+                    transforms: {
+                        position: { x: 3, y: 3, z: 3 },
+                        rotation: { x: 0, y: 0, z: 0 },
+                        scale: { x: 1, y: 1, z: 1 },
+                    },
+                    attributes: {
+                        type: type,
+                    },
                     properties: {
                         color: "#ffffff",
                         intensity: 1,

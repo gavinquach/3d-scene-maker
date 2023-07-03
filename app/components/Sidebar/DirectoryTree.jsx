@@ -6,7 +6,7 @@ const DirectoryTree = ({ sceneCollection, selectedObject, setSelectedObject }) =
     };
 
     const handleClickObjectName = (name) => {
-        setSelectedObject(null, name);
+        setSelectedObject(name);
     };
 
     return (

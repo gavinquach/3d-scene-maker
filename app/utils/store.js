@@ -1,51 +1,43 @@
 import { create } from "zustand";
 
 import { useLoader } from "@react-three/fiber";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+import { GLTFLoader, MeshoptDecoder } from "three-stdlib";
 
-// import globalObject from "./globalObjects.ts";
-import { DRACO_LOADER, KTX2_LOADER } from "./constants.ts";
+import globalObject from "./globalObjects.ts";
+import { DRACO_LOADER, GLTF_LOADER, KTX2_LOADER } from "./constants.ts";
 
 const useStore = create((set, get) => ({
-    files: [],
+    files: {},
+    results: {},
     sceneCollection: {},
-    selectedObject: { object: null, name: null, properties: null },
-    objectTransforms: {},
+    selectedObject: { name: null, object: null, objRef: null },
     sameFiles: false,
     transformMode: "translate",
 
-    loadGLTF: async () => {
-        const { files, sceneCollection } = get();
+    loadGLTF: async (sceneCollectionObject = null) => {
+        const { files, results } = get();
+
+        if (Object.keys(files).length === 0) return;
 
         // Preload models to avoid loading delay
-        for (const file of files) {
-            useLoader.preload(GLTFLoader, file.buffer, (loader) => {
+        for (const [_, buffer] of Object.entries(files)) {
+            useLoader.preload(GLTFLoader, buffer, (loader) => {
                 loader.setDRACOLoader(DRACO_LOADER);
-                loader.setKTX2Loader(
-                    KTX2_LOADER /*.detectSupport(globalObject.renderer)*/
-                );
+                loader.setKTX2Loader(KTX2_LOADER.detectSupport(globalObject.renderer));
                 loader.setMeshoptDecoder(MeshoptDecoder);
             });
         }
 
-        let gltfLoader;
-        if (typeof window !== "undefined") {
-            gltfLoader = new GLTFLoader()
-                .setCrossOrigin("anonymous")
-                .setDRACOLoader(DRACO_LOADER)
-                .setKTX2Loader(KTX2_LOADER /*.detectSupport(globalObject.renderer)*/)
-                .setMeshoptDecoder(MeshoptDecoder);
-        }
+        const gltfLoader = GLTF_LOADER(globalObject.renderer);
 
         const gltfs = await Promise.all(
-            files.map((file) => {
+            Object.keys(files).map((filename) => {
                 return new Promise((resolve, reject) =>
                     gltfLoader.parse(
-                        file.buffer,
+                        files[filename],
                         "",
                         (gltf) => {
-                            gltf.name = file.name; // Assign the name property
+                            gltf.name = filename; // Assign the name property
                             resolve(gltf);
                         },
                         reject
@@ -54,38 +46,37 @@ const useStore = create((set, get) => ({
             })
         );
 
-        // generate scene for the first time
-        if (Object.keys(files).length === 0) {
-            // Create an object with gltf objects, using file names as keys
-            const gltfObjects = gltfs.reduce((acc, gltf, index) => {
-                acc[files[index].name] = {
-                    category: "gltf",
-                    gltf: gltf,
-                    buffer: files[index].buffer,
-                    name: files[index].name,
-                };
+        // user opens a file, no need to add to sceneCollection
+        if (sceneCollectionObject !== null) {
+            const gltfObjects = gltfs.reduce((acc, gltf) => {
+                acc[gltf.name] = gltf;
                 return acc;
             }, {});
-
-            set((state) => ({
-                sceneCollection: { ...state.sceneCollection, ...gltfObjects },
-            }));
-        }
-        // when user adds object(s) to the scene
-        else {
-            // Create an object with gltf objects, using file names as keys
-            const gltfObjects = gltfs.reduce((acc, gltf, index) => {
-                acc[files[index].name] = {
+            set({ sceneCollection: sceneCollectionObject, results: gltfObjects });
+        } else {
+            // Create objects with gltf objects, using file names as keys
+            const gltfResults = {};
+            const gltfObjects = gltfs.reduce((acc, gltf) => {
+                acc[gltf.name] = {
                     category: "gltf",
-                    gltf: gltf,
-                    buffer: files[index].buffer,
-                    name: files[index].name,
+                    name: gltf.name,
+                    transforms: {
+                        position: { x: 0, y: 0, z: 0 },
+                        rotation: { x: 0, y: 0, z: 0 },
+                        scale: { x: 1, y: 1, z: 1 },
+                    },
+                    properties: {
+                        castShadow: false,
+                    },
                 };
+
+                gltfResults[gltf.name] = gltf;
+
                 return acc;
             }, {});
 
             // Create a set of existing keys from sceneCollection
-            const existingNames = new Set(Object.keys(sceneCollection));
+            const existingNames = new Set(Object.keys(results));
 
             // Filter out duplicate keys from gltfObjects
             const filteredGltfObjects = {};
@@ -97,38 +88,39 @@ const useStore = create((set, get) => ({
 
             set((state) => ({
                 sceneCollection: { ...state.sceneCollection, ...filteredGltfObjects },
+                results: { ...state.results, ...gltfResults },
             }));
         }
     },
     addFileToStore: (newBuffer, name) => {
         set((state) => ({
-            files: [...state.files, { buffer: newBuffer, name: name }],
+            files: {
+                ...state.files,
+                [name]: { buffer: newBuffer },
+            },
         }));
     },
-    addMultipleFilesToStore: (newBuffers, newNames) => {
-        set((state) => ({
-            files: [
-                ...state.files,
-                ...newBuffers.map((newBuffer, index) => ({
-                    buffer: newBuffer,
-                    name: newNames[index],
-                })),
-            ],
-        }));
+    addFiles: (object) => {
+        set({ files: object });
     },
     addLight: (name, lightObject) => {
         set((state) => ({
             sceneCollection: {
                 ...state.sceneCollection,
-                [name]: { category: "light", ...lightObject },
+                [name]: lightObject,
             },
         }));
     },
     deleteObject: (objectName) => {
         if (objectName === null) return;
         set((state) => ({
-            selectedObject: { object: null, name: null, properties: null },
-            files: state.files.filter(({ name }) => name !== objectName),
+            selectedObject: { name: null, object: null, objRef: null },
+            files: Object.fromEntries(
+                Object.entries(state.files).filter(([key]) => key !== objectName)
+            ),
+            results: Object.fromEntries(
+                Object.entries(state.results).filter(([key]) => key !== objectName)
+            ),
             sceneCollection: Object.fromEntries(
                 Object.entries(state.sceneCollection).filter(
                     ([key]) => key !== objectName
@@ -136,49 +128,53 @@ const useStore = create((set, get) => ({
             ),
         }));
     },
-    deleteFromTransforms: (name) => {
-        set((state) => {
-            const { [name]: _, ...updatedTransforms } = state.objectTransforms;
-            return {
-                objectTransforms: updatedTransforms,
-            };
-        });
-    },
     clearAll: () => {
         set({
-            selectedObject: { object: null, name: null, properties: null },
-            files: [],
+            selectedObject: { name: null, object: null, objRef: null },
+            files: {},
+            results: {},
             sceneCollection: {},
-            objectTransforms: {},
             sameFiles: false,
         });
     },
-    setSelectedObject: (object, objectName) => {
-        if (object === null && objectName !== null) {
+    setSelectedObject: (objectName, objectRef = null) => {
+        if (objectName === null) {
+            set({ selectedObject: { name: null, object: null, objRef: null } });
+            return;
+        }
+
+        if (objectRef !== null) {
             // Get the object from scene collection
             const { sceneCollection } = get();
             const item = sceneCollection[objectName];
-            if (!item) return;
-
-            if (item.category === "light") {
-                set({ selectedObject: { object: item, name: objectName } });
-            } else if (item.category === "gltf") {
-                set({ selectedObject: { object: item.gltf.scene, name: objectName } });
-            }
-        } else {
-            set({ selectedObject: { object: object, name: objectName } });
+            set({
+                selectedObject: { name: objectName, object: item, objRef: objectRef },
+            });
+            return;
         }
-    },
-    setTransformsObject: (object) => {
-        set({ objectTransforms: object });
+
+        // Get the object from scene collection
+        const { sceneCollection } = get();
+        const item = sceneCollection[objectName];
+        const sceneObj = globalObject.scene.getObjectByName(objectName);
+        if (!item || !sceneObj) {
+            console.error("Object not found in scene collection");
+            set({ selectedObject: { name: null, object: null, objRef: null } });
+            return;
+        }
+
+        set({
+            selectedObject: {
+                name: objectName,
+                object: sceneCollection[objectName],
+                objRef: globalObject.scene.getObjectByName(objectName),
+            },
+        });
     },
     setTransforms: (name, transforms) => {
-        set((state) => ({
-            objectTransforms: {
-                ...state.objectTransforms,
-                [name]: transforms,
-            },
-        }));
+        const { sceneCollection } = get();
+        sceneCollection[name].transforms = transforms;
+        set({ sceneCollection: sceneCollection });
     },
     setTransformMode: (mode) => {
         set({ transformMode: mode });

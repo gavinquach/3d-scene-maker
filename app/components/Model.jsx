@@ -15,19 +15,19 @@ import { useFrame } from "@react-three/fiber";
 import useStore from "../utils/store.js";
 import useControlParams from "./Controls/ControlParams.jsx";
 
-const Model = ({ gltf, name, ...props }) => {
-    const mesh = useRef(null);
+const Model = ({ gltf, name, properties, ...props }) => {
+    const meshRef = useRef(null);
 
     const selectedObject = useStore((state) => state.selectedObject);
+    const sceneCollection = useStore((state) => state.sceneCollection);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const setTransforms = useStore((state) => state.setTransforms);
-    const objectTransforms = useStore((state) => state.objectTransforms);
 
     const { setLevaTransforms, envIntensity } = useControlParams();
 
-    const position = objectTransforms[name]?.position;
-    const rotation = objectTransforms[name]?.rotation;
-    const scale = objectTransforms[name]?.scale;
+    const position = sceneCollection[name]?.transforms?.position;
+    const rotation = sceneCollection[name]?.transforms?.rotation;
+    const scale = sceneCollection[name]?.transforms?.scale;
 
     // TODO: Figure out how to effectively use nodes and materials like GLTFJSX https://github.com/pmndrs/gltfjsx/blob/master/src/utils/parser.js
     // so that users can add the same models to the scene many times without sacrificing performance
@@ -35,7 +35,7 @@ const Model = ({ gltf, name, ...props }) => {
 
     const scene = gltf.scene;
     const animations = gltf.animations;
-    const { actions } = useAnimations(animations, mesh);
+    const { actions } = useAnimations(animations, meshRef);
 
     const previousTransformRef = useRef({
         position: null,
@@ -46,19 +46,19 @@ const Model = ({ gltf, name, ...props }) => {
     const handleSetLevaTransform = useCallback(() => {
         setLevaTransforms({
             position: {
-                x: mesh.current?.position.x,
-                y: mesh.current?.position.y,
-                z: mesh.current?.position.z,
+                x: meshRef.current?.position.x,
+                y: meshRef.current?.position.y,
+                z: meshRef.current?.position.z,
             },
             rotation: {
-                x: mesh.current?.rotation.x,
-                y: mesh.current?.rotation.y,
-                z: mesh.current?.rotation.z,
+                x: meshRef.current?.rotation.x,
+                y: meshRef.current?.rotation.y,
+                z: meshRef.current?.rotation.z,
             },
             scale: {
-                x: mesh.current?.scale.x,
-                y: mesh.current?.scale.y,
-                z: mesh.current?.scale.z,
+                x: meshRef.current?.scale.x,
+                y: meshRef.current?.scale.y,
+                z: meshRef.current?.scale.z,
             },
         });
     }, [setLevaTransforms]);
@@ -67,36 +67,36 @@ const Model = ({ gltf, name, ...props }) => {
         handleSetLevaTransform();
         setTransforms(name, {
             position: {
-                x: mesh.current?.position.x,
-                y: mesh.current?.position.y,
-                z: mesh.current?.position.z,
+                x: meshRef.current?.position.x,
+                y: meshRef.current?.position.y,
+                z: meshRef.current?.position.z,
             },
             rotation: {
-                x: mesh.current?.rotation.x,
-                y: mesh.current?.rotation.y,
-                z: mesh.current?.rotation.z,
+                x: meshRef.current?.rotation.x,
+                y: meshRef.current?.rotation.y,
+                z: meshRef.current?.rotation.z,
             },
             scale: {
-                x: mesh.current?.scale.x,
-                y: mesh.current?.scale.y,
-                z: mesh.current?.scale.z,
+                x: meshRef.current?.scale.x,
+                y: meshRef.current?.scale.y,
+                z: meshRef.current?.scale.z,
             },
         });
     };
 
     const meshIsMoved = () => {
-        if (!mesh.current) return false;
+        if (!meshRef.current) return false;
 
         return (
-            mesh.current?.position.x !== 0 ||
-            mesh.current?.position.y !== 0 ||
-            mesh.current?.position.z !== 0 ||
-            mesh.current?.rotation.x !== 0 ||
-            mesh.current?.rotation.y !== 0 ||
-            mesh.current?.rotation.z !== 0 ||
-            mesh.current?.scale.x !== 1 ||
-            mesh.current?.scale.y !== 1 ||
-            mesh.current?.scale.z !== 1
+            meshRef.current?.position.x !== 0 ||
+            meshRef.current?.position.y !== 0 ||
+            meshRef.current?.position.z !== 0 ||
+            meshRef.current?.rotation.x !== 0 ||
+            meshRef.current?.rotation.y !== 0 ||
+            meshRef.current?.rotation.z !== 0 ||
+            meshRef.current?.scale.x !== 1 ||
+            meshRef.current?.scale.y !== 1 ||
+            meshRef.current?.scale.z !== 1
         );
     };
 
@@ -104,26 +104,26 @@ const Model = ({ gltf, name, ...props }) => {
         (bool) => {
             if (!bool) {
                 if (!selectedObject.object || !selectedObject.name) return;
-                else startTransition(() => setSelectedObject(null, null));
+                else startTransition(() => setSelectedObject(null));
             } else {
-                setSelectedObject(mesh?.current, name);
+                setSelectedObject(name, meshRef.current);
                 startTransition(() => {
                     if (meshIsMoved) {
                         setTransforms(name, {
                             position: {
-                                x: mesh.current?.position.x,
-                                y: mesh.current?.position.y,
-                                z: mesh.current?.position.z,
+                                x: meshRef.current?.position.x,
+                                y: meshRef.current?.position.y,
+                                z: meshRef.current?.position.z,
                             },
                             rotation: {
-                                x: mesh.current?.rotation.x,
-                                y: mesh.current?.rotation.y,
-                                z: mesh.current?.rotation.z,
+                                x: meshRef.current?.rotation.x,
+                                y: meshRef.current?.rotation.y,
+                                z: meshRef.current?.rotation.z,
                             },
                             scale: {
-                                x: mesh.current?.scale.x,
-                                y: mesh.current?.scale.y,
-                                z: mesh.current?.scale.z,
+                                x: meshRef.current?.scale.x,
+                                y: meshRef.current?.scale.y,
+                                z: meshRef.current?.scale.z,
                             },
                         });
                     }
@@ -157,8 +157,8 @@ const Model = ({ gltf, name, ...props }) => {
 
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
-        if (mesh.current && selectedObject?.name === name) {
-            const { position, rotation, scale } = mesh.current;
+        if (meshRef.current && selectedObject?.name === name) {
+            const { position, rotation, scale } = meshRef.current;
             const previousTransform = previousTransformRef.current;
 
             // Check if the transform has changed
@@ -187,15 +187,16 @@ const Model = ({ gltf, name, ...props }) => {
             name={name}
             onClick={() => setOutline(true)}
             onPointerMissed={() => setOutline(false)}
+            {...properties}
             dispose={null}
         >
             <Select enabled={selectedObject?.name === name} dispose={null}>
                 <primitive
-                    ref={mesh}
+                    ref={meshRef}
                     object={scene}
-                    position={position ? [position.x, position.y, position.z] : [0, 0, 0]}
-                    rotation={rotation ? [rotation.x, rotation.y, rotation.z] : [0, 0, 0]}
-                    scale={scale ? [scale.x, scale.y, scale.z] : [1, 1, 1]}
+                    position={position && [position.x, position.y, position.z]}
+                    rotation={rotation && [rotation.x, rotation.y, rotation.z]}
+                    scale={scale && [scale.x, scale.y, scale.z]}
                     dispose={null}
                     {...props}
                 />
