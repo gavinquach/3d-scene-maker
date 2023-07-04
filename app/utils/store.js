@@ -13,6 +13,7 @@ const useStore = create((set, get) => ({
     selectedObject: { name: null, object: null, objRef: null },
     sameFiles: false,
     transformMode: "translate",
+    section: 0,
 
     loadGLTF: async (sceneCollectionObject = null) => {
         const { files, results } = get();
@@ -181,6 +182,9 @@ const useStore = create((set, get) => ({
     },
     setSameFiles: (bool) => {
         set({ sameFiles: bool });
+    },
+    setSection: (section) => {
+        set({ section: section });
     },
 }));
 

@@ -7,9 +7,8 @@ import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
 // import ControlMenu from "./components/Controls/ControlMenu.jsx";
-import DirectoryTree from "./components/Sidebar/DirectoryTree.jsx";
 import NavigationBar from "./components/NavigationBar.jsx";
-import Properties from "./components/Sidebar/Properties.jsx";
+import Sidebar from "./components/Sidebar/Sidebar.tsx";
 import ToolShelf from "./components/HUD/ToolShelf.tsx";
 import Viewer from "./components/Viewer.jsx";
 import ViewportShadingSelector from "./components/HUD/ViewportShadingSelector.tsx";
@@ -25,13 +24,12 @@ export default function Home(): JSX.Element {
     const files = useStore((state) => state.files);
     const sceneCollection = useStore((state) => state.sceneCollection);
     const selectedObject = useStore((state) => state.selectedObject);
-    const setSelectedObject = useStore((state) => state.setSelectedObject);
     const deleteObject = useStore((state) => state.deleteObject);
     const setSameFiles = useStore((state) => state.setSameFiles);
     const clearAll = useStore((state) => state.clearAll);
     const loadGLTF = useStore((state) => state.loadGLTF);
     const addLight = useStore((state) => state.addLight);
-    const setTransformMode = useStore((state) => state.setTransformMode);    
+    const setTransformMode = useStore((state) => state.setTransformMode);
 
     const readSceneData: (event: ChangeEvent<HTMLInputElement>) => Promise<void> =
         useCallback(
@@ -270,23 +268,7 @@ export default function Home(): JSX.Element {
                             <Viewer />
                         </div>
                     </div>
-
-                    {/* Sidebar */}
-                    <div className="styled-scrollbar max-h-screen w-1/4 overflow-hidden bg-gray-800">
-                        {/* Top Half */}
-                        <div className="h-1/3 overflow-y-scroll">
-                            <DirectoryTree
-                                sceneCollection={sceneCollection}
-                                selectedObject={selectedObject}
-                                setSelectedObject={setSelectedObject}
-                            />
-                        </div>
-
-                        {/* Bottom Half */}
-                        <div className="h-2/3 overflow-y-scroll bg-gray-700">
-                            <Properties />
-                        </div>
-                    </div>
+                    <Sidebar />
                 </div>
             </div>
 
