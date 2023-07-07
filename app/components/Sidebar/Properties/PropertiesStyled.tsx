@@ -1,15 +1,21 @@
 import styled from "styled-components";
 
-export const TableRow = styled.tr`
-    height: 2.6rem;
+export const TableRow = styled.div`
+  display: flex;
+  height: 2.6rem;
 `;
 
-export const TableColumnLeft = styled.td`
-    width: 5rem;
-    border: 1px solid red;
+export const TableColumn = styled.div`
+  flex: 1;
 `;
 
-export const TableColumnRight = styled.td`
-    width: 12rem;
-    border: 1px solid green;
+export const TableColumnLeft = styled(TableColumn)`
+  min-width: 5rem;
+  width: 5rem;
+  max-width: 5rem;
+  border: 1px solid red;
+`;
+
+export const TableColumnRight = styled(TableColumn)`
+  border: 1px solid green;
 `;
