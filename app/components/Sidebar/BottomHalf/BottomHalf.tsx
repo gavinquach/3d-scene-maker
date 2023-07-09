@@ -10,6 +10,7 @@ import SceneProperties from "../Properties/SceneProperties.tsx";
 import useStore from "../../../utils/store.js";
 
 const BottomHalf: () => JSX.Element = () => {
+    const selectedObject = useStore((state) => state.selectedObject);
     const section = useStore((state) => state.section);
     const setSection = useStore((state) => state.setSection);
     const [selected, setSelected] = useState<number>(0);
@@ -70,7 +71,7 @@ const BottomHalf: () => JSX.Element = () => {
 
             <BottomHalfPropertiesSection>
                 {section === 0 && <SceneProperties />}
-                {section === 1 && <ObjectProperties />}
+                {selectedObject.name !== null && section === 1 && <ObjectProperties />}
             </BottomHalfPropertiesSection>
         </BottomHalfStyled>
     );
