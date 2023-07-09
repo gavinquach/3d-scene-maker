@@ -59,7 +59,10 @@ const Light = ({ name, transforms, attributes, properties, ...props }) => {
                     return;
                 else startTransition(() => setSelectedObject(null));
             } else {
+                if (selectedObject.name === name) return;
+
                 setSelectedObject(name, lightRef.current);
+
                 if (isMoved) {
                     startTransition(() => {
                         setTransforms(name, {

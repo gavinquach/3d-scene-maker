@@ -106,7 +106,10 @@ const Model = ({ gltf, name, properties, ...props }) => {
                 if (!selectedObject.object || !selectedObject.name) return;
                 else startTransition(() => setSelectedObject(null));
             } else {
+                if (selectedObject.name === name) return;
+
                 setSelectedObject(name, meshRef.current);
+
                 startTransition(() => {
                     if (meshIsMoved) {
                         setTransforms(name, {
