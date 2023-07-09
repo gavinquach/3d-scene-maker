@@ -259,7 +259,7 @@ export default function Home(): JSX.Element {
                             exportSceneData={exportSceneData}
                             handleAddLight={handleAddLight}
                         />
-                        <div className="flex-grow overflow-y-auto">
+                        <div className="flex-grow overflow-y-auto select-none">
                             <ToolShelf setTransformMode={setTransformMode} />
                             <ViewportShadingSelector />
                             <Viewer />
