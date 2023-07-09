@@ -9,9 +9,9 @@ import { saveAs } from "file-saver";
 // import ControlMenu from "./components/Controls/ControlMenu.jsx";
 import NavigationBar from "./components/NavigationBar.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.tsx";
-import ToolShelf from "./components/HUD/ToolShelf.tsx";
+import ToolShelf from "./components/HUD/ToolShelf/ToolShelf.tsx";
 import Viewer from "./components/Viewer.jsx";
-import ViewportShadingSelector from "./components/HUD/ViewportShadingSelector.tsx";
+import ViewportShadingSelector from "./components/HUD/ViewportShadingSelector/ViewportShadingSelector.tsx";
 
 import useStore from "./utils/store.js";
 import globalObject from "./utils/globalObjects.ts";

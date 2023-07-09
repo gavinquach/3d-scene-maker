@@ -1,15 +1,15 @@
-import { startTransition, useState } from "react";
+import React, { startTransition, useState } from "react";
 import {
     BottomHalfButtonSection,
     BottomHalfButtons,
     BottomHalfPropertiesSection,
     BottomHalfStyled,
-} from "./BottomHalfStyled.tsx";
+} from "./BottomHalfStyled.ts";
 import ObjectProperties from "../Properties/ObjectProperties.tsx";
 import SceneProperties from "../Properties/SceneProperties.tsx";
 import useStore from "../../../utils/store.js";
 
-const BottomHalf: () => JSX.Element = () => {
+const BottomHalf: () => React.JSX.Element = () => {
     const selectedObject = useStore((state) => state.selectedObject);
     const section = useStore((state) => state.section);
     const setSection = useStore((state) => state.setSection);

@@ -1,48 +1,45 @@
-import { FC, ReactNode } from "react";
+import React, { startTransition, useState } from "react";
+import { ButtonStyled } from "./ToolShelfStyled";
 
-interface IShelfButton {
-    children: ReactNode;
-    [x: string]: any;
-}
-
-const TopButton: FC<IShelfButton> = ({ children, ...props }) => (
-    <button
-        className="h-16 w-16 cursor-default rounded-b-none rounded-t-md bg-gray-900 px-4 py-2 text-white outline outline-1 outline-gray-600 hover:bg-gray-700"
-        {...props}
-    >
+const TopButton: React.FC<IShelfButton> = ({ children, ...props }) => (
+    <ButtonStyled side="top" {...props}>
         {children}
-    </button>
+    </ButtonStyled>
 );
-const MiddleButton: FC<IShelfButton> = ({ children, ...props }) => (
-    <button
-        className="h-16 w-16 cursor-default bg-gray-900 px-4 py-2 text-white outline outline-1 outline-gray-600 hover:bg-gray-700"
-        {...props}
-    >
-        {children}
-    </button>
+const MiddleButton: React.FC<IShelfButton> = ({ children, ...props }) => (
+    <ButtonStyled {...props}>{children}</ButtonStyled>
 );
-const BottomButton: FC<IShelfButton> = ({ children, ...props }) => (
-    <button
-        className="h-16 w-16 cursor-default rounded-b-md rounded-t-none bg-gray-900 px-4 py-2 text-white outline outline-1 outline-gray-600 hover:bg-gray-700"
-        {...props}
-    >
+const BottomButton: React.FC<IShelfButton> = ({ children, ...props }) => (
+    <ButtonStyled side="bottom" {...props}>
         {children}
-    </button>
+    </ButtonStyled>
 );
 
-// const SmallGap: () => JSX.Element = () => <div className="mb-2" />;
+// const SmallGap: () => React.JSX.Element = () => <div className="mb-2" />;
 
 const ToolShelf: ({
     setTransformMode,
 }: {
     setTransformMode: (mode: string) => void;
-}) => JSX.Element = ({ setTransformMode }) => {
+}) => React.JSX.Element = ({ setTransformMode }) => {
+    const [selected, setSelected] = useState<number>(0);
+
+    const handleClick = (index: number) => {
+        setSelected(index);
+        startTransition(() => {
+            setTransformMode(
+                index === 1 ? "rotate" : index === 2 ? "scale" : "translate"
+            );
+        });
+    };
+
     return (
         <div className="absolute left-0 top-20 z-10 h-max w-28 p-4">
             <TopButton
                 onClick={() => {
-                    setTransformMode("translate");
+                    handleClick(0);
                 }}
+                selected={selected === 0}
             >
                 <svg fill="white" viewBox="0 0 16 16" height="2.2em" width="2.2em">
                     <path
@@ -53,8 +50,9 @@ const ToolShelf: ({
             </TopButton>
             <MiddleButton
                 onClick={() => {
-                    setTransformMode("rotate");
+                    handleClick(1);
                 }}
+                selected={selected === 1}
             >
                 <svg
                     fill="none"
@@ -73,8 +71,9 @@ const ToolShelf: ({
             </MiddleButton>
             <BottomButton
                 onClick={() => {
-                    setTransformMode("scale");
+                    handleClick(2);
                 }}
+                selected={selected === 2}
             >
                 <svg viewBox="0 0 64 64" fill="white" height="2em" width="2em">
                     <path

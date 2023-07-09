@@ -5,7 +5,7 @@ import {
     PropertiesTableLeftColumn,
     PropertiesTableRightColumn,
     PropertiesTableRightColumnItem,
-} from "./PropertiesStyled";
+} from "./PropertiesStyled.ts";
 import useStore from "@/app/utils/store";
 
 export default function PropertiesCommon({ isScene = false }): React.JSX.Element {
