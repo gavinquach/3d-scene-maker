@@ -108,10 +108,11 @@ const Model = ({ gltf, name, properties, ...props }) => {
             } else {
                 if (selectedObject.name === name) return;
 
-                setSelectedObject(name, meshRef.current);
-
                 startTransition(() => {
-                    if (meshIsMoved) {
+                    setSelectedObject(name, meshRef.current);
+                });
+                if (meshIsMoved) {
+                    startTransition(() => {
                         setTransforms(name, {
                             position: {
                                 x: meshRef.current?.position.x,
@@ -129,8 +130,8 @@ const Model = ({ gltf, name, properties, ...props }) => {
                                 z: meshRef.current?.scale.z,
                             },
                         });
-                    }
-                });
+                    });
+                }
                 handleSetLevaTransform();
             }
         },
