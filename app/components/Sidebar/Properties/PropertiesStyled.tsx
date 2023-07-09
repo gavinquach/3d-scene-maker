@@ -1,5 +1,10 @@
 import styled from "styled-components";
 
+export const PropertiesHeaderText = styled.h1`
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+`;
+
 export const PropertiesTableContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);

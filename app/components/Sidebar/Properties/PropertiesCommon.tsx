@@ -6,11 +6,14 @@ import {
     PropertiesTableRightColumn,
     PropertiesTableRightColumnItem,
 } from "./PropertiesStyled";
+import useStore from "@/app/utils/store";
 
-export default function PropertiesCommon(): React.JSX.Element {
+export default function PropertiesCommon({ isScene = false }): React.JSX.Element {
     const [value, setValue] = useState<number>(0);
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const dragStartPosition = useRef<number>(0);
+
+    const selectedObject = useStore((state) => state.selectedObject);
 
     useEffect(() => {
         const handleMouseMove = (e: MouseEvent) => {
@@ -52,10 +55,12 @@ export default function PropertiesCommon(): React.JSX.Element {
 
     return (
         <PropertiesTableContainer>
-            <PropertiesTableLeftColumn>Type</PropertiesTableLeftColumn>
-            <PropertiesTableRightColumn>aaaaaa</PropertiesTableRightColumn>
             <PropertiesTableLeftColumn>Name</PropertiesTableLeftColumn>
-            <PropertiesTableRightColumn>bbbbbb</PropertiesTableRightColumn>
+            <PropertiesTableRightColumn>{isScene ? "Scene" : selectedObject.name}</PropertiesTableRightColumn>
+
+            <PropertiesTableLeftColumn>Type</PropertiesTableLeftColumn>
+            <PropertiesTableRightColumn>{isScene ? "Scene" : selectedObject.objRef.type}</PropertiesTableRightColumn>
+
             <PropertiesTableLeftColumn>Position</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
                 <PropertiesTableRightColumnItem>

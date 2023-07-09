@@ -1,6 +1,7 @@
 import useStore from "../../../utils/store.js";
 import { memo } from "react";
 import PropertiesCommon from "./PropertiesCommon.tsx";
+import { PropertiesHeaderText } from "./PropertiesStyled.tsx";
 
 const ObjectProperties = () => {
     const selectedObject = useStore((state) => state.selectedObject);
@@ -9,7 +10,7 @@ const ObjectProperties = () => {
 
     return (
         <div>
-            <h1>Object Properties</h1>
+            <PropertiesHeaderText>Object Properties</PropertiesHeaderText>
             <PropertiesCommon />
         </div>
     );
