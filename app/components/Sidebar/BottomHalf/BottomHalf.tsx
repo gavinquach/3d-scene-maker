@@ -71,8 +71,6 @@ const BottomHalf: () => JSX.Element = () => {
             <BottomHalfPropertiesSection>
                 {section === 0 && <SceneProperties />}
                 {section === 1 && <ObjectProperties />}
-                {/* {section === 2 && <ObjectProperties />}
-            {section === 3 && <ObjectProperties />} */}
             </BottomHalfPropertiesSection>
         </BottomHalfStyled>
     );

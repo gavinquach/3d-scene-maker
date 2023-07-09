@@ -248,11 +248,8 @@ export default function Home(): JSX.Element {
 
     return (
         <>
-            {/* <ControlMenu /> */}
-
             <div className="max-w-screen flex h-screen max-h-screen w-screen flex-col">
                 <div className="flex h-full max-h-full w-full max-w-full">
-                    {/* Scene */}
                     <div className="flex h-screen w-full flex-col">
                         <NavigationBar
                             onDrop={onDrop}
