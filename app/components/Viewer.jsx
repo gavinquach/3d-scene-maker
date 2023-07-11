@@ -4,7 +4,7 @@ import {
     AdaptiveDpr,
     // BakeShadows,
     // ContactShadows,
-    // Environment,
+    Environment,
     OrbitControls,
     Preload,
     TransformControls,
@@ -60,8 +60,8 @@ const Viewer = () => {
     const selectedObject = useStore((state) => state.selectedObject);
     const transformMode = useStore((state) => state.transformMode);
     const sceneCollection = useStore((state) => state.sceneCollection);
-
-    // const { environment } = useControlParams();
+    const environment = useStore((state) => state.environment);
+    const environmentBackground = useStore((state) => state.environmentBackground);
 
     const performanceSettings = {
         current: 1,
@@ -100,8 +100,7 @@ const Viewer = () => {
             <OrbitGizmo />
             <gridHelper args={[1000, 1000, 0x000000, 0x808080]} />
 
-            {/* <Environment background files={schadowplatz_1k} /> */}
-            {/* <Environment background preset={environment} /> */}
+            {environment && <Environment background={environmentBackground === true} preset={environment} />}
             <ambientLight intensity={0.3} />
 
             <OrbitControls makeDefault name="OrbitControls" />

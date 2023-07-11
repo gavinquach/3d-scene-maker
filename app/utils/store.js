@@ -14,6 +14,8 @@ const useStore = create((set, get) => ({
     sameFiles: false,
     transformMode: "translate",
     section: 0,
+    environment: null,
+    environmentBackground: true,
 
     loadGLTF: async (sceneCollectionObject = null) => {
         const { files, results } = get();
@@ -185,6 +187,12 @@ const useStore = create((set, get) => ({
     },
     setSection: (section) => {
         set({ section: section });
+    },
+    setEnvironment: (env) => {
+        set({ environment: env === "" ? null : env });
+    },
+    toggleEnvironmentBackground: () => {
+        set((state) => ({ environmentBackground: !state.environmentBackground }));
     },
 }));
 

@@ -9,6 +9,7 @@ export const PropertiesTableContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
+  margin-bottom: 0.6rem;
 `;
 
 export const PropertiesTableLeftColumn = styled.div`
@@ -52,4 +53,22 @@ export const PropertiesNumberInput = styled.input`
   &:active {
     cursor: none;
   }
+`;
+
+export const PropertiesSelect = styled.select`
+  width: 100%;
+  font-size: 1.25rem;
+  color: #000;
+  border: 1px solid red;
+`;
+
+export const PropertiesOption = styled.option`
+  color: #000;
+  font-size: 1rem;
+`;
+
+export const PropertiesInput = styled.input`
+  width: 50%;
+  height: 50%;
+  margin: 1rem 0;
 `;

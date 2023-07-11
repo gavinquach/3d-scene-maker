@@ -18,7 +18,7 @@ const FarRightButton: React.FC<IShelfButton> = ({ children, ...props }) => (
     </ButtonStyled>
 );
 
-const ViewportShadingSelector: () => React.JSX.Element = () => {
+export default function ViewportShadingSelector(): React.JSX.Element {
     const [selected, setSelected] = useState<number>(2);
 
     return (
@@ -70,5 +70,3 @@ const ViewportShadingSelector: () => React.JSX.Element = () => {
         </ViewportShadingSelectorWrapperStyled>
     );
 };
-
-export default ViewportShadingSelector;

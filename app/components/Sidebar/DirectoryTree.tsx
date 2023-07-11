@@ -1,4 +1,4 @@
-import { MouseEventHandler, memo } from "react";
+import React from "react";
 import useStore from "../../utils/store.js";
 import { styled } from "styled-components";
 
@@ -7,14 +7,13 @@ const UpperHalfWrapper = styled.div`
     overflow-y: auto;
 `;
 
-const DirectoryTree: () => JSX.Element = () => {
+export default function DirectoryTree(): React.JSX.Element {
     const sceneCollection = useStore((state) => state.sceneCollection);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
 
-    const handleToggle:MouseEventHandler<HTMLSpanElement> = (event) => {
-        // const target = e.currentTarget as HTMLSpanElement;
-        event.currentTarget?.nextElementSibling?.classList.toggle("hidden");
+    const handleToggle: React.MouseEventHandler<HTMLSpanElement> = (e) => {
+        e.currentTarget?.nextElementSibling?.classList.toggle("hidden");
     };
 
     const handleClickObjectName = (name: string) => {
@@ -49,5 +48,3 @@ const DirectoryTree: () => JSX.Element = () => {
         </UpperHalfWrapper>
     );
 };
-
-export default memo(DirectoryTree);

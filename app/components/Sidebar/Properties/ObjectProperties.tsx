@@ -1,9 +1,9 @@
+import React from "react";
 import useStore from "../../../utils/store.js";
-import { memo } from "react";
 import PropertiesCommon from "./PropertiesCommon.tsx";
 import { PropertiesHeaderText } from "./PropertiesStyled.ts";
 
-const ObjectProperties = () => {
+export default function ObjectProperties(): React.JSX.Element {
     const selectedObject = useStore((state) => state.selectedObject);
     const { objRef } = selectedObject;
     console.log(objRef);
@@ -15,5 +15,3 @@ const ObjectProperties = () => {
         </div>
     );
 };
-
-export default memo(ObjectProperties);

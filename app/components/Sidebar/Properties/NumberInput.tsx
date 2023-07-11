@@ -6,7 +6,7 @@ import React, {
     MouseEvent,
 } from "react";
 
-const NumberInput = (): React.JSX.Element => {
+export default function NumberInput(): React.JSX.Element {
     const [value, setValue] = useState<number>(0);
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const dragStartY = useRef<number>(0);
@@ -63,5 +63,3 @@ const NumberInput = (): React.JSX.Element => {
         />
     );
 };
-
-export default NumberInput;

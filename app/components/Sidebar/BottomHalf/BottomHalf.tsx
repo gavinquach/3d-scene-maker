@@ -9,7 +9,7 @@ import ObjectProperties from "../Properties/ObjectProperties.tsx";
 import SceneProperties from "../Properties/SceneProperties.tsx";
 import useStore from "../../../utils/store.js";
 
-const BottomHalf: () => React.JSX.Element = () => {
+export default function BottomHalf(): React.JSX.Element {
     const selectedObject = useStore((state) => state.selectedObject);
     const section = useStore((state) => state.section);
     const setSection = useStore((state) => state.setSection);
@@ -76,5 +76,3 @@ const BottomHalf: () => React.JSX.Element = () => {
         </BottomHalfStyled>
     );
 };
-
-export default BottomHalf;
