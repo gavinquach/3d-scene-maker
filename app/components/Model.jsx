@@ -13,7 +13,6 @@ import { Select } from "@react-three/postprocessing";
 import { useFrame } from "@react-three/fiber";
 
 import useStore from "../utils/store.js";
-import useControlParams from "./Controls/ControlParams.jsx";
 
 const Model = ({ gltf, name, properties, ...props }) => {
     const meshRef = useRef(null);
@@ -22,8 +21,7 @@ const Model = ({ gltf, name, properties, ...props }) => {
     const sceneCollection = useStore((state) => state.sceneCollection);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const setTransforms = useStore((state) => state.setTransforms);
-
-    const { envIntensity } = useControlParams();
+    const environmentIntensity = useStore((state) => state.environmentIntensity);
 
     const position = sceneCollection[name]?.transforms?.position;
     const rotation = sceneCollection[name]?.transforms?.rotation;
@@ -123,7 +121,7 @@ const Model = ({ gltf, name, properties, ...props }) => {
         scene.traverse((obj) => {
             if (obj.isMesh) {
                 obj.castShadow = obj.receiveShadow = true;
-                obj.material.envMapIntensity = envIntensity;
+                obj.material.envMapIntensity = environmentIntensity;
             }
         });
     }, []);
@@ -132,10 +130,10 @@ const Model = ({ gltf, name, properties, ...props }) => {
         scene.traverse((obj) => {
             if (obj.isMesh) {
                 obj.castShadow = obj.receiveShadow = true;
-                obj.material.envMapIntensity = envIntensity;
+                obj.material.envMapIntensity = environmentIntensity;
             }
         });
-    }, [envIntensity]);
+    }, [environmentIntensity]);
 
     // Use the useFrame hook to check for transform changes
     useFrame(() => {

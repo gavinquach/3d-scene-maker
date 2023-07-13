@@ -30,8 +30,6 @@ export const PropertiesTableRightColumnItem = styled.div`
 export const PropertiesNumberInput = styled.input`
   background: #f5f5f5;
   color: #000;
-  /* appearance: textfield;
-  -moz-appearance: textfield; */
   width: 100%;
   margin: 0;
   border: none;
@@ -62,8 +60,36 @@ export const PropertiesOption = styled.option`
   font-size: 1rem;
 `;
 
-export const PropertiesInput = styled.input`
+export const PropertiesCheckBoxInput = styled.input`
   width: 50%;
   height: 50%;
   margin: 1rem 0;
+`;
+
+export const PropertiesRangeInput = styled.input`
+  width: 90%;
+  cursor: grab;
+  &:active {
+    cursor: grabbing;
+  }
+  input[type='range'] {
+    cursor: grab;
+  }
+
+  input[type='range']:active {
+    cursor: grabbing;
+  }
+`;
+
+export const PropertiesNumberBox = styled.div`
+  width: 2.7rem;
+  height: 2.7rem;
+  font-size: 1.1rem;
+  border-radius: 0.2rem;
+  background: #f3f3f3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #000;
 `;

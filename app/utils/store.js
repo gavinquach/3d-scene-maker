@@ -14,6 +14,7 @@ const useStore = create((set, get) => ({
     section: 0,
     environment: null,
     environmentBackground: true,
+    environmentIntensity: 0.5,
 
     loadGLTF: async (sceneCollectionObject = null) => {
         const { files, results } = get();
@@ -211,6 +212,9 @@ const useStore = create((set, get) => ({
     },
     setEnvironment: (env) => {
         set({ environment: env === "" ? null : env });
+    },
+    setEnvironmentIntensity: (num) => {
+        set({ environmentIntensity: num ? num : 0.5 });
     },
     toggleEnvironmentBackground: () => {
         set((state) => ({ environmentBackground: !state.environmentBackground }));
