@@ -99,6 +99,8 @@ export default function SceneProperties(): React.JSX.Element {
                 Environment Intensity
             </PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
+
+                {/* TODO: FIX NOT DRAGGABLE */}
                 <PropertiesRangeInput
                     type="range"
                     min="0"
