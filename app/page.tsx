@@ -14,7 +14,7 @@ import Viewer from "./components/Viewer.jsx";
 import ViewportShadingSelector from "./components/HUD/ViewportShadingSelector/ViewportShadingSelector.tsx";
 
 import useStore from "./utils/store.js";
-import globalObject from "./utils/globalObjects.ts";
+import globalObject from "./utils/globalObject.ts";
 
 import { EXPORT_FILE_NAME, SCENE_DATA_FILE_NAME } from "./utils/constants.ts";
 import { generateRandomString } from "./utils/functions.ts";

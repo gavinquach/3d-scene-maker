@@ -66,7 +66,7 @@ const Light = ({ name, transforms, attributes, properties, ...props }) => {
                 });
                 if (isMoved) {
                     startTransition(() => {
-                        setTransforms(name, {
+                        setTransforms({name: name}, {
                             position: {
                                 x: lightRef.current?.position.x,
                                 y: lightRef.current?.position.y,
@@ -109,7 +109,7 @@ const Light = ({ name, transforms, attributes, properties, ...props }) => {
                         !rotation.equals(previousTransform.rotation)) ||
                     (previousTransform.scale && !scale.equals(previousTransform.scale)))
             ) {
-                setTransforms(name, {
+                setTransforms({name: name}, {
                     position: {
                         x: lightRef.current?.position.x,
                         y: lightRef.current?.position.y,

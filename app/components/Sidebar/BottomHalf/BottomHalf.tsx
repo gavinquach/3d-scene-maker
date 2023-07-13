@@ -1,16 +1,16 @@
 import React, { startTransition, useState } from "react";
+import useStore from "@/app/utils/store.js";
 import {
     BottomHalfButtonSection,
     BottomHalfButtons,
     BottomHalfPropertiesSection,
     BottomHalfStyled,
 } from "./BottomHalfStyled.ts";
-import ObjectProperties from "../Properties/ObjectProperties.tsx";
-import SceneProperties from "../Properties/SceneProperties.tsx";
-import useStore from "../../../utils/store.js";
+import Properties from "../Properties/Properties.tsx";
+import Settings from "../Settings/Settings.tsx";
+import Project from "../Project/Project.tsx";
 
 export default function BottomHalf(): React.JSX.Element {
-    const selectedObject = useStore((state) => state.selectedObject);
     const section = useStore((state) => state.section);
     const setSection = useStore((state) => state.setSection);
     const [selected, setSelected] = useState<number>(0);
@@ -30,20 +30,12 @@ export default function BottomHalf(): React.JSX.Element {
                     onClick={() => handleSelectSection(0)}
                 >
                     <svg viewBox="0 0 24 24" fill="white" height="1.8rem" width="1.8rem">
-                        <path d="M13.5 6c-.8 0-1.5.7-1.5 1.5S12.7 9 13.5 9 15 8.3 15 7.5 14.3 6 13.5 6zM19 2H5C3.3 2 2 3.3 2 5v14c0 1.7 1.3 3 3 3h14c1.7 0 3-1.3 3-3V5c0-1.7-1.3-3-3-3zm1 11.9L18.1 12c-1.2-1.1-3.1-1.1-4.2 0l-.9.9-2.9-2.9C8.9 8.9 7 8.9 5.9 10L4 11.9V5c0-.6.4-1 1-1h14c.6 0 1 .4 1 1v8.9z" />
+                        <path d="M21.512 6.112l-3.89 3.889-3.535-3.536 3.889-3.889a6.501 6.501 0 00-8.484 8.486l-6.276 6.275a.999.999 0 000 1.414l2.122 2.122a.999.999 0 001.414 0l6.275-6.276a6.501 6.501 0 007.071-1.414 6.504 6.504 0 001.414-7.071z" />
                     </svg>
                 </BottomHalfButtons>
                 <BottomHalfButtons
                     selected={selected === 1}
                     onClick={() => handleSelectSection(1)}
-                >
-                    <svg viewBox="0 0 24 24" fill="white" height="1.8rem" width="1.8rem">
-                        <path d="M21.512 6.112l-3.89 3.889-3.535-3.536 3.889-3.889a6.501 6.501 0 00-8.484 8.486l-6.276 6.275a.999.999 0 000 1.414l2.122 2.122a.999.999 0 001.414 0l6.275-6.276a6.501 6.501 0 007.071-1.414 6.504 6.504 0 001.414-7.071z" />
-                    </svg>
-                </BottomHalfButtons>
-                <BottomHalfButtons
-                    selected={selected === 2}
-                    onClick={() => handleSelectSection(2)}
                 >
                     <svg
                         viewBox="0 0 24 24"
@@ -55,8 +47,8 @@ export default function BottomHalf(): React.JSX.Element {
                     </svg>
                 </BottomHalfButtons>
                 <BottomHalfButtons
-                    selected={selected === 3}
-                    onClick={() => handleSelectSection(3)}
+                    selected={selected === 2}
+                    onClick={() => handleSelectSection(2)}
                 >
                     <svg
                         viewBox="0 0 1024 1024"
@@ -70,8 +62,9 @@ export default function BottomHalf(): React.JSX.Element {
             </BottomHalfButtonSection>
 
             <BottomHalfPropertiesSection>
-                {section === 0 && <SceneProperties />}
-                {selectedObject.name !== null && section === 1 && <ObjectProperties />}
+                {section === 0 && <Properties />}
+                {section === 1 && <Project />}
+                {section === 2 && <Settings />}
             </BottomHalfPropertiesSection>
         </BottomHalfStyled>
     );

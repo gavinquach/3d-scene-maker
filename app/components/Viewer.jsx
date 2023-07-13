@@ -24,14 +24,15 @@ import Light from "./Light.jsx";
 import Model from "./Model.jsx";
 import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
 // import { schadowplatz_1k } from "../assets/images";
-
-import globalObject from "../utils/globalObjects.ts";
+import globalObject from "../utils/globalObject.ts";
 
 const CheckScene = () => {
     const scene = useThree((state) => state.scene);
     const camera = useThree((state) => state.camera);
     const controls = useThree((state) => state.controls);
     const gl = useThree((state) => state.gl);
+
+    const setSelectedObject = useStore((state) => state.setSelectedObject);
 
     useEffect(() => {
         // scene.traverse((child) => {
@@ -44,6 +45,9 @@ const CheckScene = () => {
         globalObject.camera = camera;
         globalObject.controls = controls;
         globalObject.renderer = gl;
+
+        // set Threejs Scene as default object
+        setSelectedObject(null);
         return () => {
             globalObject.scene = null;
             globalObject.camera = null;

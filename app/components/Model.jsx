@@ -23,7 +23,7 @@ const Model = ({ gltf, name, properties, ...props }) => {
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const setTransforms = useStore((state) => state.setTransforms);
 
-    const { setLevaTransforms, envIntensity } = useControlParams();
+    const { envIntensity } = useControlParams();
 
     const position = sceneCollection[name]?.transforms?.position;
     const rotation = sceneCollection[name]?.transforms?.rotation;
@@ -43,29 +43,8 @@ const Model = ({ gltf, name, properties, ...props }) => {
         scale: null,
     });
 
-    const handleSetLevaTransform = useCallback(() => {
-        setLevaTransforms({
-            position: {
-                x: meshRef.current?.position.x,
-                y: meshRef.current?.position.y,
-                z: meshRef.current?.position.z,
-            },
-            rotation: {
-                x: meshRef.current?.rotation.x,
-                y: meshRef.current?.rotation.y,
-                z: meshRef.current?.rotation.z,
-            },
-            scale: {
-                x: meshRef.current?.scale.x,
-                y: meshRef.current?.scale.y,
-                z: meshRef.current?.scale.z,
-            },
-        });
-    }, [setLevaTransforms]);
-
     const handleTransformChange = () => {
-        handleSetLevaTransform();
-        setTransforms(name, {
+        setTransforms({name: name}, {
             position: {
                 x: meshRef.current?.position.x,
                 y: meshRef.current?.position.y,
@@ -113,7 +92,7 @@ const Model = ({ gltf, name, properties, ...props }) => {
                 });
                 if (meshIsMoved) {
                     startTransition(() => {
-                        setTransforms(name, {
+                        setTransforms({name: name}, {
                             position: {
                                 x: meshRef.current?.position.x,
                                 y: meshRef.current?.position.y,
@@ -132,7 +111,6 @@ const Model = ({ gltf, name, properties, ...props }) => {
                         });
                     });
                 }
-                handleSetLevaTransform();
             }
         },
         [setSelectedObject, setTransforms, selectedObject]

@@ -1,4 +1,4 @@
-import globalObject from "./globalObjects";
+import globalObject from "./globalObject";
 import * as THREE from "three";
 import { TransformControls } from "three-stdlib";
 

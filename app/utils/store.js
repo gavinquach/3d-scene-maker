@@ -1,16 +1,14 @@
 import { create } from "zustand";
-
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader, MeshoptDecoder } from "three-stdlib";
-
-import globalObject from "./globalObjects.ts";
 import { DRACO_LOADER, GLTF_LOADER, KTX2_LOADER } from "./constants.ts";
+import globalObject from "./globalObject.ts";
 
 const useStore = create((set, get) => ({
     files: {},
     results: {},
     sceneCollection: {},
-    selectedObject: { name: null, object: null, objRef: null },
+    selectedObject: { name: "", object: null, objRef: null },
     sameFiles: false,
     transformMode: "translate",
     section: 0,
@@ -117,7 +115,7 @@ const useStore = create((set, get) => ({
     deleteObject: (objectName) => {
         if (objectName === null) return;
         set((state) => ({
-            selectedObject: { name: null, object: null, objRef: null },
+            selectedObject: { name: "", object: null, objRef: globalObject.scene },
             files: Object.fromEntries(
                 Object.entries(state.files).filter(([key]) => key !== objectName)
             ),
@@ -133,7 +131,7 @@ const useStore = create((set, get) => ({
     },
     clearAll: () => {
         set({
-            selectedObject: { name: null, object: null, objRef: null },
+            selectedObject: { name: "", object: null, objRef: globalObject.scene },
             files: {},
             results: {},
             sceneCollection: {},
@@ -141,11 +139,11 @@ const useStore = create((set, get) => ({
         });
     },
     setSelectedObject: (objectName, objectRef = null) => {
+        // set Scene as selected object if objectName is null
         if (objectName === null) {
-            set({ selectedObject: { name: null, object: null, objRef: null } });
+            set({ selectedObject: { name: "", object: null, objRef: globalObject.scene } });
             return;
         }
-
         if (objectRef !== null) {
             // Get the object from scene collection
             const { sceneCollection } = get();
@@ -162,7 +160,7 @@ const useStore = create((set, get) => ({
         const sceneObj = globalObject.scene.getObjectByName(objectName);
         if (!item || !sceneObj) {
             console.error("Object not found in scene collection");
-            set({ selectedObject: { name: null, object: null, objRef: null } });
+            set({ selectedObject: { name: "", object: null, objRef: globalObject.scene } });
             return;
         }
 
@@ -174,10 +172,33 @@ const useStore = create((set, get) => ({
             },
         });
     },
-    setTransforms: (name, transforms) => {
-        const { sceneCollection } = get();
-        sceneCollection[name].transforms = transforms;
-        set({ sceneCollection: sceneCollection });
+    setTransforms: (
+        { name, objRef },
+        transformValue = 0,
+        transformMode = "position",
+        transformAxis = "x"
+    ) => {
+        if (name === null && objRef === null) return;
+
+        if (name) {
+            const { sceneCollection } = get();
+            sceneCollection[name].transforms = transformValue;
+            set({ sceneCollection: sceneCollection });
+        } else if (objRef) {
+            if (transformMode === "position") {
+                if (transformAxis === "x") objRef.position.x = transformValue;
+                else if (transformAxis === "y") objRef.position.y = transformValue;
+                else if (transformAxis === "z") objRef.position.z = transformValue;
+            } else if (transformMode === "rotation") {
+                if (transformAxis === "x") objRef.rotation.x = transformValue;
+                else if (transformAxis === "y") objRef.rotation.y = transformValue;
+                else if (transformAxis === "z") objRef.rotation.z = transformValue;
+            } else if (transformMode === "scale") {
+                if (transformAxis === "x") objRef.scale.x = transformValue;
+                else if (transformAxis === "y") objRef.scale.y = transformValue;
+                else if (transformAxis === "z") objRef.scale.z = transformValue;
+            }
+        }
     },
     setTransformMode: (mode) => {
         set({ transformMode: mode });
