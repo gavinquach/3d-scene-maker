@@ -4,6 +4,7 @@ import { Object3D } from "three";
 import {
     PropertiesCheckBoxInput,
     PropertiesInputLabel,
+    PropertiesNumericBox,
     PropertiesTableLeftColumn,
     PropertiesTableRightColumn,
     PropertiesTableRightColumnItem,
@@ -38,7 +39,14 @@ export const Object3DProperties: FC<{ object: Object3D }> = ({ object }) => {
                             setValue(!value);
                         }}
                     />
-                    <PropertiesInputLabel>Cast</PropertiesInputLabel>
+                    <PropertiesInputLabel
+                        onClick={() => {
+                            object.castShadow = !object.castShadow;
+                            setValue(!value);
+                        }}
+                    >
+                        Cast
+                    </PropertiesInputLabel>
                 </PropertiesTableRightColumnItem>
                 <PropertiesTableRightColumnItem>
                     <PropertiesCheckBoxInput
@@ -49,7 +57,14 @@ export const Object3DProperties: FC<{ object: Object3D }> = ({ object }) => {
                             setValue(!value);
                         }}
                     />
-                    <PropertiesInputLabel>Receive</PropertiesInputLabel>
+                    <PropertiesInputLabel
+                        onClick={() => {
+                            object.receiveShadow = !object.receiveShadow;
+                            setValue(!value);
+                        }}
+                    >
+                        Receive
+                    </PropertiesInputLabel>
                 </PropertiesTableRightColumnItem>
             </PropertiesTableRightColumn>
 
@@ -74,6 +89,14 @@ export const Object3DProperties: FC<{ object: Object3D }> = ({ object }) => {
                         object.frustumCulled = !object.frustumCulled;
                         setValue(!value);
                     }}
+                />
+            </PropertiesTableRightColumn>
+
+            <PropertiesTableLeftColumn>Render Order</PropertiesTableLeftColumn>
+            <PropertiesTableRightColumn>
+                <PropertiesNumericBox
+                    type="number"
+                    defaultValue={object.renderOrder}
                 />
             </PropertiesTableRightColumn>
         </>

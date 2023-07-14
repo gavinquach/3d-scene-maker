@@ -80,10 +80,9 @@ export const PropertiesRangeInput = styled.input`
   margin-right: 0.5rem;
 `;
 export const PropertiesNumericBox = styled.input`
-  display: block;
   width: 2.7rem;
   height: 2.7rem;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   border-radius: 0.2rem;
   background: #f3f3f3;
   display: flex;
