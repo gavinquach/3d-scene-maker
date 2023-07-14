@@ -14,12 +14,41 @@ const NavigationBar = ({
 }) => {
     const fileInputRef = useRef(null);
     const isHoveringOverFileUpload = useRef(false);
+
+    const [isFullscreen, setIsFullscreen] = useState(false);
     const [isWindowOn, setIsWindowOn] = useState(false);
     const [isFileDropdownOpen, setIsFileDropdownOpen] = useState(false);
     const [isObjectDropdownOpen, setIsObjectDropdownOpen] = useState(false);
     const [isAddDropdownOpen, setIsAddDropdownOpen] = useState(false);
     const [isAddLightDropdownOpen, setIsAddLightDropdownOpen] = useState(false);
     const [isAddMeshDropdownOpen, setIsAddMeshDropdownOpen] = useState(false);
+
+    const handleFullscreenToggle = () => {
+        if (!document.fullscreenElement) {
+            // Enter fullscreen mode
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+            } else if (document.documentElement.mozRequestFullScreen) {
+                document.documentElement.mozRequestFullScreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+                document.documentElement.webkitRequestFullscreen();
+            } else if (document.documentElement.msRequestFullscreen) {
+                document.documentElement.msRequestFullscreen();
+            }
+        } else {
+            // Exit fullscreen mode
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+        setIsFullscreen(!isFullscreen);
+    };
 
     // const closeAllDropdowns = () => {
     //     setIsWindowOn(false);
@@ -92,7 +121,7 @@ const NavigationBar = ({
                 <ul className="flex flex-row justify-left select-none">
                     <li className="relative">
                         <div
-                            className="text-white text-sm px-4 py-2 cursor-pointer"
+                            className="text-white text-sm px-4 py-2 cursor-pointer hover:bg-gray-800"
                             onClick={() => toggleFileDropdown()}
                         >
                             File
@@ -129,7 +158,7 @@ const NavigationBar = ({
                     </li>
                     <li className="relative">
                         <div
-                            className="text-white text-sm px-4 py-2 cursor-pointer"
+                            className="text-white text-sm px-4 py-2 cursor-pointer hover:bg-gray-800"
                             onClick={() => toggleWindow(null)}
                             onDragOver={() => toggleWindow(true)}
                             onDragLeave={() => {
@@ -163,7 +192,7 @@ const NavigationBar = ({
                     </li>
                     <li className="relative">
                         <div
-                            className="text-white text-sm px-4 py-2 cursor-pointer"
+                            className="text-white text-sm px-4 py-2 cursor-pointer hover:bg-gray-800"
                             onClick={() => toggleAddDropdown()}
                         >
                             Add
@@ -339,7 +368,7 @@ const NavigationBar = ({
                     </li>
                     <li className="relative">
                         <div
-                            className="text-white text-sm px-4 py-2 cursor-pointer"
+                            className="text-white text-sm px-4 py-2 cursor-pointer hover:bg-gray-800"
                             onClick={() => toggleObjectDropdown()}
                         >
                             Object
@@ -355,7 +384,15 @@ const NavigationBar = ({
                             </ul>
                         )}
                     </li>
-                    <li className="text-white text-sm px-4 py-2">
+                    <li className="relative">
+                        <div
+                            className="text-white text-sm px-4 py-2 cursor-pointer hover:bg-gray-800"
+                            onClick={handleFullscreenToggle}
+                        >
+                            Fullscreen
+                        </div>
+                    </li>
+                    <li className="text-white text-sm px-4 py-2 hover:bg-gray-800">
                         <NewTabLink href="https://github.com/gavinquach/3d-scene-maker">
                             Github
                         </NewTabLink>
