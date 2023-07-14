@@ -1,10 +1,10 @@
-import { memo, useRef, useState } from "react";
-import FileUpload from "./FileUpload.jsx";
-import NewTabLink from "./NewTabLink.tsx";
+import dynamic from "next/dynamic";
+import { useRef, useState } from "react";
 
-// import { handleAddLight } from "../utils/sceneUtils.ts";
+const FileUpload = dynamic(() => import("./FileUpload.tsx").then((mod) => mod.FileUpload));
+const NewTabLink = dynamic(() => import("./NewTabLink.tsx").then((mod) => mod.NewTabLink));
 
-const NavigationBar = ({
+export const NavigationBar = ({
     onDrop,
     handleDeleteObject,
     handleClearAll,
@@ -402,5 +402,3 @@ const NavigationBar = ({
         </header>
     );
 };
-
-export default memo(NavigationBar);

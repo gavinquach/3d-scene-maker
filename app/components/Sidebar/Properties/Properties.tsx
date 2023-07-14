@@ -1,13 +1,15 @@
-import { JSX } from "react";
+import dynamic from "next/dynamic";
+import { FC } from "react";
 import { Object3D } from "three";
 import useStore from "@/app/utils/store.js";
 import { PropertiesTableContainer } from "./PropertiesStyled.ts";
 import { SidebarHeaderText } from "../SidebarStyled";
-import CommonProperties from "./SubProperties/CommonProperties.tsx";
-import SceneProperties from "./SubProperties/SceneProperties.tsx";
-import ObjectProperties from "./SubProperties/ObjectProperties.tsx";
 
-export default function Properties(): JSX.Element {
+const CommonProperties = dynamic(() => import("./SubProperties/CommonProperties.tsx").then((mod) => mod.CommonProperties));
+const SceneProperties = dynamic(() => import("./SubProperties/SceneProperties.tsx").then((mod) => mod.SceneProperties));
+const ObjectProperties = dynamic(() => import("./SubProperties/ObjectProperties.tsx").then((mod) => mod.ObjectProperties));
+
+export const Properties: FC = () => {
     const selectedObject = useStore((state) => state.selectedObject);
     const { objRef } = selectedObject;
     console.log(objRef);

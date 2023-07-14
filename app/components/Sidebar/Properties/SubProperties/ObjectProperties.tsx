@@ -1,9 +1,11 @@
-import { JSX } from "react";
-import PositionProperties from "./TransformProperties/PositionProperties.tsx";
-import RotationProperties from "./TransformProperties/RotationProperties.tsx";
-import ScaleProperties from "./TransformProperties/ScaleProperties.tsx";
+import dynamic from "next/dynamic";
+import { FC } from "react";
 
-export default function ObjectProperties(): JSX.Element {
+const PositionProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.PositionProperties));
+const RotationProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.RotationProperties));
+const ScaleProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.ScaleProperties));
+
+export const ObjectProperties: FC = () => {
     return (
         <>
             <PositionProperties />

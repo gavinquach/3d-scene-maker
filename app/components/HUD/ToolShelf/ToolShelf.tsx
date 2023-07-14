@@ -17,7 +17,7 @@ const BottomButton: React.FC<IShelfButton> = ({ children, ...props }) => (
 
 // const SmallGap: () => React.JSX.Element = () => <div className="mb-2" />;
 
-const ToolShelf: ({
+export const ToolShelf: ({
     setTransformMode,
 }: {
     setTransformMode: (mode: string) => void;
@@ -101,5 +101,3 @@ const ToolShelf: ({
         </div>
     );
 };
-
-export default ToolShelf;

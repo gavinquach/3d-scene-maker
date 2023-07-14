@@ -1,5 +1,3 @@
-"use client";
-
 import {
     AdaptiveDpr,
     // BakeShadows,
@@ -10,7 +8,7 @@ import {
     TransformControls,
 } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
-import { memo, startTransition, Suspense, useEffect } from "react";
+import { startTransition, Suspense, useEffect } from "react";
 import { Perf } from "r3f-perf";
 import {
     Selection,
@@ -57,7 +55,7 @@ const CheckScene = () => {
     }, [camera, controls, gl, scene]);
 };
 
-const Viewer = () => {
+export const Viewer = () => {
     const loadGLTF = useStore((state) => state.loadGLTF);
     const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
@@ -171,5 +169,3 @@ const Viewer = () => {
         </Canvas>
     );
 };
-
-export default memo(Viewer);

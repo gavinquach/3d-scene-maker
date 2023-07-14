@@ -5,7 +5,7 @@ import {
 import useStore from "@/app/utils/store";
 import { Object3D } from "three";
 
-export default function CommonProperties(): React.JSX.Element {
+export const CommonProperties: React.FC = () => {
     const selectedObject = useStore((state) => state.selectedObject);
 
     return (

@@ -1,17 +1,15 @@
 "use client";
 
-import { ChangeEvent, startTransition, useCallback, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { ChangeEvent, JSX, startTransition, useCallback, useEffect } from "react";
 import { Object3D } from "three";
-
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
-// import ControlMenu from "./components/Controls/ControlMenu.jsx";
-import NavigationBar from "./components/NavigationBar.jsx";
-import Sidebar from "./components/Sidebar/Sidebar.tsx";
-import ToolShelf from "./components/HUD/ToolShelf/ToolShelf.tsx";
-import Viewer from "./components/Viewer.jsx";
-import ViewportShadingSelector from "./components/HUD/ViewportShadingSelector/ViewportShadingSelector.tsx";
+const NavigationBar = dynamic(() => import("./components/NavigationBar.jsx").then((mod) => mod.NavigationBar));
+const Sidebar = dynamic(() => import("./components/Sidebar/Sidebar.tsx").then((mod) => mod.Sidebar));
+const ToolShelf = dynamic(() => import("./components/HUD/ToolShelf/ToolShelf.tsx").then((mod) => mod.ToolShelf));
+const Viewer = dynamic(() => import("./components/Viewer.jsx").then((mod) => mod.Viewer));
 
 import useStore from "./utils/store.js";
 import globalObject from "./utils/globalObject.ts";
@@ -261,7 +259,6 @@ export default function Home(): JSX.Element {
                         />
                         <div className="flex-grow overflow-y-auto select-none">
                             <ToolShelf setTransformMode={setTransformMode} />
-                            <ViewportShadingSelector />
                             <Viewer />
                         </div>
                     </div>

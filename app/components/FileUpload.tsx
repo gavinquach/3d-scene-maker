@@ -1,11 +1,14 @@
-import { memo } from "react";
+import { FC } from "react";
 import { useDropzone } from "react-dropzone";
 import useStore from "../utils/store";
 
-const FileUpload = ({ small = false, onDrop }) => {
+export const FileUpload: FC<{
+    small?: boolean;
+    onDrop: (acceptedFiles: File[]) => void;
+}> = ({ small = false, onDrop }) => {
     const { getRootProps, getInputProps, isDragActive, fileRejections } =
         useDropzone({
-            onDrop: onDrop,
+            onDrop,
             maxFiles: 20,
             accept: {
                 "model/gltf-binary": [".gltf", ".glb"],
@@ -13,23 +16,19 @@ const FileUpload = ({ small = false, onDrop }) => {
         });
 
     const sameFiles = useStore((state) => state.sameFiles);
-    const files = useStore((state) => state.files);
 
     return (
         <>
             <div
                 {...getRootProps()}
-                className={
-                    small
-                        ? `fixed top-14 left-2 z-50 h-40 w-64 flex items-center justify-center text-center bg-white bg-opacity-30 rounded-xl ${isDragActive ? "drag-active" : ""
-                        }`
-                        : `h-full w-screen flex flex-col items-center justify-center text-center ${isDragActive && "drag-active"
-                        }`
-                }
+                className={`${small
+                        ? "fixed left-2 top-14 z-50 flex h-40 w-64 items-center justify-center rounded-xl bg-white bg-opacity-30 text-center " +
+                        (isDragActive ? "drag-active" : "")
+                        : "flex h-full w-screen flex-col items-center justify-center text-center " +
+                        (isDragActive ? "drag-active" : "")
+                    }`}
             >
                 <input {...getInputProps()} />
-
-                {/* {files.length < 1 && <p className="text-5xl mb-8">Scene is empty! </p>} */}
 
                 {isDragActive ? (
                     <p>Drop the files here...</p>
@@ -38,13 +37,13 @@ const FileUpload = ({ small = false, onDrop }) => {
                 )}
 
                 {fileRejections.length > 0 && (
-                    <p className="block text-center text-xl pt-4 text-red-300">
+                    <p className="block pt-4 text-center text-xl text-red-300">
                         Only .gltf or .glb files are accepted
                     </p>
                 )}
 
                 {sameFiles && (
-                    <p className="block text-center text-xl pt-4 text-red-300">
+                    <p className="block pt-4 text-center text-xl text-red-300">
                         Duplicate file
                     </p>
                 )}
@@ -52,5 +51,3 @@ const FileUpload = ({ small = false, onDrop }) => {
         </>
     );
 };
-
-export default memo(FileUpload);

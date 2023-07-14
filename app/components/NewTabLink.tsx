@@ -1,6 +1,6 @@
-import { MouseEvent, ReactNode, memo } from "react";
+import { MouseEvent, ReactNode } from "react";
 
-const NewTabLink = ({ href, children }: { href: string; children: ReactNode }) => {
+export const NewTabLink = ({ href, children }: { href: string; children: ReactNode }) => {
     const handleClick: (e: MouseEvent<HTMLAnchorElement>) => void = (
         e: MouseEvent<HTMLAnchorElement>
     ): void => {
@@ -14,5 +14,3 @@ const NewTabLink = ({ href, children }: { href: string; children: ReactNode }) =
         </a>
     );
 };
-
-export default memo(NewTabLink);

@@ -1,12 +1,13 @@
+import dynamic from "next/dynamic";
+import { FC } from "react";
 import { SidebarWrapper } from "./SidebarStyled.ts";
-import DirectoryTree from "./DirectoryTree.tsx";
-import BottomHalf from "./BottomHalf/BottomHalf.tsx";
 
-const Sidebar = () => (
+const BottomHalf = dynamic(() => import("./BottomHalf/BottomHalf.tsx").then((mod) => mod.BottomHalf));
+const DirectoryTree = dynamic(() => import("./DirectoryTree.tsx").then((mod) => mod.DirectoryTree));
+
+export const Sidebar: FC = () => (
     <SidebarWrapper>
         <DirectoryTree />
         <BottomHalf />
     </SidebarWrapper>
 );
-
-export default Sidebar;

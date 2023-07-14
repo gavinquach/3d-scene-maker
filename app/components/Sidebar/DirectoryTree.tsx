@@ -1,13 +1,13 @@
 import React from "react";
+import styled from "styled-components";
 import useStore from "../../utils/store.js";
-import { styled } from "styled-components";
 
 const UpperHalfWrapper = styled.div`
     height: 33.3%;
     overflow-y: auto;
 `;
 
-export default function DirectoryTree(): React.JSX.Element {
+export const DirectoryTree: React.FC = () => {
     const sceneCollection = useStore((state) => state.sceneCollection);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);

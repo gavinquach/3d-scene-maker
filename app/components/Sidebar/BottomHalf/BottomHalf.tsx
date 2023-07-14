@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import React, { startTransition, useState } from "react";
 import useStore from "@/app/utils/store.js";
 import {
@@ -6,11 +7,12 @@ import {
     BottomHalfPropertiesSection,
     BottomHalfStyled,
 } from "./BottomHalfStyled.ts";
-import Properties from "../Properties/Properties.tsx";
-import Settings from "../Settings/Settings.tsx";
-import Project from "../Project/Project.tsx";
 
-export default function BottomHalf(): React.JSX.Element {
+const Properties = dynamic(() => import("../Properties/Properties.tsx").then((mod) => mod.Properties));
+const Settings = dynamic(() => import("../Settings/Settings.tsx").then((mod) => mod.Settings));
+const Project = dynamic(() => import("../Project/Project.tsx").then((mod) => mod.Project));
+
+export const BottomHalf: React.FC = () => {
     const section = useStore((state) => state.section);
     const setSection = useStore((state) => state.setSection);
     const [selected, setSelected] = useState<number>(0);

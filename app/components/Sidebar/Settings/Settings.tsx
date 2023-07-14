@@ -1,6 +1,7 @@
+import { FC } from "react";
 import { SidebarHeaderText } from "../SidebarStyled";
 
-export default function Settings() {
+export const Settings: FC = () => {
     return (
         <>
             <SidebarHeaderText>Settings</SidebarHeaderText>

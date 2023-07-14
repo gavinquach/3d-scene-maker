@@ -1,6 +1,7 @@
+import { FC } from "react";
 import { SidebarHeaderText } from "../SidebarStyled";
 
-export default function Project() {
+export const Project: FC = () => {
     return (
         <>
             <SidebarHeaderText>Project</SidebarHeaderText>

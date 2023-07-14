@@ -26,7 +26,7 @@ const OrbitGizmo = ({ renderPriority = 2, matrix = new Matrix4(), ...props }) =>
 
     return (
         <Hud renderPriority={renderPriority} {...props} dispose={null}>
-            <OrthographicCamera makeDefault position={[-400, 20, 100]} zoom={0.8} />
+            <OrthographicCamera makeDefault position={[-400, -45, 100]} zoom={0.8} />
             <GizmoObject
                 ref={mesh}
                 position={[size.width / 2 - 300, size.height / 2 - 20, 0]}
