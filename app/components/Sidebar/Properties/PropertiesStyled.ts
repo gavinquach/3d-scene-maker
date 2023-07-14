@@ -66,22 +66,15 @@ export const PropertiesCheckBoxInput = styled.input`
   margin: 1rem 0;
 `;
 
-export const PropertiesRangeInput = styled.input`
-  width: 90%;
-  cursor: grab;
-  &:active {
-    cursor: grabbing;
-  }
-  input[type='range'] {
-    cursor: grab;
-  }
-
-  input[type='range']:active {
-    cursor: grabbing;
-  }
+export const PropertiesRangeInputContainer = styled.div`
+  display: flex;
 `;
-
-export const PropertiesNumberBox = styled.div`
+export const PropertiesRangeInput = styled.input`
+  flex-grow: 1;
+  margin-right: 0.5rem;
+`;
+export const PropertiesNumericBox = styled.input`
+  display: block;
   width: 2.7rem;
   height: 2.7rem;
   font-size: 1.1rem;

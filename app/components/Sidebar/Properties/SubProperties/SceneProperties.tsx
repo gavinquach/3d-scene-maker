@@ -1,19 +1,22 @@
-import React from "react";
+import dynamic from "next/dynamic";
+import React, { startTransition } from "react";
 import useStore from "@/app/utils/store.js";
 import {
     PropertiesCheckBoxInput,
-    PropertiesNumberBox,
+    PropertiesNumericBox,
     PropertiesOption,
     PropertiesRangeInput,
+    PropertiesRangeInputContainer,
     PropertiesSelect,
     PropertiesTableLeftColumn,
     PropertiesTableRightColumn,
 } from "../PropertiesStyled.ts";
-import PositionProperties from "./TransformProperties/PositionProperties.tsx";
-import RotationProperties from "./TransformProperties/RotationProperties.tsx";
-import ScaleProperties from "./TransformProperties/ScaleProperties.tsx";
 
-export default function SceneProperties(): React.JSX.Element {
+const PositionProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.PositionProperties));
+const RotationProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.RotationProperties));
+const ScaleProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.ScaleProperties));
+
+export const SceneProperties: React.FC = () => {
     const environment = useStore((state) => state.environment);
     const environmentIntensity = useStore((state) => state.environmentIntensity);
     const setEnvironment = useStore((state) => state.setEnvironment);
@@ -28,11 +31,24 @@ export default function SceneProperties(): React.JSX.Element {
     );
 
     const handleEnvironmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setEnvironment(e.target.value);
+        startTransition(() => {
+            setEnvironment(e.target.value);
+        });
+    };
+
+    const handleEnvIntensityDrag = (e: React.ChangeEvent<HTMLInputElement>) => {
+        startTransition(() => {
+            setEnvironmentIntensity(e.target.value);
+        });
     };
 
     const handleEnvIntensityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEnvironmentIntensity(parseFloat(e.target.value));
+        const value = parseFloat(e.target.value);
+        if (!isNaN(value)) {
+            startTransition(() => {
+                setEnvironmentIntensity(parseFloat(e.target.value));
+            });
+        }
     };
 
     const dreiBackgroundList: string[] = [
@@ -49,7 +65,7 @@ export default function SceneProperties(): React.JSX.Element {
         "warehouse",
     ];
 
-    const dreiBackgroundOptionComponents: React.JSX.Element[] =
+    const dreiBackgroundOptionComponents: React.ReactNode[] =
         dreiBackgroundList.map((option) => (
             <>
                 {option === "" ? (
@@ -95,23 +111,27 @@ export default function SceneProperties(): React.JSX.Element {
                     onChange={toggleEnvironmentBackground}
                 />
             </PropertiesTableRightColumn>
+
             <PropertiesTableLeftColumn>
                 Environment Intensity
             </PropertiesTableLeftColumn>
-            <PropertiesTableRightColumn>
-
-                {/* TODO: FIX NOT DRAGGABLE */}
-                <PropertiesRangeInput
-                    type="range"
-                    min="0"
-                    max="1"
-                    value="0.5"
-                    step={0.01}
-                    onChange={handleEnvIntensityChange}
-                />
-                <PropertiesNumberBox id="envMapIntensityDOM">
-                    {environmentIntensity}
-                </PropertiesNumberBox>
+            <PropertiesTableRightColumn style={{ border: "1px solid red" }}>
+                <PropertiesRangeInputContainer>
+                    {/* TODO: FIX NOT DRAGGABLE */}
+                    <PropertiesRangeInput
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        value={environmentIntensity}
+                        onChange={handleEnvIntensityDrag}
+                    />
+                    <PropertiesNumericBox
+                        type="numeric"
+                        value={environmentIntensity}
+                        onChange={handleEnvIntensityChange}
+                    />
+                </PropertiesRangeInputContainer>
             </PropertiesTableRightColumn>
         </>
     );
