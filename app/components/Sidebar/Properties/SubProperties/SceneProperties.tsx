@@ -13,10 +13,6 @@ import {
 } from "../PropertiesStyled.ts";
 import globalObject from "@/app/utils/globalObject.ts";
 
-const PositionProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.PositionProperties));
-const RotationProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.RotationProperties));
-const ScaleProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.ScaleProperties));
-
 export const SceneProperties: React.FC = () => {
     const environment = useStore((state) => state.environment);
     const environmentIntensity = useStore((state) => state.environmentIntensity);
@@ -89,10 +85,6 @@ export const SceneProperties: React.FC = () => {
             </>
         ));
 
-    useEffect(() => {
-        console.log(globalObject.scene);
-    }, []);
-
     return (
         <>
             <PropertiesTableLeftColumn>Environment</PropertiesTableLeftColumn>
@@ -136,4 +128,4 @@ export const SceneProperties: React.FC = () => {
             </PropertiesTableRightColumn>
         </>
     );
-}
+};

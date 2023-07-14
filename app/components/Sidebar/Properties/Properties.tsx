@@ -15,16 +15,14 @@ const SceneProperties = dynamic(() =>
         (mod) => mod.SceneProperties
     )
 );
-const ObjectProperties = dynamic(() =>
-    import("./SubProperties/ObjectProperties.tsx").then(
-        (mod) => mod.ObjectProperties
+const Object3DProperties = dynamic(() =>
+    import("./SubProperties/Object3DProperties.tsx").then(
+        (mod) => mod.Object3DProperties
     )
 );
 
 export const Properties: FC = () => {
     const selectedObject = useStore((state) => state.selectedObject);
-    const { objRef } = selectedObject;
-    console.log(objRef);
 
     return (
         <>
@@ -32,12 +30,11 @@ export const Properties: FC = () => {
             <PropertiesTableContainer>
                 <CommonProperties />
 
-                {(selectedObject.objRef as Object3D)?.type === "Scene" && (
-                    <SceneProperties />
-                )}
+                {(selectedObject.objRef as Object3D)?.type === "Scene" && <SceneProperties />}
 
                 {(selectedObject.objRef as Object3D)?.isObject3D && (
-                    <ObjectProperties />
+                    // <ObjectProperties />
+                    <Object3DProperties object={selectedObject.objRef} />
                 )}
             </PropertiesTableContainer>
         </>

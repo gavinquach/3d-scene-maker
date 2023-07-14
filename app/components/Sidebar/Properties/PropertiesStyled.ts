@@ -5,10 +5,13 @@ export const PropertiesTableContainer = styled.div`
   grid-template-columns: 0.6fr 1fr;
   gap: 0.5rem;
   margin-bottom: 0.6rem;
+  font-size: 1.1rem;
 `;
 
 export const PropertiesTableLeftColumn = styled.div`
   /* Styles for the left column */
+  display: flex;
+  align-items: center;
   margin-bottom: 0.5rem;
 `;
 
@@ -25,6 +28,8 @@ export const PropertiesTableRightColumn = styled.div`
 
 export const PropertiesTableRightColumnItem = styled.div`
   /* Styles for each smaller column */
+  display: flex;
+  align-items: center;
 `;
 
 export const PropertiesNumberInput = styled.input`
@@ -51,19 +56,17 @@ export const PropertiesNumberInput = styled.input`
 
 export const PropertiesSelect = styled.select`
   width: 100%;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   color: #000;
 `;
 
 export const PropertiesOption = styled.option`
   color: #000;
-  font-size: 1rem;
 `;
 
 export const PropertiesCheckBoxInput = styled.input`
-  width: 50%;
-  height: 50%;
-  margin: 1rem 0;
+  width: 1.2rem;
+  height: 1.2rem;
 `;
 
 export const PropertiesRangeInputContainer = styled.div`
@@ -88,4 +91,10 @@ export const PropertiesNumericBox = styled.input`
   align-items: center;
   text-align: center;
   color: #000;
+`;
+
+export const PropertiesInputLabel = styled.label`
+  font-size: 1.1rem;
+  margin-left: 0.6rem;
+  user-select: none;
 `;
