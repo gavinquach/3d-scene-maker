@@ -63,7 +63,9 @@ export const Viewer = () => {
     const transformMode = useStore((state) => state.transformMode);
     const sceneCollection = useStore((state) => state.sceneCollection);
     const environment = useStore((state) => state.environment);
-    const environmentBackground = useStore((state) => state.environmentBackground);
+    const environmentBackground = useStore(
+        (state) => state.environmentBackground
+    );
 
     const performanceSettings = {
         current: 1,
@@ -102,7 +104,10 @@ export const Viewer = () => {
             <OrbitGizmo />
             <gridHelper args={[1000, 1000, 0x000000, 0x808080]} />
 
-            {environment && <Environment background={environmentBackground === true} preset={environment} />}
+            {environment && <Environment
+                background={environmentBackground === true}
+                files={environment}
+            />}
             <ambientLight intensity={0.3} />
 
             <OrbitControls makeDefault name="OrbitControls" />
