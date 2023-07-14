@@ -24,3 +24,5 @@ export const GLTF_LOADER = (renderer: WebGLRenderer) =>
         .setDRACOLoader(DRACO_LOADER)
         .setKTX2Loader(renderer ? KTX2_LOADER : KTX2_LOADER.detectSupport(renderer))
         .setMeshoptDecoder(MeshoptDecoder);
+
+export const ENVMAP_PATH = `/envmaps`;

@@ -12,7 +12,7 @@ module.exports = withPlugins([withImages], {
             loader: 'raw-loader',
           },
           {
-            test: /\.(hdr|gif|png|jpe?g)$/i,
+            test: /\.(gif|png|jpe?g)$/i,
             use: [
               {
                 loader: 'file-loader',

@@ -1,5 +1,5 @@
-import dynamic from "next/dynamic";
-import React, { startTransition, useEffect } from "react";
+import React, { startTransition } from "react";
+import { ENVMAP_PATH } from "@/app/utils/constants.ts";
 import useStore from "@/app/utils/store.js";
 import {
     PropertiesCheckBoxInput,
@@ -11,7 +11,6 @@ import {
     PropertiesTableLeftColumn,
     PropertiesTableRightColumn,
 } from "../PropertiesStyled.ts";
-import globalObject from "@/app/utils/globalObject.ts";
 
 export const SceneProperties: React.FC = () => {
     const environment = useStore((state) => state.environment);
@@ -48,41 +47,29 @@ export const SceneProperties: React.FC = () => {
         }
     };
 
-    const dreiBackgroundList: string[] = [
-        "",
-        "apartment",
-        "city",
-        "dawn",
-        "forest",
-        "lobby",
-        "night",
-        "park",
-        "studio",
-        "sunset",
-        "warehouse",
-    ];
+    const dreiBackgroundList = {
+        "none": "",
+        "apartment": `${ENVMAP_PATH}/lebombo_1k.hdr`,
+        "city": `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
+        "dawn": `${ENVMAP_PATH}/kiara_1_dawn_1k.hdr`,
+        "forest": `${ENVMAP_PATH}/forest_slope_1k.hdr`,
+        "lobby": `${ENVMAP_PATH}/st_fagans_interior_1k.hdr`,
+        "night": `${ENVMAP_PATH}/dikhololo_night_1k.hdr`,
+        "park": `${ENVMAP_PATH}/rooitou_park_1k.hdr`,
+        "studio": `${ENVMAP_PATH}/studio_small_03_1k.hdr`,
+        "sunset": `${ENVMAP_PATH}/venice_sunset_1k.hdr`,
+        "warehouse": `${ENVMAP_PATH}/empty_warehouse_01_1k.hdr`,
+    };
 
     const dreiBackgroundOptionComponents: React.ReactNode[] =
-        dreiBackgroundList.map((option) => (
-            <>
-                {option === "" ? (
-                    <PropertiesOption
-                        selected={environment === null}
-                        value={option}
-                        key={option}
-                    >
-                        none
-                    </PropertiesOption>
-                ) : (
-                    <PropertiesOption
-                        selected={environment === option}
-                        value={option}
-                        key={option}
-                    >
-                        {option}
-                    </PropertiesOption>
-                )}
-            </>
+        Object.entries(dreiBackgroundList).map((env) => (
+            <PropertiesOption
+                selected={environment === env[0]}
+                value={env[1]}
+                key={env[0]}
+            >
+                {env[0]}
+            </PropertiesOption>
         ));
 
     return (
