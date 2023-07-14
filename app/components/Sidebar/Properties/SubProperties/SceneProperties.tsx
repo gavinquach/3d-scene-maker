@@ -115,7 +115,7 @@ export const SceneProperties: React.FC = () => {
             <PropertiesTableLeftColumn>
                 Environment Intensity
             </PropertiesTableLeftColumn>
-            <PropertiesTableRightColumn style={{ border: "1px solid red" }}>
+            <PropertiesTableRightColumn>
                 <PropertiesRangeInputContainer>
                     {/* TODO: FIX NOT DRAGGABLE */}
                     <PropertiesRangeInput

@@ -68,6 +68,9 @@ export const PropertiesCheckBoxInput = styled.input`
 
 export const PropertiesRangeInputContainer = styled.div`
   display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 `;
 export const PropertiesRangeInput = styled.input`
   flex-grow: 1;
