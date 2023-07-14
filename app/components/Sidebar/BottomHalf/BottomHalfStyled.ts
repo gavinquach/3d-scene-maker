@@ -52,4 +52,5 @@ export const BottomHalfPropertiesSection = styled.div`
     width: 100%;
     background-color: #1f2937;
     padding: 2rem 1rem;
+    overflow-y: scroll;
 `;
