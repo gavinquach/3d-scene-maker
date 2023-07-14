@@ -6,8 +6,9 @@ import { Object3D } from "three";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
+import { Sidebar } from "./components/Sidebar/Sidebar.tsx";
+
 const NavigationBar = dynamic(() => import("./components/NavigationBar.jsx").then((mod) => mod.NavigationBar));
-const Sidebar = dynamic(() => import("./components/Sidebar/Sidebar.tsx").then((mod) => mod.Sidebar));
 const ToolShelf = dynamic(() => import("./components/HUD/ToolShelf/ToolShelf.tsx").then((mod) => mod.ToolShelf));
 const Viewer = dynamic(() => import("./components/Viewer.jsx").then((mod) => mod.Viewer));
 
