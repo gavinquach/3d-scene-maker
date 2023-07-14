@@ -58,6 +58,7 @@ export const PropertiesSelect = styled.select`
   width: 100%;
   font-size: 1.1rem;
   color: #000;
+  user-select: none;
 `;
 
 export const PropertiesOption = styled.option`
