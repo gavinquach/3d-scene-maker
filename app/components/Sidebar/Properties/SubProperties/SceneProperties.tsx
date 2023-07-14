@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import React, { startTransition } from "react";
+import React, { startTransition, useEffect } from "react";
 import useStore from "@/app/utils/store.js";
 import {
     PropertiesCheckBoxInput,
@@ -11,6 +11,7 @@ import {
     PropertiesTableLeftColumn,
     PropertiesTableRightColumn,
 } from "../PropertiesStyled.ts";
+import globalObject from "@/app/utils/globalObject.ts";
 
 const PositionProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.PositionProperties));
 const RotationProperties = dynamic(() => import("./TransformProperties.tsx").then((mod) => mod.RotationProperties));
@@ -88,12 +89,12 @@ export const SceneProperties: React.FC = () => {
             </>
         ));
 
+    useEffect(() => {
+        console.log(globalObject.scene);
+    }, []);
+
     return (
         <>
-            <PositionProperties />
-            <RotationProperties />
-            <ScaleProperties />
-
             <PropertiesTableLeftColumn>Environment</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
                 <PropertiesSelect onChange={handleEnvironmentChange}>
