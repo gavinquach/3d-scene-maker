@@ -10,16 +10,16 @@ export const ButtonStyled = styled.button<IShelfButton>`
   outline: 1px solid #4b5563;
   outline-offset: -1px;
   border-radius: 0.25rem;
-  border-top-left-radius: ${(props) => (props.side === "top" ? "0.25rem" : 0)};
-  border-top-right-radius: ${(props) => (props.side === "top" ? "0.25rem" : 0)};
-  border-bottom-left-radius: ${(props) =>
-    props.side === "bottom" ? "0.25rem" : 0};
-  border-bottom-right-radius: ${(props) =>
-    props.side === "bottom" ? "0.25rem" : 0};
+  border-top-left-radius: ${({ side }) => (side === "top" ? "0.25rem" : 0)};
+  border-top-right-radius: ${({ side }) => (side === "top" ? "0.25rem" : 0)};
+  border-bottom-left-radius: ${({ side }) =>
+    side === "bottom" ? "0.25rem" : 0};
+  border-bottom-right-radius: ${({ side }) =>
+    side === "bottom" ? "0.25rem" : 0};
 
   &:hover {
     background-color: #374151;
   }
 
-  ${(props) => props.selected && `background-color: #152f6e;`}
+  ${({ selected }) => selected && `background-color: #152f6e;`}
 `;

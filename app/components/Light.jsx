@@ -1,7 +1,6 @@
 "use client";
 
 import {
-    memo,
     startTransition,
     useCallback,
     useLayoutEffect,
@@ -20,7 +19,7 @@ import useStore from "../utils/store";
 
 extend({ DirectionalLightHelper, PointLightHelper, SpotLightHelper });
 
-const Light = ({ name, transforms, attributes, properties, ...props }) => {
+export const Light = ({ name, transforms, attributes, properties, ...props }) => {
     const { type } = attributes;
 
     const [hasLight, setHasLight] = useState(false);
@@ -57,12 +56,12 @@ const Light = ({ name, transforms, attributes, properties, ...props }) => {
             if (!bool) {
                 if (selectedObject.object === null || selectedObject.name === null)
                     return;
-                else startTransition(() => setSelectedObject(null));
+                else startTransition(() => setSelectedObject({ objectName: "" }));
             } else {
                 if (selectedObject.name === name) return;
 
                 startTransition(() => {
-                    setSelectedObject(name, lightRef.current);
+                    setSelectedObject({ objectName: name, objectRef: lightRef.current });
                 });
                 if (isMoved) {
                     startTransition(() => {
@@ -214,5 +213,3 @@ const Light = ({ name, transforms, attributes, properties, ...props }) => {
         </Select>
     );
 };
-
-export default memo(Light);

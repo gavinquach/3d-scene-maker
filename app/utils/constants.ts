@@ -26,3 +26,10 @@ export const GLTF_LOADER = (renderer: WebGLRenderer) =>
         .setMeshoptDecoder(MeshoptDecoder);
 
 export const ENVMAP_PATH = `/envmaps`;
+
+export const PERFORMANCE_SETTINGS = {
+    current: 1,
+    min: 0.1,
+    max: 1,
+    debounce: 200,
+};

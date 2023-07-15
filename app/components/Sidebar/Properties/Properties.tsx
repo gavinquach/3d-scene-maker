@@ -33,7 +33,6 @@ export const Properties: FC = () => {
                 {(selectedObject.objRef as Object3D)?.type === "Scene" && <SceneProperties />}
 
                 {(selectedObject.objRef as Object3D)?.isObject3D && (
-                    // <ObjectProperties />
                     <Object3DProperties object={selectedObject.objRef} />
                 )}
             </PropertiesTableContainer>

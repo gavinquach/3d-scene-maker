@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import {
     AdaptiveDpr,
     // BakeShadows,
@@ -8,7 +9,7 @@ import {
     TransformControls,
 } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
-import { startTransition, Suspense, useEffect } from "react";
+import { startTransition, Suspense, useEffect, useLayoutEffect } from "react";
 import { Perf } from "r3f-perf";
 import {
     Selection,
@@ -18,11 +19,12 @@ import {
 
 // import useControlParams from "./Controls/ControlParams.jsx";
 import useStore from "../utils/store.js";
-import Light from "./Light.jsx";
-import Model from "./Model.jsx";
 import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
-// import { schadowplatz_1k } from "../assets/images";
 import globalObject from "../utils/globalObject.ts";
+import { PERFORMANCE_SETTINGS } from "../utils/constants.ts";
+
+const Light = dynamic(() => import("./Light.jsx").then((mod) => mod.Light));
+const Model = dynamic(() => import("./Model.jsx").then((mod) => mod.Model));
 
 const CheckScene = () => {
     const scene = useThree((state) => state.scene);
@@ -32,7 +34,7 @@ const CheckScene = () => {
 
     const setSelectedObject = useStore((state) => state.setSelectedObject);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         // scene.traverse((child) => {
         //     console.log("child", child);
         // });
@@ -45,7 +47,9 @@ const CheckScene = () => {
         globalObject.renderer = gl;
 
         // set Threejs Scene as default object
-        setSelectedObject(null);
+        startTransition(() => {
+            setSelectedObject({ objectRef: scene, name: scene.name });
+        });
         return () => {
             globalObject.scene = null;
             globalObject.camera = null;
@@ -67,13 +71,6 @@ export const Viewer = () => {
         (state) => state.environmentBackground
     );
 
-    const performanceSettings = {
-        current: 1,
-        min: 0.1,
-        max: 1,
-        debounce: 200,
-    };
-
     // generate scene whenever file array is changed
     useEffect(() => {
         if (files.length === 0) return;
@@ -94,7 +91,7 @@ export const Viewer = () => {
             shadows
             dpr={[1, 1.5]}
             camera={{ position: [6, 5, -10], fov: 50, near: 0.001, far: 1000 }}
-            performance={performanceSettings}
+            performance={PERFORMANCE_SETTINGS}
         >
             <color attach="background" args={["#3B3B3B"]} />
 

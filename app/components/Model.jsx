@@ -2,7 +2,6 @@
 
 import { useAnimations } from "@react-three/drei";
 import {
-    memo,
     startTransition,
     useCallback,
     useEffect,
@@ -14,7 +13,7 @@ import { useFrame } from "@react-three/fiber";
 
 import useStore from "../utils/store.js";
 
-const Model = ({ gltf, name, properties, ...props }) => {
+export const Model = ({ gltf, name, properties, ...props }) => {
     const meshRef = useRef(null);
 
     const selectedObject = useStore((state) => state.selectedObject);
@@ -81,12 +80,12 @@ const Model = ({ gltf, name, properties, ...props }) => {
         (bool) => {
             if (!bool) {
                 if (!selectedObject.object || !selectedObject.name) return;
-                else startTransition(() => setSelectedObject(null));
+                else startTransition(() => setSelectedObject({ objectName: null }));
             } else {
                 if (selectedObject.name === name) return;
 
                 startTransition(() => {
-                    setSelectedObject(name, meshRef.current);
+                    setSelectedObject({ objectName: name, objectRef: meshRef.current });
                 });
                 if (meshIsMoved) {
                     startTransition(() => {
@@ -184,5 +183,3 @@ const Model = ({ gltf, name, properties, ...props }) => {
         </mesh>
     );
 };
-
-export default memo(Model);
