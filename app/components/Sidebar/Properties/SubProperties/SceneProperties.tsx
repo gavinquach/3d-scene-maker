@@ -64,7 +64,6 @@ export const SceneProperties: React.FC = () => {
     const dreiBackgroundOptionComponents: React.ReactNode[] =
         Object.entries(dreiBackgroundList).map((env) => (
             <PropertiesOption
-                selected={environment === env[0]}
                 value={env[1]}
                 key={env[0]}
             >
@@ -76,7 +75,7 @@ export const SceneProperties: React.FC = () => {
         <>
             <PropertiesTableLeftColumn>Environment</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
-                <PropertiesSelect onChange={handleEnvironmentChange}>
+                <PropertiesSelect defaultValue={""} onChange={handleEnvironmentChange}>
                     {dreiBackgroundOptionComponents}
                 </PropertiesSelect>
             </PropertiesTableRightColumn>
