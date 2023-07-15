@@ -12,7 +12,7 @@ export const CommonProperties: React.FC = () => {
         <>
             <PropertiesTableLeftColumn>Name</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
-                {selectedObject.name === "" ? "Scene" : selectedObject.name}
+                {selectedObject.name}
             </PropertiesTableRightColumn>
 
             <PropertiesTableLeftColumn>Type</PropertiesTableLeftColumn>

@@ -11,7 +11,6 @@ const useStore = create((set, get) => ({
     selectedObject: { name: "", object: null, objRef: null },
     sameFiles: false,
     transformMode: "translate",
-    section: 0,
     environment: null,
     environmentBackground: true,
     environmentIntensity: 0.5,
@@ -139,7 +138,7 @@ const useStore = create((set, get) => ({
             sameFiles: false,
         });
     },
-    setSelectedObject: (objectName, objectRef = null) => {
+    setSelectedObject: ({ objectName = "", objectRef = null }) => {
         // set Scene as selected object if objectName is null
         if (objectName === null) {
             set({ selectedObject: { name: "", object: null, objRef: globalObject.scene } });
@@ -206,9 +205,6 @@ const useStore = create((set, get) => ({
     },
     setSameFiles: (bool) => {
         set({ sameFiles: bool });
-    },
-    setSection: (section) => {
-        set({ section: section });
     },
     setEnvironment: (env) => {
         set({ environment: env === "" ? null : env });

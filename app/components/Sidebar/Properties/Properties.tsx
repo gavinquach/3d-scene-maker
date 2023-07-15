@@ -2,8 +2,8 @@ import dynamic from "next/dynamic";
 import { FC } from "react";
 import { Object3D } from "three";
 import useStore from "@/app/utils/store.js";
+import { BottomHalfHeaderText } from "../BottomHalf/BottomHalfStyled.ts";
 import { PropertiesTableContainer } from "./PropertiesStyled.ts";
-import { SidebarHeaderText } from "../SidebarStyled";
 
 const CommonProperties = dynamic(() =>
     import("./SubProperties/CommonProperties.tsx").then(
@@ -21,21 +21,40 @@ const Object3DProperties = dynamic(() =>
     )
 );
 
-export const Properties: FC = () => {
+export const Properties: FC<{ objectCategory: number }> = ({
+    objectCategory,
+}) => {
     const selectedObject = useStore((state) => state.selectedObject);
 
     return (
         <>
-            <SidebarHeaderText>Object Properties</SidebarHeaderText>
-            <PropertiesTableContainer>
-                <CommonProperties />
+            {objectCategory === 0 && (
+                <>
+                    <BottomHalfHeaderText>Properties</BottomHalfHeaderText>
+                    <PropertiesTableContainer>
+                        <CommonProperties />
 
-                {(selectedObject.objRef as Object3D)?.type === "Scene" && <SceneProperties />}
-
-                {(selectedObject.objRef as Object3D)?.isObject3D && (
-                    <Object3DProperties object={selectedObject.objRef} />
-                )}
-            </PropertiesTableContainer>
+                        {(selectedObject.objRef as Object3D)?.type === "Scene" && (
+                            <SceneProperties />
+                        )}
+                        {(selectedObject.objRef as Object3D)?.isObject3D && (
+                            <Object3DProperties object={selectedObject.objRef} />
+                        )}
+                    </PropertiesTableContainer>
+                </>
+            )}
+            {objectCategory === 1 && (
+                <>
+                    <BottomHalfHeaderText>Geometry</BottomHalfHeaderText>
+                    <PropertiesTableContainer></PropertiesTableContainer>
+                </>
+            )}
+            {objectCategory === 2 && (
+                <>
+                    <BottomHalfHeaderText>Material</BottomHalfHeaderText>
+                    <PropertiesTableContainer></PropertiesTableContainer>
+                </>
+            )}
         </>
     );
 };

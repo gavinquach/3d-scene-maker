@@ -1,14 +1,8 @@
-import { ReactNode } from "react";
 import { styled } from "styled-components";
-
-interface ISelectionButton {
-    children: ReactNode;
-    [x: string]: any;
-}
 
 export const BottomHalfStyled = styled.div`
     display: flex;
-    height: 65%;
+    height: 65vh;
     width: 100%;
     background-color: #1f2937;
     border-top: 1px solid #374151;
@@ -16,15 +10,21 @@ export const BottomHalfStyled = styled.div`
     user-select: none;
 `;
 
+export const BottomHalfHeaderText = styled.h1`
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1rem 0 1.4rem 1rem;
+`;
+
 export const BottomHalfButtonSection = styled.div`
     display: block;
     flex-basis: 3rem;
-    height: 100%;
+    height: 65vh;
     background-color: #171c22;
     padding-top: 1.5rem;
 `;
 
-export const BottomHalfButtons = styled.button<ISelectionButton>`
+export const BottomHalfButtons = styled.button<IButton>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -48,9 +48,21 @@ export const BottomHalfButtons = styled.button<ISelectionButton>`
 
 export const BottomHalfPropertiesSection = styled.div`
     flex-grow: 1;
-    height: 100%;
+    height: 65vh;
     width: 100%;
     background-color: #1f2937;
-    padding: 2rem 1rem;
-    overflow-y: scroll;
+    overflow: hidden;
+`;
+
+export const BottomHalfObjectCategoryButton = styled.button<IButton>`
+    width: 33.33%;
+    height: 3.4rem;
+    font-size: 1.3rem;
+    background-color: ${({ selected }) => (selected ? "#0e121a" : "#18202b")};
+    user-select: none;
+    border: none;
+
+    @media (max-width: 1280px) {
+        font-size: 1rem;
+    }
 `;

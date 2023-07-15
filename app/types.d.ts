@@ -1,4 +1,4 @@
-interface IShelfButton {
+interface IButton {
     children: React.ReactNode;
     [x: string]: any;
 }

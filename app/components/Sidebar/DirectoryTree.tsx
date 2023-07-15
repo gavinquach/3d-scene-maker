@@ -1,23 +1,36 @@
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
 import styled from "styled-components";
 import useStore from "../../utils/store.js";
+import globalObject from "@/app/utils/globalObject.ts";
+import { Scene } from "three";
 
 const UpperHalfWrapper = styled.div`
     height: 33.3%;
+    max-height: 35%;
     overflow-y: auto;
 `;
 
 export const DirectoryTree: React.FC = () => {
-    const sceneCollection = useStore((state) => state.sceneCollection);
+    // const sceneCollection = useStore((state) => state.sceneCollection);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
+
+    const [sceneCollection, setSceneCollection] = useState<Scene>();
+
+    useLayoutEffect(() => {
+        setSceneCollection(globalObject.scene as Scene);
+    }, []);
+
+    useLayoutEffect(() => {
+        console.log(sceneCollection);
+    }, [sceneCollection]);
 
     const handleToggle: React.MouseEventHandler<HTMLSpanElement> = (e) => {
         e.currentTarget?.nextElementSibling?.classList.toggle("hidden");
     };
 
     const handleClickObjectName = (name: string) => {
-        setSelectedObject(name);
+        setSelectedObject({ objectName: name });
     };
 
     return (
@@ -31,7 +44,7 @@ export const DirectoryTree: React.FC = () => {
                         Scene Collection
                     </span>
                     <ul className="pl-8">
-                        {Object.keys(sceneCollection).map((name) => (
+                        {/* {Object.keys(sceneCollection).map((name) => (
                             <li
                                 key={name}
                                 className={`mb-2 py-0.4 pl-4 cursor-default hover:cursor-default
@@ -41,7 +54,7 @@ export const DirectoryTree: React.FC = () => {
                             >
                                 {name}
                             </li>
-                        ))}
+                        ))} */}
                     </ul>
                 </li>
             </ul>

@@ -1,10 +1,10 @@
 import { FC } from "react";
-import { SidebarHeaderText } from "../SidebarStyled";
+import { BottomHalfHeaderText } from "../BottomHalf/BottomHalfStyled.ts";
 
 export const Settings: FC = () => {
     return (
         <>
-            <SidebarHeaderText>Settings</SidebarHeaderText>
+            <BottomHalfHeaderText>Settings</BottomHalfHeaderText>
         </>
     )
 }

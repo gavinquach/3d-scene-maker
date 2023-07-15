@@ -1,34 +1,40 @@
 import dynamic from "next/dynamic";
-import React, { startTransition, useState } from "react";
-import useStore from "@/app/utils/store.js";
+import React, { useState } from "react";
 import {
     BottomHalfButtonSection,
     BottomHalfButtons,
+    BottomHalfObjectCategoryButton,
     BottomHalfPropertiesSection,
     BottomHalfStyled,
 } from "./BottomHalfStyled.ts";
+import { Settings } from "../Settings/Settings.tsx";
+import { Project } from "../Project/Project.tsx";
 
-const Properties = dynamic(() => import("../Properties/Properties.tsx").then((mod) => mod.Properties));
-const Settings = dynamic(() => import("../Settings/Settings.tsx").then((mod) => mod.Settings));
-const Project = dynamic(() => import("../Project/Project.tsx").then((mod) => mod.Project));
+const Properties = dynamic(() =>
+    import("../Properties/Properties.tsx").then((mod) => mod.Properties)
+);
 
 export const BottomHalf: React.FC = () => {
-    const section = useStore((state) => state.section);
-    const setSection = useStore((state) => state.setSection);
-    const [selected, setSelected] = useState<number>(0);
+    const [selectedSection, setSelectedSection] = useState<number>(0);
+    const [section, setSection] = useState<number>(0);
+    const [objectCategory, setObjectCategory] = useState<number>(0);
+    const [selectedCategory, setSelectedCategory] = useState<number>(0);
 
     const handleSelectSection = (num: number) => {
-        setSelected(num);
-        startTransition(() => {
-            setSection(num);
-        });
+        setSelectedSection(num);
+        setSection(num);
+    };
+
+    const handleSelectCategory = (num: number) => {
+        setObjectCategory(num);
+        setSelectedCategory(num);
     };
 
     return (
         <BottomHalfStyled>
             <BottomHalfButtonSection>
                 <BottomHalfButtons
-                    selected={selected === 0}
+                    selected={selectedSection === 0}
                     onClick={() => handleSelectSection(0)}
                 >
                     <svg viewBox="0 0 24 24" fill="white" height="1.8rem" width="1.8rem">
@@ -36,7 +42,7 @@ export const BottomHalf: React.FC = () => {
                     </svg>
                 </BottomHalfButtons>
                 <BottomHalfButtons
-                    selected={selected === 1}
+                    selected={selectedSection === 1}
                     onClick={() => handleSelectSection(1)}
                 >
                     <svg
@@ -49,7 +55,7 @@ export const BottomHalf: React.FC = () => {
                     </svg>
                 </BottomHalfButtons>
                 <BottomHalfButtons
-                    selected={selected === 2}
+                    selected={selectedSection === 2}
                     onClick={() => handleSelectSection(2)}
                 >
                     <svg
@@ -64,7 +70,29 @@ export const BottomHalf: React.FC = () => {
             </BottomHalfButtonSection>
 
             <BottomHalfPropertiesSection>
-                {section === 0 && <Properties />}
+                {section === 0 && (
+                    <>
+                        <BottomHalfObjectCategoryButton
+                            selected={objectCategory === 0}
+                            onClick={() => setObjectCategory(0)}
+                        >
+                            OBJECT
+                        </BottomHalfObjectCategoryButton>
+                        <BottomHalfObjectCategoryButton
+                            selected={objectCategory === 1}
+                            onClick={() => setObjectCategory(1)}
+                        >
+                            GEOMETRY
+                        </BottomHalfObjectCategoryButton>
+                        <BottomHalfObjectCategoryButton
+                            selected={objectCategory === 2}
+                            onClick={() => setObjectCategory(2)}
+                        >
+                            MATERIAL
+                        </BottomHalfObjectCategoryButton>
+                        <Properties objectCategory={objectCategory} />
+                    </>
+                )}
                 {section === 1 && <Project />}
                 {section === 2 && <Settings />}
             </BottomHalfPropertiesSection>

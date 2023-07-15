@@ -1,15 +1,15 @@
 import React, { startTransition, useState } from "react";
 import { ButtonStyled } from "./ToolShelfStyled";
 
-const TopButton: React.FC<IShelfButton> = ({ children, ...props }) => (
+const TopButton: React.FC<IButton> = ({ children, ...props }) => (
     <ButtonStyled side="top" {...props}>
         {children}
     </ButtonStyled>
 );
-const MiddleButton: React.FC<IShelfButton> = ({ children, ...props }) => (
+const MiddleButton: React.FC<IButton> = ({ children, ...props }) => (
     <ButtonStyled {...props}>{children}</ButtonStyled>
 );
-const BottomButton: React.FC<IShelfButton> = ({ children, ...props }) => (
+const BottomButton: React.FC<IButton> = ({ children, ...props }) => (
     <ButtonStyled side="bottom" {...props}>
         {children}
     </ButtonStyled>

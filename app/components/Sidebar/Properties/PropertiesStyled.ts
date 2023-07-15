@@ -4,8 +4,23 @@ export const PropertiesTableContainer = styled.div`
   display: grid;
   grid-template-columns: 0.6fr 1fr;
   gap: 0.5rem;
-  margin-bottom: 0.6rem;
   font-size: 1.1rem;
+  padding: 0 1rem;
+  height: 52vh;
+  overflow: scroll;
+ 
+  @media (max-width: 2560px) {
+    height: 55.2vh;
+  }
+  @media (max-width: 1920px) {
+    height: 52vh;
+  }
+  @media (max-width: 1280px) {
+    height: 45vh;
+  }
+  @media (max-width: 768px) {
+    height: 35.5vh;
+  }
 `;
 
 export const PropertiesTableLeftColumn = styled.div`
@@ -18,10 +33,12 @@ export const PropertiesTableLeftColumn = styled.div`
 export const PropertiesTableRightColumn = styled.div`
   /* Styles for the right column */
   display: grid;
+ 
+  /* Split into smaller columns */
   grid-template-columns: repeat(
     auto-fit,
     minmax(0, 1fr)
-  ); /* Split into smaller columns */
+  );
   gap: 0.5rem;
   user-select: all;
 `;
