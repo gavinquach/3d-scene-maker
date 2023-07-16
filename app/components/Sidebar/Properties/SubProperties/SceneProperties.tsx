@@ -75,7 +75,7 @@ export const SceneProperties: React.FC = () => {
         <>
             <PropertiesTableLeftColumn>Environment</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
-                <PropertiesSelect defaultValue={""} onChange={handleEnvironmentChange}>
+                <PropertiesSelect defaultValue={environment} onChange={handleEnvironmentChange}>
                     {dreiBackgroundOptionComponents}
                 </PropertiesSelect>
             </PropertiesTableRightColumn>

@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader, MeshoptDecoder } from "three-stdlib";
-import { DRACO_LOADER, GLTF_LOADER, KTX2_LOADER } from "./constants.ts";
+import { DRACO_LOADER, ENVMAP_PATH, GLTF_LOADER, KTX2_LOADER } from "./constants.ts";
 import globalObject from "./globalObject.ts";
 
 const useStore = create((set, get) => ({
@@ -11,7 +11,7 @@ const useStore = create((set, get) => ({
     selectedObject: { name: "", object: null, objRef: null },
     sameFiles: false,
     transformMode: "translate",
-    environment: null,
+    environment: `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
     environmentBackground: true,
     environmentIntensity: 0.5,
 
