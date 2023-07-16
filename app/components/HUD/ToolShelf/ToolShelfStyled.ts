@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const ButtonStyled = styled.button<IShelfButton>`
+export const ButtonStyled = styled.button<IButton>`
   cursor: default;
   height: 4rem;
   width: 4rem;
