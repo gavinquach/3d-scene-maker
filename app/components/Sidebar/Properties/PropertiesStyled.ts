@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const PropertiesTableContainer = styled.div`
   display: grid;
   grid-template-columns: 0.6fr 1fr;
-  gap: 0.5rem;
+  /* gap: 0.5rem; */
   font-size: 1.1rem;
   padding: 0 1rem;
   height: 52vh;

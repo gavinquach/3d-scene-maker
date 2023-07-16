@@ -39,7 +39,7 @@ export const BottomHalfButtons = styled.button<IButton>`
     border-bottom-right-radius: 0;
     outline: none;
     padding: 0.5rem;
-    margin: 0 -0.1rem 0.5rem 0;
+    margin: 0 0 0.5rem 0;
     background-color: ${({ selected }) => (selected ? "#1f2937" : "none")};
     &:hover {
         background-color: #323232;

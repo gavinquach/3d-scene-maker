@@ -1,5 +1,6 @@
-import React, { startTransition, useState } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import { ButtonStyled } from "./ToolShelfStyled";
+import useStore from "@/app/utils/store";
 
 const TopButton: React.FC<IButton> = ({ children, ...props }) => (
     <ButtonStyled side="top" {...props}>
@@ -17,12 +18,12 @@ const BottomButton: React.FC<IButton> = ({ children, ...props }) => (
 
 // const SmallGap: () => React.JSX.Element = () => <div className="mb-2" />;
 
-export const ToolShelf: ({
-    setTransformMode,
-}: {
-    setTransformMode: (mode: string) => void;
-}) => React.JSX.Element = ({ setTransformMode }) => {
+export const ToolShelf: React.FC = () => {
     const [selected, setSelected] = useState<number>(0);
+    const selectedObject = useStore((state) => state.selectedObject);
+    const setTransformMode = useStore((state) => state.setTransformMode);
+
+    const lightTypes = ["DirectionalLight", "PointLight", "SpotLight"];
 
     const handleClick = (index: number) => {
         setSelected(index);
@@ -32,6 +33,16 @@ export const ToolShelf: ({
             );
         });
     };
+
+    // set to translate mode when selecting a light
+    useEffect(() => {
+        if (lightTypes.includes(selectedObject.objRef?.type)) {
+            setSelected(0);
+            startTransition(() => {
+                setTransformMode("translate");
+            });
+        }
+    }, [selectedObject]);
 
     return (
         <div className="absolute left-0 top-20 z-10 h-max w-28 p-4">
@@ -53,6 +64,12 @@ export const ToolShelf: ({
                     handleClick(1);
                 }}
                 selected={selected === 1}
+                // hide rotate button for lights
+                style={{
+                    display: lightTypes.includes(selectedObject.objRef?.type)
+                        ? "none"
+                        : "block",
+                }}
             >
                 <svg
                     fill="none"
@@ -74,6 +91,12 @@ export const ToolShelf: ({
                     handleClick(2);
                 }}
                 selected={selected === 2}
+                // hide scale button for lights
+                style={{
+                    display: lightTypes.includes(selectedObject.objRef?.type)
+                        ? "none"
+                        : "block",
+                }}
             >
                 <svg viewBox="0 0 64 64" fill="white" height="2em" width="2em">
                     <path

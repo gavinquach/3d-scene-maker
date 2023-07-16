@@ -1,8 +1,7 @@
-import dynamic from "next/dynamic";
 import { useRef, useState } from "react";
 
-const FileUpload = dynamic(() => import("./FileUpload.tsx").then((mod) => mod.FileUpload));
-const NewTabLink = dynamic(() => import("./NewTabLink.tsx").then((mod) => mod.NewTabLink));
+import { FileUpload } from "./FileUpload.tsx";
+import { NewTabLink } from "./NewTabLink.tsx";
 
 export const NavigationBar = ({
     onDrop,

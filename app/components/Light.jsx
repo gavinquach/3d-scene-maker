@@ -19,24 +19,31 @@ import useStore from "../utils/store";
 
 extend({ DirectionalLightHelper, PointLightHelper, SpotLightHelper });
 
-export const Light = ({ name, transforms, attributes, properties, ...props }) => {
-    const { type } = attributes;
-
+export const Light = ({ name, transforms, type, properties, ...props }) => {
     const [hasLight, setHasLight] = useState(false);
     const lightRef = useRef(null);
 
     const selectedObject = useStore((state) => state.selectedObject);
-    const sceneCollection = useStore((state) => state.sceneCollection);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const setTransforms = useStore((state) => state.setTransforms);
 
-    const position = sceneCollection[name]?.transforms?.position;
-    const rotation = sceneCollection[name]?.transforms?.rotation;
-
     const previousTransformRef = useRef({
         position: null,
-        rotation: null,
     });
+
+    const {
+        color,
+        intensity,
+        distance,
+        angle,
+        penumbra,
+        decay,
+        castShadow,
+        target,
+        isDirectionalLight,
+        isSpotLight,
+        power,
+    } = properties;
 
     const isMoved = () => {
         if (!lightRef.current) return false;
@@ -94,22 +101,24 @@ export const Light = ({ name, transforms, attributes, properties, ...props }) =>
 
     useLayoutEffect(() => {
         setHasLight(true);
+
+        if ((type === "DirectionalLight" || type === "SpotLight") && target) {
+            console.log(lightRef.current);
+            lightRef.current?.target?.position.set(target.x, target.y, target.z);
+        }
     }, []);
 
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
         if (lightRef.current && selectedObject.name === name) {
-            const { position, rotation, scale } = lightRef.current;
+            const { position } = lightRef.current;
             const previousTransform = previousTransformRef.current;
 
             // Check if the transform has changed
             if (
                 previousTransform &&
-                ((previousTransform.position &&
-                    !position.equals(previousTransform.position)) ||
-                    (previousTransform.rotation &&
-                        !rotation.equals(previousTransform.rotation)) ||
-                    (previousTransform.scale && !scale.equals(previousTransform.scale)))
+                previousTransform.position &&
+                !position.equals(previousTransform.position)
             ) {
                 setTransforms(
                     { name: name },
@@ -119,11 +128,6 @@ export const Light = ({ name, transforms, attributes, properties, ...props }) =>
                             y: lightRef.current?.position.y,
                             z: lightRef.current?.position.z,
                         },
-                        rotation: {
-                            x: lightRef.current?.rotation.x,
-                            y: lightRef.current?.rotation.y,
-                            z: lightRef.current?.rotation.z,
-                        },
                     }
                 );
             }
@@ -131,8 +135,6 @@ export const Light = ({ name, transforms, attributes, properties, ...props }) =>
             // Update the previous transform reference
             previousTransformRef.current = {
                 position: position.clone(),
-                rotation: rotation.clone(),
-                scale: scale.clone(),
             };
         }
     });
@@ -142,9 +144,13 @@ export const Light = ({ name, transforms, attributes, properties, ...props }) =>
             <directionalLight
                 ref={lightRef}
                 name={name}
-                position={position && [position.x, position.y, position.z]}
-                rotation={rotation && [rotation.x, rotation.y, rotation.z]}
-                {...properties}
+                castShadow={castShadow}
+                isDirectionalLight={isDirectionalLight}
+                position={[
+                    transforms.position.x,
+                    transforms.position.y,
+                    transforms.position.z,
+                ]}
                 {...props}
                 dispose={null}
             />
@@ -164,9 +170,17 @@ export const Light = ({ name, transforms, attributes, properties, ...props }) =>
             <pointLight
                 ref={lightRef}
                 name={name}
-                position={position && [position.x, position.y, position.z]}
-                rotation={rotation && [rotation.x, rotation.y, rotation.z]}
-                {...properties}
+                castShadow={castShadow}
+                color={color}
+                decay={decay}
+                distance={distance}
+                intensity={intensity}
+                power={power}
+                position={[
+                    transforms.position.x,
+                    transforms.position.y,
+                    transforms.position.z,
+                ]}
                 {...props}
                 dispose={null}
             />
@@ -186,9 +200,20 @@ export const Light = ({ name, transforms, attributes, properties, ...props }) =>
             <spotLight
                 ref={lightRef}
                 name={name}
-                position={position && [position.x, position.y, position.z]}
-                rotation={rotation && [rotation.x, rotation.y, rotation.z]}
-                {...properties}
+                castShadow={castShadow}
+                angle={angle}
+                color={color}
+                intensity={intensity}
+                distance={distance}
+                penumbra={penumbra}
+                decay={decay}
+                isSpotLight={isSpotLight}
+                power={power}
+                position={[
+                    transforms.position.x,
+                    transforms.position.y,
+                    transforms.position.z,
+                ]}
                 {...props}
                 dispose={null}
             />
@@ -205,11 +230,9 @@ export const Light = ({ name, transforms, attributes, properties, ...props }) =>
 
     return (
         <Select dispose={null}>
-            {type === "DirectionalLight"
-                ? DIRECTIONAL_LIGHT
-                : type === "PointLight"
-                    ? POINT_LIGHT
-                    : type === "SpotLight" && SPOT_LIGHT}
+            {type === "DirectionalLight" && DIRECTIONAL_LIGHT}
+            {type === "PointLight" && POINT_LIGHT}
+            {type === "SpotLight" && SPOT_LIGHT}
         </Select>
     );
 };

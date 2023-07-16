@@ -8,7 +8,7 @@ import {
     Preload,
     TransformControls,
 } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import React, { startTransition, Suspense, useEffect } from "react";
 import { Perf } from "r3f-perf";
 import {
@@ -16,48 +16,25 @@ import {
     EffectComposer,
     Outline,
 } from "@react-three/postprocessing";
-import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
-import { OrbitControls as OrbitControlsThree } from "three-stdlib";
 
-import useStore from "../utils/store.js";
-import OrbitGizmo from "./OrbitGizmo/OrbitGizmo.jsx";
-import globalObject from "../utils/globalObject.ts";
+import useStore from "../../utils/store.js";
+import OrbitGizmo from "../OrbitGizmo/OrbitGizmo.jsx";
+import globalObject from "../../utils/globalObject.ts";
+import { PERFORMANCE_SETTINGS } from "../../utils/constants.ts";
 
-const Light = dynamic(() => import("./Light.jsx").then((mod) => mod.default));
-const Model = dynamic(() => import("./Model.jsx").then((mod) => mod.default));
+const AssignSceneToGlobal = dynamic(
+    () =>
+        import("./AssignSceneToGlobal.tsx").then((mod) => mod.AssignSceneToGlobal),
+    { ssr: true }
+);
+const Light = dynamic(() => import("../Light.jsx").then((mod) => mod.Light), {
+    ssr: true,
+});
+const Model = dynamic(() => import("../Model.jsx").then((mod) => mod.Model), {
+    ssr: true,
+});
 
-const CheckScene: React.FC = () => {
-    const scene = useThree((state) => state.scene);
-    const camera = useThree((state) => state.camera);
-    const controls = useThree((state) => state.controls);
-    const gl = useThree((state) => state.gl);
-
-    const setSelectedObject = useStore((state) => state.setSelectedObject);
-
-    useEffect(() => {
-        // scene.traverse((child) => {
-        //     console.log("child", child);
-        // });
-        // console.log("End of child objects");
-        // console.log("================================================================");
-
-        globalObject.scene = scene as Scene;
-        globalObject.camera = camera as PerspectiveCamera;
-        globalObject.controls = controls as OrbitControlsThree;
-        globalObject.renderer = gl as WebGLRenderer;
-
-        // set Threejs Scene as default object
-        setSelectedObject(null);
-        return () => {
-            globalObject.scene = null;
-            globalObject.camera = null;
-            globalObject.controls = null;
-            globalObject.renderer = null;
-        };
-    }, [camera, controls, gl, scene]);
-};
-
-export const Viewer = () => {
+export const Viewer: React.FC = () => {
     const loadGLTF = useStore((state) => state.loadGLTF);
     const files = useStore((state) => state.files);
     const results = useStore((state) => state.results);
@@ -65,14 +42,9 @@ export const Viewer = () => {
     const transformMode = useStore((state) => state.transformMode);
     const sceneCollection = useStore((state) => state.sceneCollection);
     const environment = useStore((state) => state.environment);
-    const environmentBackground = useStore((state) => state.environmentBackground);
-
-    const performanceSettings = {
-        current: 1,
-        min: 0.1,
-        max: 1,
-        debounce: 200,
-    };
+    const environmentBackground = useStore(
+        (state) => state.environmentBackground
+    );
 
     // generate scene whenever file array is changed
     useEffect(() => {
@@ -94,27 +66,32 @@ export const Viewer = () => {
             shadows
             dpr={[1, 1.5]}
             camera={{ position: [6, 5, -10], fov: 50, near: 0.001, far: 1000 }}
-            performance={performanceSettings}
+            performance={PERFORMANCE_SETTINGS}
         >
             <color attach="background" args={["#3B3B3B"]} />
 
-            <CheckScene />
+            <AssignSceneToGlobal />
             <Perf position="bottom-left" />
 
             <OrbitGizmo />
             <gridHelper args={[1000, 1000, 0x000000, 0x808080]} />
 
-            {environment && <Environment background={environmentBackground === true} preset={environment} />}
-            <ambientLight intensity={0.3} />
+            {environment && (
+                <Environment
+                    background={environmentBackground === true}
+                    files={environment}
+                />
+            )}
+            <ambientLight intensity={0.3} name="AmbientLight" />
 
-            <OrbitControls makeDefault name="OrbitControls" />
+            <OrbitControls makeDefault />
 
             <Suspense fallback={null}>
                 <Selection>
                     <EffectComposer multisampling={8} autoClear={false}>
                         <Outline
                             blur
-                            visibleEdgeColor="orange"
+                            visibleEdgeColor={0xffa500}
                             edgeStrength={100}
                             width={1000}
                         />
@@ -122,13 +99,14 @@ export const Viewer = () => {
 
                     {Object.keys(sceneCollection).length > 0 &&
                         Object.keys(sceneCollection).map((name) => {
-                            const { attributes, properties } = sceneCollection[name];
+                            const { type, transforms, properties } = sceneCollection[name];
                             if (sceneCollection[name].category === "light") {
                                 return (
                                     <Light
                                         key={name}
                                         name={name}
-                                        attributes={attributes}
+                                        transforms={transforms}
+                                        type={type}
                                         properties={properties}
                                     />
                                 );

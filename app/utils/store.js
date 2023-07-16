@@ -61,6 +61,7 @@ const useStore = create((set, get) => ({
                 acc[gltf.name] = {
                     category: "gltf",
                     name: gltf.name,
+                    type: "Mesh",
                     transforms: {
                         position: { x: 0, y: 0, z: 0 },
                         rotation: { x: 0, y: 0, z: 0 },
@@ -138,7 +139,10 @@ const useStore = create((set, get) => ({
             sameFiles: false,
         });
     },
-    setSelectedObject: ({ objectName = "", objectRef = null }) => {
+    setSelectedObject: (objectObject) => {
+        const { objectName, objectRef } = objectObject;
+        if (objectName === null && objectRef === null) return;
+
         // set Scene as selected object if objectName is null
         if (objectName === null) {
             set({ selectedObject: { name: "", object: null, objRef: globalObject.scene } });

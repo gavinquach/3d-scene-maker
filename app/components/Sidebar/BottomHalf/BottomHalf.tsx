@@ -10,8 +10,9 @@ import {
 import { Settings } from "../Settings/Settings.tsx";
 import { Project } from "../Project/Project.tsx";
 
-const Properties = dynamic(() =>
-    import("../Properties/Properties.tsx").then((mod) => mod.Properties)
+const Properties = dynamic(
+    () => import("../Properties/Properties.tsx").then((mod) => mod.Properties),
+    { ssr: true }
 );
 
 export const BottomHalf: React.FC = () => {
