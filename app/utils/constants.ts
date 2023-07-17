@@ -33,3 +33,5 @@ export const PERFORMANCE_SETTINGS = {
     max: 1,
     debounce: 200,
 };
+
+export const LIGHT_TYPES = ["DirectionalLight", "PointLight", "SpotLight"];

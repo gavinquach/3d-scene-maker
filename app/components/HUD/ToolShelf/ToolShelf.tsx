@@ -1,6 +1,7 @@
 import React, { startTransition, useEffect, useState } from "react";
 import { ButtonStyled } from "./ToolShelfStyled";
 import useStore from "@/app/utils/store";
+import { LIGHT_TYPES } from "@/app/utils/constants";
 
 const TopButton: React.FC<IButton> = ({ children, ...props }) => (
     <ButtonStyled side="top" {...props}>
@@ -23,8 +24,6 @@ export const ToolShelf: React.FC = () => {
     const selectedObject = useStore((state) => state.selectedObject);
     const setTransformMode = useStore((state) => state.setTransformMode);
 
-    const lightTypes = ["DirectionalLight", "PointLight", "SpotLight"];
-
     const handleClick = (index: number) => {
         setSelected(index);
         startTransition(() => {
@@ -36,7 +35,7 @@ export const ToolShelf: React.FC = () => {
 
     // set to translate mode when selecting a light
     useEffect(() => {
-        if (lightTypes.includes(selectedObject.objRef?.type)) {
+        if (LIGHT_TYPES.includes(selectedObject.objRef?.type)) {
             setSelected(0);
             startTransition(() => {
                 setTransformMode("translate");
@@ -66,7 +65,7 @@ export const ToolShelf: React.FC = () => {
                 selected={selected === 1}
                 // hide rotate button for lights
                 style={{
-                    display: lightTypes.includes(selectedObject.objRef?.type)
+                    display: LIGHT_TYPES.includes(selectedObject.objRef?.type)
                         ? "none"
                         : "block",
                 }}
@@ -93,7 +92,7 @@ export const ToolShelf: React.FC = () => {
                 selected={selected === 2}
                 // hide scale button for lights
                 style={{
-                    display: lightTypes.includes(selectedObject.objRef?.type)
+                    display: LIGHT_TYPES.includes(selectedObject.objRef?.type)
                         ? "none"
                         : "block",
                 }}
