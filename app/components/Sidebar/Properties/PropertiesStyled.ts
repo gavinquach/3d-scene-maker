@@ -107,6 +107,8 @@ export const PropertiesNumericBox = styled.input`
   align-items: center;
   text-align: center;
   color: #000;
+  border: none;
+  outline: none;
 `;
 
 export const PropertiesInputLabel = styled.label`
