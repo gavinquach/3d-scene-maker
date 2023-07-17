@@ -20,7 +20,7 @@ const ScaleProperties = dynamic(() =>
     import("./TransformProperties.tsx").then((mod) => mod.ScaleProperties)
 );
 
-export const Object3DProperties: FC<{ object: Object3D }> = ({ object }) => {
+export const Object3DProperties: FC<{ name: string, object: Object3D }> = ({ name, object }) => {
     const [value, setValue] = useState<boolean>(false);
     return (
         <>

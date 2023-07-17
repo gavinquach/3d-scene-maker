@@ -1,32 +1,94 @@
 import dynamic from "next/dynamic";
-import { FC, useState } from "react";
-import { Object3D } from "three";
+import React, { startTransition, useState } from "react";
+import { Color, DirectionalLight, Object3D, PointLight, SpotLight } from "three";
 import {
     PropertiesCheckBoxInput,
     PropertiesInputLabel,
     PropertiesNumericBox,
+    PropertiesRangeInput,
+    PropertiesRangeInputContainer,
     PropertiesTableLeftColumn,
     PropertiesTableRightColumn,
     PropertiesTableRightColumnItem,
 } from "../PropertiesStyled.ts";
+import useStore from "@/app/utils/store.js";
 
 const PositionProperties = dynamic(() =>
     import("./TransformProperties.tsx").then((mod) => mod.PositionProperties)
 );
-const RotationProperties = dynamic(() =>
-    import("./TransformProperties.tsx").then((mod) => mod.RotationProperties)
-);
-const ScaleProperties = dynamic(() =>
-    import("./TransformProperties.tsx").then((mod) => mod.ScaleProperties)
-);
 
-export const LightProperties: FC<{ object: Object3D }> = ({ object }) => {
+export const LightProperties: React.FC<{ name: string, object: Object3D }> = ({ name, object }) => {
+    const sceneCollection = useStore((state) => state.sceneCollection);
+    const setObjectProperty = useStore((state) => state.setObjectProperty);
+
+    const lightProperties = sceneCollection[name].properties;
+
     const [value, setValue] = useState<boolean>(false);
+    const [color, setColor] = useState<string>(lightProperties.color);
+    const [intensity, setIntensity] = useState<number>(lightProperties.intensity);
+
+    const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (object instanceof DirectionalLight || object instanceof SpotLight || object instanceof PointLight) {
+            object.color = new Color(e.target.value);
+        }
+
+        startTransition(() => {
+            setColor(e.target.value);
+            setObjectProperty(name, "color", e.target.value);
+        });
+    };
+
+    const handleIntensityDrag = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setIntensity(parseFloat(e.target.value));
+        startTransition(() => {
+            setObjectProperty(name, "intensity", parseFloat(e.target.value));
+        });
+    };
+
+    const handleIntensityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseFloat(e.target.value);
+        if (!isNaN(value)) {
+            setIntensity(parseFloat(e.target.value));
+            startTransition(() => {
+                setObjectProperty(name, "intensity", parseFloat(e.target.value));
+            });
+        }
+    };
+
     return (
         <>
             <PositionProperties />
-            <RotationProperties />
-            <ScaleProperties />
+
+            <PropertiesTableLeftColumn>Color</PropertiesTableLeftColumn>
+            <PropertiesTableRightColumn>
+                <PropertiesTableRightColumnItem>
+                    <input
+                        type="color"
+                        value={color}
+                        onChange={handleColorChange}
+                    />
+                </PropertiesTableRightColumnItem>
+            </PropertiesTableRightColumn>
+
+            <PropertiesTableLeftColumn>Intensity</PropertiesTableLeftColumn>
+            <PropertiesTableRightColumn>
+                <PropertiesRangeInputContainer>
+                    {/* TODO: FIX NOT DRAGGABLE */}
+                    <PropertiesRangeInput
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        value={intensity}
+                        onChange={handleIntensityDrag}
+                    />
+                    <PropertiesNumericBox
+                        type="numeric"
+                        value={intensity}
+                        onChange={handleIntensityChange}
+                    />
+                </PropertiesRangeInputContainer>
+            </PropertiesTableRightColumn>
 
             <PropertiesTableLeftColumn>Shadow</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
@@ -46,24 +108,6 @@ export const LightProperties: FC<{ object: Object3D }> = ({ object }) => {
                         }}
                     >
                         Cast
-                    </PropertiesInputLabel>
-                </PropertiesTableRightColumnItem>
-                <PropertiesTableRightColumnItem>
-                    <PropertiesCheckBoxInput
-                        type="checkbox"
-                        checked={object.receiveShadow === true}
-                        onChange={() => {
-                            object.receiveShadow = !object.receiveShadow;
-                            setValue(!value);
-                        }}
-                    />
-                    <PropertiesInputLabel
-                        onClick={() => {
-                            object.receiveShadow = !object.receiveShadow;
-                            setValue(!value);
-                        }}
-                    >
-                        Receive
                     </PropertiesInputLabel>
                 </PropertiesTableRightColumnItem>
             </PropertiesTableRightColumn>
@@ -94,10 +138,7 @@ export const LightProperties: FC<{ object: Object3D }> = ({ object }) => {
 
             <PropertiesTableLeftColumn>Render Order</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
-                <PropertiesNumericBox
-                    type="number"
-                    defaultValue={object.renderOrder}
-                />
+                <PropertiesNumericBox type="number" defaultValue={object.renderOrder} />
             </PropertiesTableRightColumn>
         </>
     );

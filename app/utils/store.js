@@ -11,6 +11,11 @@ const useStore = create((set, get) => ({
     selectedObject: { name: "", object: null, objRef: null },
     sameFiles: false,
     transformMode: "translate",
+    sceneProperties: {
+        environment: `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
+        environmentBackground: true,
+        environmentIntensity: 0.5,
+    },
     environment: `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
     environmentBackground: true,
     environmentIntensity: 0.5,
@@ -176,6 +181,11 @@ const useStore = create((set, get) => ({
             },
         });
     },
+    setObjectProperty: (name, property, value) => {
+        const { sceneCollection } = get();
+        sceneCollection[name].properties[property] = value;
+        set({ sceneCollection: sceneCollection });
+    },
     setTransforms: (
         { name, objRef },
         transformValue = 0,
@@ -215,6 +225,14 @@ const useStore = create((set, get) => ({
     },
     setEnvironmentIntensity: (num) => {
         set({ environmentIntensity: num ? num : 0.5 });
+    },
+    setsceneProperties: (property, value) => {
+        set((state) => ({
+            sceneProperties: {
+                ...state.sceneProperties,
+                [property]: value,
+            },
+        }));
     },
     toggleEnvironmentBackground: () => {
         set((state) => ({ environmentBackground: !state.environmentBackground }));
