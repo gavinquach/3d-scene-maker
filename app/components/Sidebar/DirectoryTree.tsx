@@ -3,6 +3,7 @@ import { Scene } from "three";
 import styled from "styled-components";
 import useStore from "../../utils/store.js";
 import globalObject from "@/app/utils/globalObject.ts";
+import { generateRandomString } from "@/app/utils/functions.ts";
 
 const UpperHalfWrapper = styled.div`
   height: 33.3%;
@@ -27,9 +28,9 @@ export const DirectoryTree: React.FC = () => {
         setSceneObjects(sceneUUIDs);
     }, [globalObject.scene]);
 
-    const handleToggle: () => void = () => {
-        document.querySelector("#sceneList")?.classList.toggle("hidden");
-    };
+    // const handleToggle: () => void = () => {
+    //     document.querySelector("#sceneList")?.classList.toggle("hidden");
+    // };
 
     const handleSetScene: () => void = () => {
         startTransition(() => {
@@ -60,14 +61,14 @@ export const DirectoryTree: React.FC = () => {
                 <li className="mb-2">
                     <ul>
                         <li
-                            className={`py-0.4 mb-2 cursor-pointer pl-4
+                            className={`py-0.4 mb-2 pl-4
                             ${selectedObject?.objRef?.type === "Scene"
                                     ? "active-item"
                                     : ""
                                 }`}
-                            onClick={(e) => {
+                            onClick={() => {
                                 handleSetScene();
-                                handleToggle();
+                                // handleToggle();
                             }}
                         >
                             Scene
@@ -77,7 +78,7 @@ export const DirectoryTree: React.FC = () => {
                         {/* {scene?.children.map((child: any) => ( */}
                         {Object.keys(sceneCollection).map((name) => (
                             <li
-                                key={sceneObjects[name]}
+                                key={generateRandomString(5)}
                                 value={name}
                                 className={`py-0.4 mb-2 cursor-default pl-4 hover:cursor-default
                             ${selectedObject?.name === name ? "active-item" : ""
