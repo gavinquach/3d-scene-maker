@@ -3,23 +3,23 @@ import styled from "styled-components";
 export const PropertiesTableContainer = styled.div`
   display: grid;
   grid-template-columns: 0.6fr 1fr;
-  /* gap: 0.5rem; */
+  gap: 1.2rem 0;
   font-size: 1.1rem;
-  padding: 0 1rem;
-  height: 52vh;
-  overflow: scroll;
+  padding: 0 0.7rem 1.5rem 0.5rem;
+  overflow: auto;
+  height: auto;
  
   @media (max-width: 2560px) {
-    height: 55.2vh;
+    max-height: 55.2vh;
   }
   @media (max-width: 1920px) {
-    height: 52vh;
+    max-height: 52vh;
   }
   @media (max-width: 1280px) {
-    height: 45vh;
+    max-height: 45vh;
   }
   @media (max-width: 768px) {
-    height: 35.5vh;
+    max-height: 35.5vh;
   }
 `;
 
@@ -27,7 +27,6 @@ export const PropertiesTableLeftColumn = styled.div`
   /* Styles for the left column */
   display: flex;
   align-items: center;
-  margin-bottom: 0.5rem;
 `;
 
 export const PropertiesTableRightColumn = styled.div`
