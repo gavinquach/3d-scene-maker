@@ -3,7 +3,7 @@ import { PropertiesNumberInput } from "./PropertiesStyled";
 import useStore from "@/app/utils/store";
 import { Object3D } from "three";
 
-const DragInput: React.FC<{
+export const TransformDragInput: React.FC<{
     transformMode: "position" | "rotation" | "scale";
     axis: "x" | "y" | "z";
 }> = ({ transformMode = "position", axis = "x" }) => {
@@ -88,10 +88,6 @@ const DragInput: React.FC<{
         document.body.style.cursor = "none";
         setIsDragging(true);
 
-        // console.log(selectedObject.objRef.position);
-        // console.log(selectedObject.objRef.rotation);
-        // console.log(selectedObject.objRef.scale);
-
         // TODO: FIX NUMBER RESETTING TO 0 WHEN SELECTING THE INPUT FIELD
         if (transformMode === "position") {
             if (axis === "x") {
@@ -136,5 +132,3 @@ const DragInput: React.FC<{
         />
     );
 };
-
-export default DragInput;
