@@ -63,7 +63,7 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
             if (!bool) {
                 if (selectedObject.object === null || selectedObject.name === null)
                     return;
-                else startTransition(() => setSelectedObject({ objectName: "" }));
+                else startTransition(() => setSelectedObject({ objectName: null }));
             } else {
                 if (selectedObject.name === name) return;
 
