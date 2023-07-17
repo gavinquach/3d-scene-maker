@@ -48,6 +48,7 @@ export const DirectoryTree: React.FC = () => {
 
         startTransition(() => {
             setSelectedObject({
+                objectName: name,
                 objectRef: (globalObject.scene as Scene).getObjectByName(name),
             });
         });
@@ -76,7 +77,7 @@ export const DirectoryTree: React.FC = () => {
                         {/* {scene?.children.map((child: any) => ( */}
                         {Object.keys(sceneCollection).map((name) => (
                             <li
-                                key={generateRandomString(5)}
+                                key={name + '_' + generateRandomString(5)}
                                 value={name}
                                 className={`py-0.4 mb-2 cursor-default pl-4 hover:cursor-default
                             ${selectedObject?.name === name ? "active-item" : ""
