@@ -16,6 +16,7 @@ import { extend, useFrame } from "@react-three/fiber";
 import { Select } from "@react-three/postprocessing";
 
 import useStore from "../utils/store";
+import globalObject from "../utils/globalObject";
 
 extend({ DirectionalLightHelper, PointLightHelper, SpotLightHelper });
 
@@ -63,7 +64,7 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
             if (!bool) {
                 if (selectedObject.object === null || selectedObject.name === null)
                     return;
-                else startTransition(() => setSelectedObject({ objectName: null }));
+                else startTransition(() => setSelectedObject({ objectRef: globalObject.scene }));
             } else {
                 if (selectedObject.name === name) return;
 
@@ -102,8 +103,8 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
     useLayoutEffect(() => {
         setHasLight(true);
 
+        // set light target
         if ((type === "DirectionalLight" || type === "SpotLight") && target) {
-            console.log(lightRef.current);
             lightRef.current?.target?.position.set(target.x, target.y, target.z);
         }
     }, []);

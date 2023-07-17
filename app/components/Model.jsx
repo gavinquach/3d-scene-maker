@@ -11,7 +11,8 @@ import {
 import { Select } from "@react-three/postprocessing";
 import { useFrame } from "@react-three/fiber";
 
-import useStore from "../utils/store.js";
+import useStore from "../utils/store";
+import globalObject from "../utils/globalObject";
 
 export const Model = ({ gltf, name, properties, ...props }) => {
     const meshRef = useRef(null);
@@ -80,7 +81,7 @@ export const Model = ({ gltf, name, properties, ...props }) => {
         (bool) => {
             if (!bool) {
                 if (!selectedObject.object || !selectedObject.name) return;
-                else startTransition(() => setSelectedObject({ objectName: null }));
+                else startTransition(() => setSelectedObject({ objectRef: globalObject.scene }));
             } else {
                 if (selectedObject.name === name) return;
 
