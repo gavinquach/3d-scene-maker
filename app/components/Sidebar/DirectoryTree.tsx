@@ -53,8 +53,6 @@ export const DirectoryTree: React.FC = () => {
         });
     };
 
-    // console.log(globalObject.scene?.children);
-
     return (
         <UpperHalfWrapper>
             <ul className="directory-tree select-none list-none">
