@@ -15,6 +15,7 @@ import {
     Selection,
     EffectComposer,
     Outline,
+    SMAA,
 } from "@react-three/postprocessing";
 
 import useStore from "../../utils/store.js";
@@ -88,7 +89,8 @@ export const Viewer: React.FC = () => {
 
             <Suspense fallback={null}>
                 <Selection>
-                    <EffectComposer multisampling={8} autoClear={false}>
+                    <EffectComposer multisampling={0} autoClear={false}>
+                        <SMAA />
                         <Outline
                             blur
                             visibleEdgeColor={0xffa500}
