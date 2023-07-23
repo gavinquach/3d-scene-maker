@@ -12,23 +12,17 @@ import { Project } from "../Project/Project.tsx";
 
 const Properties = dynamic(
     () => import("../Properties/Properties.tsx").then((mod) => mod.Properties),
-    { ssr: true }
+    { ssr: false }
 );
 
 export const BottomHalf: React.FC = () => {
     const [selectedSection, setSelectedSection] = useState<number>(0);
     const [section, setSection] = useState<number>(0);
     const [objectCategory, setObjectCategory] = useState<number>(0);
-    const [selectedCategory, setSelectedCategory] = useState<number>(0);
 
-    const handleSelectSection = (num: number) => {
+    const handleSelectSection = (num: number): void => {
         setSelectedSection(num);
         setSection(num);
-    };
-
-    const handleSelectCategory = (num: number) => {
-        setObjectCategory(num);
-        setSelectedCategory(num);
     };
 
     return (

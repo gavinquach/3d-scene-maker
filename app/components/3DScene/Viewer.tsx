@@ -18,10 +18,10 @@ import {
     SMAA,
 } from "@react-three/postprocessing";
 
-import useStore from "../../utils/store.js";
 import OrbitGizmo from "../OrbitGizmo/OrbitGizmo.jsx";
-import globalObject from "../../utils/globalObject.ts";
-import { PERFORMANCE_SETTINGS } from "../../utils/constants.ts";
+import useStore from "@/app/utils/store.js";
+import globalObject from "@/app/utils/globalObject.ts";
+import { PERFORMANCE_SETTINGS } from "@/app/utils/constants.ts";
 
 const AssignSceneToGlobal = dynamic(
     () =>
@@ -42,10 +42,9 @@ export const Viewer: React.FC = () => {
     const selectedObject = useStore((state) => state.selectedObject);
     const transformMode = useStore((state) => state.transformMode);
     const sceneCollection = useStore((state) => state.sceneCollection);
-    const environment = useStore((state) => state.environment);
-    const environmentBackground = useStore(
-        (state) => state.environmentBackground
-    );
+    const scene = useStore((state) => state.scene);
+
+    const { environment, environmentBackground } = scene.properties;
 
     // generate scene whenever file array is changed
     useEffect(() => {
@@ -118,12 +117,7 @@ export const Viewer: React.FC = () => {
                     {Object.keys(results).length > 0 &&
                         Object.keys(results).map((name) => {
                             return (
-                                <Model
-                                    key={name}
-                                    name={name}
-                                    gltf={results[name]}
-                                    properties={sceneCollection[name].properties}
-                                />
+                                <Model key={name} name={name} />
                             );
                         })}
                 </Selection>

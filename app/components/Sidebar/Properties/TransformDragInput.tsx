@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { PropertiesNumberInput } from "./PropertiesStyled";
+import { PropertiesDragNumberInput } from "./PropertiesStyled";
 import useStore from "@/app/utils/store";
 import { Object3D } from "three";
 
@@ -119,7 +119,7 @@ export const TransformDragInput: React.FC<{
     };
 
     return (
-        <PropertiesNumberInput
+        <PropertiesDragNumberInput
             type="number"
             step={0.01}
             value={

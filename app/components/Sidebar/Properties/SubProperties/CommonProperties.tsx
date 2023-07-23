@@ -2,23 +2,19 @@ import {
     PropertiesTableLeftColumn,
     PropertiesTableRightColumn,
 } from "../PropertiesStyled.ts";
-import useStore from "@/app/utils/store";
 import { Object3D } from "three";
 
-export const CommonProperties: React.FC = () => {
-    const selectedObject = useStore((state) => state.selectedObject);
-
+export const CommonProperties: React.FC<{ name: string; object: Object3D }> = ({
+    name,
+    object,
+}) => {
     return (
         <>
             <PropertiesTableLeftColumn>Name</PropertiesTableLeftColumn>
-            <PropertiesTableRightColumn>
-                {selectedObject.name}
-            </PropertiesTableRightColumn>
+            <PropertiesTableRightColumn>{name}</PropertiesTableRightColumn>
 
             <PropertiesTableLeftColumn>Type</PropertiesTableLeftColumn>
-            <PropertiesTableRightColumn>
-                {(selectedObject.objRef as Object3D)?.type}
-            </PropertiesTableRightColumn>
+            <PropertiesTableRightColumn>{object?.type}</PropertiesTableRightColumn>
         </>
     );
-}
+};

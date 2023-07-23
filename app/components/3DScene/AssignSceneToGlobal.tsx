@@ -12,7 +12,10 @@ export const AssignSceneToGlobal: FC = () => {
     const controls = useThree((state) => state.controls);
     const gl = useThree((state) => state.gl);
 
+    const sceneFromStore = useStore((state) => state.scene);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
+
+    const { castShadow, receiveShadow, visible, frustumCulled, renderOrder } = sceneFromStore.properties;
 
     useLayoutEffect(() => {
         // scene.traverse((child) => {
@@ -20,6 +23,12 @@ export const AssignSceneToGlobal: FC = () => {
         // });
         // console.log("End of child objects");
         // console.log("================================================================");
+
+        scene.castShadow = castShadow;
+        scene.receiveShadow = receiveShadow;
+        scene.visible = visible;
+        scene.frustumCulled = frustumCulled;
+        scene.renderOrder = renderOrder;
 
         globalObject.scene = scene;
         globalObject.camera = camera as PerspectiveCamera;

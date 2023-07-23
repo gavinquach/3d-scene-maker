@@ -1,9 +1,8 @@
-import React, { startTransition } from "react";
+import React, { startTransition, useState } from "react";
 import { ENVMAP_PATH } from "@/app/utils/constants.ts";
-import useStore from "@/app/utils/store.js";
 import {
     PropertiesCheckBoxInput,
-    PropertiesNumericBox,
+    PropertiesNumericInput,
     PropertiesOption,
     PropertiesRangeInput,
     PropertiesRangeInputContainer,
@@ -11,30 +10,37 @@ import {
     PropertiesTableLeftColumn,
     PropertiesTableRightColumn,
 } from "../PropertiesStyled.ts";
+import useStore from "@/app/utils/store.js";
 
 export const SceneProperties: React.FC = () => {
-    const environment = useStore((state) => state.environment);
-    const environmentIntensity = useStore((state) => state.environmentIntensity);
-    const setEnvironment = useStore((state) => state.setEnvironment);
-    const environmentBackground = useStore(
-        (state) => state.environmentBackground
-    );
-    const toggleEnvironmentBackground = useStore(
-        (state) => state.toggleEnvironmentBackground
-    );
-    const setEnvironmentIntensity = useStore(
-        (state) => state.setEnvironmentIntensity
-    );
+    const scene = useStore((state) => state.scene);
+    const setSceneProperties = useStore((state) => state.setSceneProperties);
+
+    const [environment, setEnvironment] = useState<string>(scene.properties.environment);
+    const [envIntensity, setEnvIntensity] = useState<number>(scene.properties.environmentIntensity);
+    const [envBackground, setEnvBackground] = useState<boolean>(scene.properties.environmentBackground);
 
     const handleEnvironmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log(e.target.value);
+        setEnvironment(e.target.value);
         startTransition(() => {
-            setEnvironment(e.target.value);
+            setSceneProperties("environment", e.target.value);
+        });
+    };
+
+    const toggleEnvironmentBackground = () => {
+        const value = !envBackground;
+        setEnvBackground(value);
+        startTransition(() => {
+            setSceneProperties("environmentBackground", value);
         });
     };
 
     const handleEnvIntensityDrag = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseFloat(e.target.value);
         startTransition(() => {
-            setEnvironmentIntensity(e.target.value);
+            setEnvIntensity(value);
+            setSceneProperties("environmentIntensity", value);
         });
     };
 
@@ -42,7 +48,8 @@ export const SceneProperties: React.FC = () => {
         const value = parseFloat(e.target.value);
         if (!isNaN(value)) {
             startTransition(() => {
-                setEnvironmentIntensity(parseFloat(e.target.value));
+                setEnvIntensity(value);
+                setSceneProperties("environmentIntensity", value);
             });
         }
     };
@@ -86,7 +93,7 @@ export const SceneProperties: React.FC = () => {
             <PropertiesTableRightColumn>
                 <PropertiesCheckBoxInput
                     type="checkbox"
-                    checked={environmentBackground === true}
+                    checked={envBackground}
                     onChange={toggleEnvironmentBackground}
                 />
             </PropertiesTableRightColumn>
@@ -102,12 +109,12 @@ export const SceneProperties: React.FC = () => {
                         min={0}
                         max={1}
                         step={0.01}
-                        value={environmentIntensity}
+                        value={envIntensity}
                         onChange={handleEnvIntensityDrag}
                     />
-                    <PropertiesNumericBox
+                    <PropertiesNumericInput
                         type="numeric"
-                        value={environmentIntensity}
+                        value={envIntensity}
                         onChange={handleEnvIntensityChange}
                     />
                 </PropertiesRangeInputContainer>

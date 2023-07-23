@@ -1,27 +1,12 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { JSX } from "react";
 
 import { SceneFunctions } from "./utils/SceneFunctions.ts";
 import { Sidebar } from "./components/Sidebar/Sidebar.tsx";
-
-const NavigationBar = dynamic(
-    () =>
-        import("./components/NavigationBar.jsx").then((mod) => mod.NavigationBar),
-    { ssr: true }
-);
-const ToolShelf = dynamic(
-    () =>
-        import("./components/HUD/ToolShelf/ToolShelf.tsx").then(
-            (mod) => mod.ToolShelf
-        ),
-    { ssr: true }
-);
-const Viewer = dynamic(
-    () => import("./components/3DScene/Viewer.tsx").then((mod) => mod.Viewer),
-    { ssr: true }
-);
+import { NavigationBar } from "./components/NavigationBar.jsx";
+import { ToolShelf } from "./components/HUD/ToolShelf/ToolShelf.tsx";
+import { Viewer } from "./components/3DScene/Viewer.tsx";
 
 export default function Home(): JSX.Element {
     const {

@@ -1,7 +1,12 @@
 import { create } from "zustand";
 import { useLoader } from "@react-three/fiber";
 import { GLTFLoader, MeshoptDecoder } from "three-stdlib";
-import { DRACO_LOADER, ENVMAP_PATH, GLTF_LOADER, KTX2_LOADER } from "./constants.ts";
+import {
+    DRACO_LOADER,
+    ENVMAP_PATH,
+    GLTF_LOADER,
+    KTX2_LOADER,
+} from "./constants.ts";
 import globalObject from "./globalObject.ts";
 
 const useStore = create((set, get) => ({
@@ -11,14 +16,23 @@ const useStore = create((set, get) => ({
     selectedObject: { name: "", object: null, objRef: null },
     sameFiles: false,
     transformMode: "translate",
-    sceneProperties: {
-        environment: `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
-        environmentBackground: true,
-        environmentIntensity: 0.5,
+    scene: {
+        transforms: {
+            position: { x: 0, y: 0, z: 0 },
+            rotation: { x: 0, y: 0, z: 0 },
+            scale: { x: 1, y: 1, z: 1 },
+        },
+        properties: {
+            environment: `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
+            environmentBackground: true,
+            environmentIntensity: 0.5,
+            castShadow: false,
+            receiveShadow: false,
+            visible: true,
+            frustumCulled: true,
+            renderOrder: 0,
+        },
     },
-    environment: `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
-    environmentBackground: true,
-    environmentIntensity: 0.5,
 
     loadGLTF: async (sceneCollectionObject = null) => {
         const { files, results } = get();
@@ -74,6 +88,10 @@ const useStore = create((set, get) => ({
                     },
                     properties: {
                         castShadow: false,
+                        receiveShadow: false,
+                        visible: true,
+                        frustumCulled: true,
+                        renderOrder: 0,
                     },
                 };
 
@@ -99,16 +117,13 @@ const useStore = create((set, get) => ({
             }));
         }
     },
-    addFileToStore: (newBuffer, name) => {
+    addFiles: (newFiles) => {
         set((state) => ({
             files: {
                 ...state.files,
-                [name]: { buffer: newBuffer },
+                ...newFiles,
             },
         }));
-    },
-    addFiles: (object) => {
-        set({ files: object });
     },
     addLight: (name, lightObject) => {
         set((state) => ({
@@ -150,7 +165,9 @@ const useStore = create((set, get) => ({
 
         // set Scene as selected object if objectName is null
         if (objectName === null) {
-            set({ selectedObject: { name: "", object: null, objRef: globalObject.scene } });
+            set({
+                selectedObject: { name: "", object: null, objRef: globalObject.scene },
+            });
             return;
         }
         if (objectRef !== null) {
@@ -169,7 +186,9 @@ const useStore = create((set, get) => ({
         const sceneObj = globalObject.scene.getObjectByName(objectName);
         if (!item || !sceneObj) {
             console.error("Object not found in scene collection");
-            set({ selectedObject: { name: "", object: null, objRef: globalObject.scene } });
+            set({
+                selectedObject: { name: "", object: null, objRef: globalObject.scene },
+            });
             return;
         }
 
@@ -226,16 +245,30 @@ const useStore = create((set, get) => ({
     setEnvironmentIntensity: (num) => {
         set({ environmentIntensity: num ? num : 0.5 });
     },
-    setsceneProperties: (property, value) => {
+    setScene: (sceneData) => {
+        set({ scene: sceneData });
+    },
+    setSceneProperties: (propertyName, value) => {
         set((state) => ({
-            sceneProperties: {
-                ...state.sceneProperties,
-                [property]: value,
+            scene: {
+                ...state.scene,
+                properties: {
+                    ...state.scene.properties,
+                    [propertyName]: value,
+                },
             },
         }));
     },
-    toggleEnvironmentBackground: () => {
-        set((state) => ({ environmentBackground: !state.environmentBackground }));
+    setLightHelper: (name, helper) => {
+        set((state) => ({
+            sceneCollection: {
+                ...state.sceneCollection,
+                [name]: {
+                    ...state.sceneCollection[name],
+                    helper: helper,
+                },
+            },
+        }));
     },
 }));
 

@@ -1,6 +1,6 @@
 {
   "name": "3d-scene-maker",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -41,6 +41,7 @@
     "next-compose-plugins": "^2.2.1",
     "next-images": "^1.8.5",
     "prettier": "^2.8.8",
-    "prettier-plugin-tailwindcss": "^0.3.0"
+    "prettier-plugin-tailwindcss": "^0.3.0",
+    "react-input-with-drag": "^1.1.5"
   }
 }

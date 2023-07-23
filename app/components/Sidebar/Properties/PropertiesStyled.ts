@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import InputWithDrag from 'react-input-with-drag';
 
 export const PropertiesTableContainer = styled.div`
   display: grid;
@@ -48,7 +49,7 @@ export const PropertiesTableRightColumnItem = styled.div`
   align-items: center;
 `;
 
-export const PropertiesNumberInput = styled.input`
+export const PropertiesDragNumberInput = styled.input`
   background: #f5f5f5;
   color: #000;
   width: 100%;
@@ -92,12 +93,29 @@ export const PropertiesRangeInputContainer = styled.div`
   align-items: center;
   text-align: center;
 `;
+
 export const PropertiesRangeInput = styled.input`
   flex-grow: 1;
   margin-right: 0.5rem;
 `;
-export const PropertiesNumericBox = styled.input`
-  width: 2.7rem;
+
+export const PropertiesNumericInput = styled.input`
+  width: 4.2rem;
+  height: 2.7rem;
+  font-size: 1.2rem;
+  border-radius: 0.2rem;
+  background: #f3f3f3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #000;
+  border: none;
+  outline: none;
+`;
+
+export const PropertiesNumberInputStandalone = styled.input`
+  width: 3.4rem;
   height: 2.7rem;
   font-size: 1.2rem;
   border-radius: 0.2rem;
@@ -115,4 +133,8 @@ export const PropertiesInputLabel = styled.label`
   font-size: 1.1rem;
   margin-left: 0.6rem;
   user-select: none;
+`;
+
+export const InputWithDragStyled = styled(InputWithDrag)`
+  color: #000000;
 `;

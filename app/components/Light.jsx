@@ -3,6 +3,7 @@
 import {
     startTransition,
     useCallback,
+    useEffect,
     useLayoutEffect,
     useRef,
     useState,
@@ -23,9 +24,11 @@ extend({ DirectionalLightHelper, PointLightHelper, SpotLightHelper });
 export const Light = ({ name, transforms, type, properties, ...props }) => {
     const [hasLight, setHasLight] = useState(false);
     const lightRef = useRef(null);
+    const lightHelperRef = useRef(null);
 
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
+    const setLightHelper = useStore((state) => state.setLightHelper);
     const setTransforms = useStore((state) => state.setTransforms);
 
     const previousTransformRef = useRef({
@@ -35,14 +38,14 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
     const {
         color,
         intensity,
-        distance,
-        angle,
-        penumbra,
-        decay,
         castShadow,
+        shadowBias,
+        shadowNormalBias,
+        angle,
+        decay,
+        distance,
+        penumbra,
         target,
-        isDirectionalLight,
-        isSpotLight,
         power,
     } = properties;
 
@@ -109,6 +112,13 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
         }
     }, []);
 
+    // set helper
+    useEffect(() => {
+        if (hasLight) {
+            setLightHelper(name, lightHelperRef.current);
+        }
+    }, [hasLight]);
+
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
         if (lightRef.current && selectedObject.name === name) {
@@ -121,6 +131,7 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
                 previousTransform.position &&
                 !position.equals(previousTransform.position)
             ) {
+                lightHelperRef.current?.update();
                 setTransforms(
                     { name: name },
                     {
@@ -146,7 +157,6 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
                 ref={lightRef}
                 name={name}
                 castShadow={castShadow}
-                isDirectionalLight={isDirectionalLight}
                 position={[
                     transforms.position.x,
                     transforms.position.y,
@@ -158,6 +168,7 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
             {hasLight && (
                 <directionalLightHelper
                     args={[lightRef.current, 1]}
+                    ref={lightHelperRef}
                     onClick={() => setOutline(true)}
                     onPointerMissed={() => setOutline(false)}
                     dispose={null}
@@ -182,12 +193,15 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
                     transforms.position.y,
                     transforms.position.z,
                 ]}
+                shadow-bias={shadowBias}
+                shadow-normalBias={shadowNormalBias}
                 {...props}
                 dispose={null}
             />
             {hasLight && (
                 <pointLightHelper
                     args={[lightRef.current, 0.7, "white"]}
+                    ref={lightHelperRef}
                     onClick={() => setOutline(true)}
                     onPointerMissed={() => setOutline(false)}
                     dispose={null}
@@ -208,7 +222,6 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
                 distance={distance}
                 penumbra={penumbra}
                 decay={decay}
-                isSpotLight={isSpotLight}
                 power={power}
                 position={[
                     transforms.position.x,
@@ -221,6 +234,7 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
             {hasLight && (
                 <spotLightHelper
                     args={[lightRef.current, "white"]}
+                    ref={lightHelperRef}
                     onClick={() => setOutline(true)}
                     onPointerMissed={() => setOutline(false)}
                     dispose={null}

@@ -1,82 +1,72 @@
-import dynamic from "next/dynamic";
-import { FC, useState } from "react";
+import { FC, startTransition, useState } from "react";
 import { Object3D } from "three";
 import {
     PropertiesCheckBoxInput,
-    PropertiesInputLabel,
-    PropertiesNumericBox,
+    PropertiesNumericInput,
     PropertiesTableLeftColumn,
     PropertiesTableRightColumn,
-    PropertiesTableRightColumnItem,
 } from "../PropertiesStyled.ts";
-
-const PositionProperties = dynamic(() =>
-    import("./TransformProperties.tsx").then((mod) => mod.PositionProperties)
-);
-const RotationProperties = dynamic(() =>
-    import("./TransformProperties.tsx").then((mod) => mod.RotationProperties)
-);
-const ScaleProperties = dynamic(() =>
-    import("./TransformProperties.tsx").then((mod) => mod.ScaleProperties)
-);
+import useStore from "@/app/utils/store.js";
 
 export const Object3DProperties: FC<{ name: string, object: Object3D }> = ({ name, object }) => {
-    const [value, setValue] = useState<boolean>(false);
+    const sceneCollection = useStore((state) => state.sceneCollection);
+    const setObjectProperty = useStore((state) => state.setObjectProperty);
+    const scene = useStore((state) => state.scene);
+    const setSceneProperties = useStore((state) => state.setSceneProperties);
+
+    const properties = sceneCollection[name]?.properties || scene.properties;
+
+    const [visible, setVisible] = useState<boolean>(properties.visible);
+    const [frustumCulled, setFrustumCulled] = useState<boolean>(properties.frustumCulled);
+    const [renderOrder, setRenderOrder] = useState<number>(properties.renderOrder);
+
+    const handleVisibleToggle = () => {
+        const value = !visible;
+        setVisible(value);
+        startTransition(() => {
+            if (name) {
+                setObjectProperty(name, "visible", value);
+            } else {
+                setSceneProperties("visible", value);
+            }
+        });
+        object.visible = value;
+    };
+    const handleFrustumCulledToggle = () => {
+        const value = !frustumCulled;
+        setFrustumCulled(value);
+        startTransition(() => {
+            if (name) {
+                setObjectProperty(name, "frustumCulled", value);
+            } else {
+                setSceneProperties("frustumCulled", value);
+            }
+        });
+        object.frustumCulled = value;
+    };
+    const handleRenderOrderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = parseFloat(e.target.value);
+        if (isNaN(value)) return;
+
+        object.renderOrder = value;
+        setRenderOrder(value);
+        startTransition(() => {
+            if (name) {
+                setObjectProperty(name, "renderOrder", value);
+            } else {
+                setSceneProperties("renderOrder", value);
+            }
+        });
+    };
+
     return (
         <>
-            <PositionProperties />
-            <RotationProperties />
-            <ScaleProperties />
-
-            <PropertiesTableLeftColumn>Shadow</PropertiesTableLeftColumn>
-            <PropertiesTableRightColumn>
-                <PropertiesTableRightColumnItem>
-                    <PropertiesCheckBoxInput
-                        type="checkbox"
-                        checked={object.castShadow === true}
-                        onChange={() => {
-                            object.castShadow = !object.castShadow;
-                            setValue(!value);
-                        }}
-                    />
-                    <PropertiesInputLabel
-                        onClick={() => {
-                            object.castShadow = !object.castShadow;
-                            setValue(!value);
-                        }}
-                    >
-                        Cast
-                    </PropertiesInputLabel>
-                </PropertiesTableRightColumnItem>
-                <PropertiesTableRightColumnItem>
-                    <PropertiesCheckBoxInput
-                        type="checkbox"
-                        checked={object.receiveShadow === true}
-                        onChange={() => {
-                            object.receiveShadow = !object.receiveShadow;
-                            setValue(!value);
-                        }}
-                    />
-                    <PropertiesInputLabel
-                        onClick={() => {
-                            object.receiveShadow = !object.receiveShadow;
-                            setValue(!value);
-                        }}
-                    >
-                        Receive
-                    </PropertiesInputLabel>
-                </PropertiesTableRightColumnItem>
-            </PropertiesTableRightColumn>
-
             <PropertiesTableLeftColumn>Visible</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
                 <PropertiesCheckBoxInput
                     type="checkbox"
-                    checked={object.visible === true}
-                    onChange={() => {
-                        object.visible = !object.visible;
-                        setValue(!value);
-                    }}
+                    checked={visible}
+                    onChange={handleVisibleToggle}
                 />
             </PropertiesTableRightColumn>
 
@@ -84,19 +74,18 @@ export const Object3DProperties: FC<{ name: string, object: Object3D }> = ({ nam
             <PropertiesTableRightColumn>
                 <PropertiesCheckBoxInput
                     type="checkbox"
-                    checked={object.frustumCulled === true}
-                    onChange={() => {
-                        object.frustumCulled = !object.frustumCulled;
-                        setValue(!value);
-                    }}
+                    checked={frustumCulled}
+                    onChange={handleFrustumCulledToggle}
                 />
             </PropertiesTableRightColumn>
 
             <PropertiesTableLeftColumn>Render Order</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>
-                <PropertiesNumericBox
+                <PropertiesNumericInput
                     type="number"
-                    defaultValue={object.renderOrder}
+                    min={0}
+                    defaultValue={renderOrder}
+                    onChange={handleRenderOrderChange}
                 />
             </PropertiesTableRightColumn>
         </>

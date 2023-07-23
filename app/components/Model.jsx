@@ -11,27 +11,33 @@ import {
 import { Select } from "@react-three/postprocessing";
 import { useFrame } from "@react-three/fiber";
 
-import useStore from "../utils/store";
-import globalObject from "../utils/globalObject";
+import useStore from "@/app/utils/store";
+import globalObject from "@/app/utils/globalObject";
 
-export const Model = ({ gltf, name, properties, ...props }) => {
+export const Model = ({ name, ...props }) => {
     const meshRef = useRef(null);
 
+    const results = useStore((state) => state.results);
     const selectedObject = useStore((state) => state.selectedObject);
     const sceneCollection = useStore((state) => state.sceneCollection);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const setTransforms = useStore((state) => state.setTransforms);
-    const environmentIntensity = useStore((state) => state.environmentIntensity);
+    const scene = useStore((state) => state.scene);
 
-    const position = sceneCollection[name]?.transforms?.position;
-    const rotation = sceneCollection[name]?.transforms?.rotation;
-    const scale = sceneCollection[name]?.transforms?.scale;
+    const { environmentIntensity } = scene.properties;
+
+    const position = sceneCollection[name].transforms?.position;
+    const rotation = sceneCollection[name].transforms?.rotation;
+    const scale = sceneCollection[name].transforms?.scale;
+
+    const gltf = results[name];
+    const { castShadow, receiveShadow, visible, frustumCulled, renderOrder } = sceneCollection[name].properties;
 
     // TODO: Figure out how to effectively use nodes and materials like GLTFJSX https://github.com/pmndrs/gltfjsx/blob/master/src/utils/parser.js
     // so that users can add the same models to the scene many times without sacrificing performance
     // const { nodes, materials } = useGraph(scene);
 
-    const scene = gltf.scene;
+    const gltfScene = gltf.scene;
     const animations = gltf.animations;
     const { actions } = useAnimations(animations, meshRef);
 
@@ -42,7 +48,7 @@ export const Model = ({ gltf, name, properties, ...props }) => {
     });
 
     const handleTransformChange = () => {
-        setTransforms({name: name}, {
+        setTransforms({ name: name }, {
             position: {
                 x: meshRef.current?.position.x,
                 y: meshRef.current?.position.y,
@@ -90,7 +96,7 @@ export const Model = ({ gltf, name, properties, ...props }) => {
                 });
                 if (meshIsMoved) {
                     startTransition(() => {
-                        setTransforms({name: name}, {
+                        setTransforms({ name: name }, {
                             position: {
                                 x: meshRef.current?.position.x,
                                 y: meshRef.current?.position.y,
@@ -118,22 +124,33 @@ export const Model = ({ gltf, name, properties, ...props }) => {
     useLayoutEffect(() => {
         Object.keys(actions).forEach((action) => actions[action]?.play());
 
-        scene.traverse((obj) => {
-            if (obj.isMesh) {
-                obj.castShadow = obj.receiveShadow = true;
-                obj.material.envMapIntensity = environmentIntensity;
-            }
-        });
+        // gltfScene.traverse((obj) => {
+        //     if (obj.isMesh) {
+        //         obj.castShadow = obj.receiveShadow = true;
+        //         obj.material.envMapIntensity = environmentIntensity;
+        //     }
+        // });
     }, []);
 
     useEffect(() => {
-        scene.traverse((obj) => {
+        gltfScene.traverse((obj) => {
             if (obj.isMesh) {
-                obj.castShadow = obj.receiveShadow = true;
                 obj.material.envMapIntensity = environmentIntensity;
             }
         });
     }, [environmentIntensity]);
+
+    useEffect(() => {
+        gltfScene.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.castShadow = castShadow;
+                obj.receiveShadow = receiveShadow;
+                obj.visible = visible;
+                obj.frustumCulled = frustumCulled;
+                obj.renderOrder = renderOrder;
+            }
+        });
+    }, [castShadow, receiveShadow, visible, frustumCulled, renderOrder]);
 
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
@@ -167,13 +184,12 @@ export const Model = ({ gltf, name, properties, ...props }) => {
             name={name}
             onClick={() => setOutline(true)}
             onPointerMissed={() => setOutline(false)}
-            {...properties}
             dispose={null}
         >
             <Select enabled={selectedObject?.name === name} dispose={null}>
                 <primitive
                     ref={meshRef}
-                    object={scene}
+                    object={gltfScene}
                     position={position && [position.x, position.y, position.z]}
                     rotation={rotation && [rotation.x, rotation.y, rotation.z]}
                     scale={scale && [scale.x, scale.y, scale.z]}
