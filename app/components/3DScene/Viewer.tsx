@@ -22,6 +22,7 @@ import OrbitGizmo from "../OrbitGizmo/OrbitGizmo.jsx";
 import useStore from "@/app/utils/store.js";
 import globalObject from "@/app/utils/globalObject.ts";
 import { PERFORMANCE_SETTINGS } from "@/app/utils/constants.ts";
+import { generateRandomString } from "@/app/utils/functions.ts";
 
 const AssignSceneToGlobal = dynamic(
     () =>
@@ -44,7 +45,8 @@ export const Viewer: React.FC = () => {
     const sceneCollection = useStore((state) => state.sceneCollection);
     const scene = useStore((state) => state.scene);
 
-    const { environment, environmentBackground } = scene.properties;
+    const { environment, environmentBackground, environmentIntensity } =
+        scene.properties;
 
     // generate scene whenever file array is changed
     useEffect(() => {
@@ -102,13 +104,18 @@ export const Viewer: React.FC = () => {
                         Object.keys(sceneCollection).map(
                             (name) =>
                                 sceneCollection[name].category === "light" && (
-                                    <Light key={name} name={name} />
+                                    <Light key={name + generateRandomString(5)} name={name} />
                                 )
                         )}
 
                     {Object.keys(results).length > 0 &&
                         Object.keys(results).map((name) => (
-                            <Model key={name} name={name} />
+                            <Model
+                                key={name + generateRandomString(5)}
+                                name={name}
+                                gltf={results[name]}
+                                envIntensity={environmentIntensity}
+                            />
                         ))}
                 </Selection>
 

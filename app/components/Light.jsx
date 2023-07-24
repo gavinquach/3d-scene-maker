@@ -17,8 +17,9 @@ import {
 import { extend, useFrame } from "@react-three/fiber";
 import { Select } from "@react-three/postprocessing";
 
-import useStore from "../utils/store";
-import globalObject from "../utils/globalObject";
+import useStore from "@/app/utils/store";
+import globalObject from "@/app/utils/globalObject";
+import { isObjectMoved } from "@/app/utils/functions";
 
 extend({ DirectionalLightHelper, PointLightHelper, SpotLightHelper });
 
@@ -53,32 +54,22 @@ const Light = ({ name, ...props }) => {
         power,
     } = properties;
 
-    const isMoved = () => {
-        if (!lightRef.current) return false;
-
-        return (
-            lightRef.current?.position.x !== 0 ||
-            lightRef.current?.position.y !== 0 ||
-            lightRef.current?.position.z !== 0 ||
-            lightRef.current?.rotation.x !== 0 ||
-            lightRef.current?.rotation.y !== 0 ||
-            lightRef.current?.rotation.z !== 0
-        );
-    };
-
     const setOutline = useCallback(
         (bool) => {
             if (!bool) {
                 if (selectedObject.object === null || selectedObject.name === null)
                     return;
-                else startTransition(() => setSelectedObject({ objectRef: globalObject.scene }));
+                else
+                    startTransition(() =>
+                        setSelectedObject({ objectRef: globalObject.scene })
+                    );
             } else {
                 if (selectedObject.name === name) return;
 
                 startTransition(() => {
                     setSelectedObject({ objectName: name, objectRef: lightRef.current });
                 });
-                if (isMoved) {
+                if (isObjectMoved(lightRef.current)) {
                     startTransition(() => {
                         setTransforms(
                             { name: name },
@@ -125,14 +116,14 @@ const Light = ({ name, ...props }) => {
 
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
-        if (lightRef.current && selectedObject.name === name) {
+        if (!lightRef.current) return;
+        if (selectedObject.name === name) {
             const { position } = lightRef.current;
             const previousTransform = previousTransformRef.current;
 
             // Check if the transform has changed
             if (
-                previousTransform &&
-                previousTransform.position &&
+                previousTransform?.position &&
                 !position.equals(previousTransform.position)
             ) {
                 lightHelperRef.current?.update();
