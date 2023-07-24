@@ -1,10 +1,17 @@
 import { FC, startTransition, useLayoutEffect } from "react";
 import { useThree } from "@react-three/fiber";
 import { PerspectiveCamera } from "three";
-import { OrbitControls } from "three-stdlib";
+import { OrbitControls, RGBELoader } from "three-stdlib";
 
-import globalObject from "../../utils/globalObject.ts";
-import useStore from "../../utils/store.js";
+import globalObject from "@/app/utils/globalObject.ts";
+import useStore from "@/app/utils/store.js";
+import { ENVMAP_LIST } from "@/app/utils/constants.ts";
+
+// Preload envmaps to avoid long loading time when switching envmaps
+const rgbeLoader = new RGBELoader();
+for (const [_, path] of Object.entries(ENVMAP_LIST)) {
+    rgbeLoader.load(path, () => { });
+}
 
 export const AssignSceneToGlobal: FC = () => {
     const scene = useThree((state) => state.scene);
