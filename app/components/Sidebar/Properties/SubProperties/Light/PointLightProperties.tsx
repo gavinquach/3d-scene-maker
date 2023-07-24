@@ -12,7 +12,7 @@ export const PointLightProperties: React.FC<{
     object: Object3D;
 }> = ({ name, object }) => {
     const sceneCollection = useStore((state) => state.sceneCollection);
-    const setObjectProperty = useStore((state) => state.setObjectProperty);
+    const updateObjectProperty = useStore((state) => state.updateObjectProperty);
 
     const lightProperties = sceneCollection[name].properties;
     const lightHelper = sceneCollection[name].helper;
@@ -26,7 +26,7 @@ export const PointLightProperties: React.FC<{
             if (object instanceof PointLight) {
                 setDistance(value);
                 startTransition(() => {
-                    setObjectProperty(name, "distance", value);
+                    updateObjectProperty(name, "distance", value);
                 });
                 object.distance = value;
                 lightHelper?.update();
@@ -40,7 +40,7 @@ export const PointLightProperties: React.FC<{
             if (object instanceof PointLight) {
                 setDecay(value);
                 startTransition(() => {
-                    setObjectProperty(name, "decay", value);
+                    updateObjectProperty(name, "decay", value);
                 });
                 object.decay = value;
                 lightHelper?.update();

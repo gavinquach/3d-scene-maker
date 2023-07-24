@@ -3,6 +3,7 @@ import { FC } from "react";
 import { Object3D, Scene } from "three";
 
 import useStore from "@/app/utils/store.js";
+
 import { BottomHalfHeaderText } from "../BottomHalf/BottomHalfStyled.ts";
 import { PropertiesTableContainer } from "./PropertiesStyled.ts";
 import { LIGHT_TYPES } from "@/app/utils/constants.ts";
@@ -10,16 +11,16 @@ import { CommonProperties } from "./SubProperties/CommonProperties.tsx";
 import { MeshProperties } from "./SubProperties/Mesh/MeshProperties.tsx";
 import { Object3DProperties } from "./SubProperties/Object3DProperties.tsx";
 import { SceneProperties } from "./SubProperties/SceneProperties.tsx";
+import { DirectionalLightProperties } from "./SubProperties/Light/DirectionalLightProperties.tsx";
+import { SpotLightProperties } from "./SubProperties/Light/SpotLightProperties.tsx";
+import { PointLightProperties } from "./SubProperties/Light/PointLightProperties.tsx";
 
-const CommonLightProperties = dynamic(() =>
-    import("./SubProperties/Light/CommonLightProperties.tsx").then(
-        (mod) => mod.CommonLightProperties
-    ), { ssr: false }
-);
-const LightProperties = dynamic(() =>
-    import("./SubProperties/Light/LightProperties.tsx").then(
-        (mod) => mod.LightProperties
-    ), { ssr: false }
+const CommonLightProperties = dynamic(
+    () =>
+        import("./SubProperties/Light/CommonLightProperties.tsx").then(
+            (mod) => mod.CommonLightProperties
+        ),
+    { ssr: false }
 );
 
 export const Properties: FC<{ objectCategory: number }> = ({
@@ -27,33 +28,40 @@ export const Properties: FC<{ objectCategory: number }> = ({
 }) => {
     const selectedObject = useStore((state) => state.selectedObject);
 
+    const { name, object, objRef } = selectedObject;
+
     return (
         <>
             {objectCategory === 0 && (
                 <>
                     <BottomHalfHeaderText>Properties</BottomHalfHeaderText>
                     <PropertiesTableContainer>
-                        <CommonProperties name={selectedObject.name} object={selectedObject.objRef} />
+                        <CommonProperties name={name} object={objRef} />
 
-                        {(selectedObject.objRef as Scene)?.isScene && (
-                            <SceneProperties />
-                        )}
+                        {(objRef as Scene)?.isScene && <SceneProperties />}
 
-                        {(selectedObject.objRef as Object3D)?.isObject3D &&
-                            (!LIGHT_TYPES.includes(
-                                (selectedObject.objRef as Object3D)?.type
-                            ) ? (
-                                <>
-                                    <MeshProperties name={selectedObject.name} object={selectedObject.objRef} />
-                                    <Object3DProperties name={selectedObject.name} object={selectedObject.objRef} />
-                                </>
+                        {(objRef as Object3D)?.isObject3D &&
+                            (!LIGHT_TYPES.includes((objRef as Object3D)?.type) ? (
+                                <MeshProperties key={name} name={name} object={objRef} />
                             ) : (
                                 <>
-                                    <CommonLightProperties name={selectedObject.name} object={selectedObject.objRef} />
-                                    <LightProperties />
-                                    <Object3DProperties name={selectedObject.name} object={selectedObject.objRef} />
+                                    <CommonLightProperties
+                                        key={name}
+                                        name={name}
+                                        object={objRef}
+                                    />
+                                    {object.type === "DirectionalLight" && (
+                                        <DirectionalLightProperties name={name} object={objRef} />
+                                    )}
+                                    {object.type === "SpotLight" && (
+                                        <SpotLightProperties name={name} object={objRef} />
+                                    )}
+                                    {object.type === "PointLight" && (
+                                        <PointLightProperties name={name} object={objRef} />
+                                    )}
                                 </>
                             ))}
+                        <Object3DProperties name={name} object={objRef} />
                     </PropertiesTableContainer>
                 </>
             )}

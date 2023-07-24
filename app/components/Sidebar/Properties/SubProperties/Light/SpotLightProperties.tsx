@@ -14,7 +14,7 @@ export const SpotLightProperties: React.FC<{
     object: Object3D;
 }> = ({ name, object }) => {
     const sceneCollection = useStore((state) => state.sceneCollection);
-    const setObjectProperty = useStore((state) => state.setObjectProperty);
+    const updateObjectProperty = useStore((state) => state.updateObjectProperty);
 
     const lightProperties = sceneCollection[name].properties;
     const lightHelper = sceneCollection[name].helper;
@@ -44,7 +44,7 @@ export const SpotLightProperties: React.FC<{
                 z: object.target.position.z,
             };
             startTransition(() => {
-                setObjectProperty(name, "target", target);
+                updateObjectProperty(name, "target", target);
             });
         }
     };
@@ -64,7 +64,7 @@ export const SpotLightProperties: React.FC<{
                 z: object.target.position.z,
             };
             startTransition(() => {
-                setObjectProperty(name, "target", target);
+                updateObjectProperty(name, "target", target);
             });
         }
     };
@@ -84,7 +84,7 @@ export const SpotLightProperties: React.FC<{
                 z: value,
             };
             startTransition(() => {
-                setObjectProperty(name, "target", target);
+                updateObjectProperty(name, "target", target);
             });
         }
     };
@@ -95,7 +95,7 @@ export const SpotLightProperties: React.FC<{
             if (object instanceof SpotLight) {
                 setAngle(value);
                 startTransition(() => {
-                    setObjectProperty(name, "angle", value);
+                    updateObjectProperty(name, "angle", value);
                 });
                 object.angle = value;
                 lightHelper?.update();
@@ -109,7 +109,7 @@ export const SpotLightProperties: React.FC<{
             if (object instanceof SpotLight) {
                 setDistance(value);
                 startTransition(() => {
-                    setObjectProperty(name, "distance", value);
+                    updateObjectProperty(name, "distance", value);
                 });
                 object.distance = value;
                 lightHelper?.update();
@@ -123,7 +123,7 @@ export const SpotLightProperties: React.FC<{
             if (object instanceof SpotLight) {
                 setDecay(value);
                 startTransition(() => {
-                    setObjectProperty(name, "decay", value);
+                    updateObjectProperty(name, "decay", value);
                 });
                 object.decay = value;
                 lightHelper?.update();
@@ -137,7 +137,7 @@ export const SpotLightProperties: React.FC<{
             if (object instanceof SpotLight) {
                 setPenumbra(value);
                 startTransition(() => {
-                    setObjectProperty(name, "penumbra", value);
+                    updateObjectProperty(name, "penumbra", value);
                 });
                 object.penumbra = value;
                 lightHelper?.update();

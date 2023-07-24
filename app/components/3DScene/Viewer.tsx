@@ -67,7 +67,7 @@ export const Viewer: React.FC = () => {
             gl={{ preserveDrawingBuffer: true }}
             shadows
             dpr={[1, 1.5]}
-            camera={{ position: [6, 5, -10], fov: 50, near: 0.001, far: 500 }}
+            camera={{ position: [6, 5, -10], fov: 50, near: 0.01, far: 500 }}
             performance={PERFORMANCE_SETTINGS}
         >
             <color attach="background" args={["#3B3B3B"]} />

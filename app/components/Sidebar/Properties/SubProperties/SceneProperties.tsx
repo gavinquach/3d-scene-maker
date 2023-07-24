@@ -14,7 +14,7 @@ import useStore from "@/app/utils/store.js";
 
 export const SceneProperties: React.FC = () => {
     const scene = useStore((state) => state.scene);
-    const setSceneProperties = useStore((state) => state.setSceneProperties);
+    const updateSceneProperty = useStore((state) => state.updateSceneProperty);
 
     const [environment, setEnvironment] = useState<string>(scene.properties.environment);
     const [envIntensity, setEnvIntensity] = useState<number>(scene.properties.environmentIntensity);
@@ -23,7 +23,7 @@ export const SceneProperties: React.FC = () => {
     const handleEnvironmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setEnvironment(e.target.value);
         startTransition(() => {
-            setSceneProperties("environment", e.target.value);
+            updateSceneProperty("environment", e.target.value);
         });
     };
 
@@ -31,7 +31,7 @@ export const SceneProperties: React.FC = () => {
         const value = !envBackground;
         setEnvBackground(value);
         startTransition(() => {
-            setSceneProperties("environmentBackground", value);
+            updateSceneProperty("environmentBackground", value);
         });
     };
 
@@ -39,7 +39,7 @@ export const SceneProperties: React.FC = () => {
         const value = parseFloat(e.target.value);
         startTransition(() => {
             setEnvIntensity(value);
-            setSceneProperties("environmentIntensity", value);
+            updateSceneProperty("environmentIntensity", value);
         });
     };
 
@@ -48,7 +48,7 @@ export const SceneProperties: React.FC = () => {
         if (!isNaN(value)) {
             startTransition(() => {
                 setEnvIntensity(value);
-                setSceneProperties("environmentIntensity", value);
+                updateSceneProperty("environmentIntensity", value);
             });
         }
     };

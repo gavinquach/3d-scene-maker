@@ -7,9 +7,8 @@ import {
     PropertiesTableRightColumn,
     PropertiesTableRightColumnItem,
 } from "../../PropertiesStyled.ts";
-import { PositionProperties } from "../TransformProperties.tsx";
-import { RotationProperties } from "../TransformProperties.tsx";
-import { ScaleProperties } from "../TransformProperties.tsx";
+import { TransformProperty } from "../TransformProperties.tsx";
+
 import useStore from "@/app/utils/store.js";
 
 export const MeshProperties: FC<{ name: string; object: Object3D }> = ({
@@ -17,9 +16,9 @@ export const MeshProperties: FC<{ name: string; object: Object3D }> = ({
     object,
 }) => {
     const sceneCollection = useStore((state) => state.sceneCollection);
-    const setObjectProperty = useStore((state) => state.setObjectProperty);
+    const updateObjectProperty = useStore((state) => state.updateObjectProperty);
     const scene = useStore((state) => state.scene);
-    const setSceneProperties = useStore((state) => state.setSceneProperties);
+    const updateSceneProperties = useStore((state) => state.updateSceneProperties);
 
     const properties = (object as Scene).isScene ? scene.properties : sceneCollection[name]?.properties;
 
@@ -33,12 +32,12 @@ export const MeshProperties: FC<{ name: string; object: Object3D }> = ({
         setCastShadow(value);
         startTransition(() => {
             if (name) {
-                setObjectProperty(name, "castShadow", value);
+                updateObjectProperty(name, "castShadow", value);
             } else {
-                setSceneProperties("castShadow", value);
+                updateSceneProperties("castShadow", value);
+                object.castShadow = value;
             }
         });
-        object.castShadow = value;
     };
 
     const handleReceiveShadowToggle = () => {
@@ -46,19 +45,19 @@ export const MeshProperties: FC<{ name: string; object: Object3D }> = ({
         setReceiveShadow(value);
         startTransition(() => {
             if (name) {
-                setObjectProperty(name, "receiveShadow", value);
+                updateObjectProperty(name, "receiveShadow", value);
             } else {
-                setSceneProperties("receiveShadow", value);
+                updateSceneProperties("receiveShadow", value);
+                object.receiveShadow = value;
             }
         });
-        object.receiveShadow = value;
     };
 
     return (
         <>
-            <PositionProperties />
-            <RotationProperties />
-            <ScaleProperties />
+            <TransformProperty mode="position" name={name} object={object} />
+            <TransformProperty mode="rotation" name={name} object={object} />
+            <TransformProperty mode="scale" name={name} object={object} />
 
             <PropertiesTableLeftColumn>Shadow</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>

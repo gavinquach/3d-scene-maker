@@ -17,18 +17,16 @@ import {
     PropertiesTableRightColumn,
     PropertiesTableRightColumnItem,
 } from "../../PropertiesStyled.ts";
-import useStore from "@/app/utils/store.js";
+import { TransformProperty } from "../TransformProperties.tsx";
 
-const PositionProperties = dynamic(() =>
-    import("../TransformProperties.tsx").then((mod) => mod.PositionProperties)
-);
+import useStore from "@/app/utils/store.js";
 
 export const CommonLightProperties: React.FC<{
     name: string;
     object: Object3D;
 }> = ({ name, object }) => {
     const sceneCollection = useStore((state) => state.sceneCollection);
-    const setObjectProperty = useStore((state) => state.setObjectProperty);
+    const updateObjectProperty = useStore((state) => state.updateObjectProperty);
 
     const lightProperties = sceneCollection[name].properties;
 
@@ -45,7 +43,7 @@ export const CommonLightProperties: React.FC<{
             object.color = new Color(e.target.value);
             startTransition(() => {
                 setColor(e.target.value);
-                setObjectProperty(name, "color", e.target.value);
+                updateObjectProperty(name, "color", e.target.value);
             });
         }
     };
@@ -61,7 +59,7 @@ export const CommonLightProperties: React.FC<{
                 object.intensity = value;
                 startTransition(() => {
                     setIntensity(value);
-                    setObjectProperty(name, "intensity", value);
+                    updateObjectProperty(name, "intensity", value);
                 });
             }
         }
@@ -79,7 +77,7 @@ export const CommonLightProperties: React.FC<{
             }
             setIntensity(value);
             startTransition(() => {
-                setObjectProperty(name, "intensity", value);
+                updateObjectProperty(name, "intensity", value);
             });
         }
     };
@@ -94,14 +92,14 @@ export const CommonLightProperties: React.FC<{
             object.castShadow = !object.castShadow;
             setShadow(value);
             startTransition(() => {
-                setObjectProperty(name, "castShadow", value);
+                updateObjectProperty(name, "castShadow", value);
             });
         }
     };
 
     return (
         <>
-            <PositionProperties />
+            <TransformProperty mode="position" name={name} object={object} />
 
             <PropertiesTableLeftColumn>Color</PropertiesTableLeftColumn>
             <PropertiesTableRightColumn>

@@ -10,9 +10,9 @@ import useStore from "@/app/utils/store.js";
 
 export const Object3DProperties: FC<{ name: string, object: Object3D }> = ({ name, object }) => {
     const sceneCollection = useStore((state) => state.sceneCollection);
-    const setObjectProperty = useStore((state) => state.setObjectProperty);
+    const updateObjectProperty = useStore((state) => state.updateObjectProperty);
     const scene = useStore((state) => state.scene);
-    const setSceneProperties = useStore((state) => state.setSceneProperties);
+    const updateSceneProperty = useStore((state) => state.updateSceneProperty);
 
     const properties = sceneCollection[name]?.properties || scene.properties;
 
@@ -25,9 +25,9 @@ export const Object3DProperties: FC<{ name: string, object: Object3D }> = ({ nam
         setVisible(value);
         startTransition(() => {
             if (name) {
-                setObjectProperty(name, "visible", value);
+                updateObjectProperty(name, "visible", value);
             } else {
-                setSceneProperties("visible", value);
+                updateSceneProperty("visible", value);
             }
         });
         object.visible = value;
@@ -37,9 +37,9 @@ export const Object3DProperties: FC<{ name: string, object: Object3D }> = ({ nam
         setFrustumCulled(value);
         startTransition(() => {
             if (name) {
-                setObjectProperty(name, "frustumCulled", value);
+                updateObjectProperty(name, "frustumCulled", value);
             } else {
-                setSceneProperties("frustumCulled", value);
+                updateSceneProperty("frustumCulled", value);
             }
         });
         object.frustumCulled = value;
@@ -52,9 +52,9 @@ export const Object3DProperties: FC<{ name: string, object: Object3D }> = ({ nam
         setRenderOrder(value);
         startTransition(() => {
             if (name) {
-                setObjectProperty(name, "renderOrder", value);
+                updateObjectProperty(name, "renderOrder", value);
             } else {
-                setSceneProperties("renderOrder", value);
+                updateSceneProperty("renderOrder", value);
             }
         });
     };

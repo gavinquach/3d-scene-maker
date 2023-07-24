@@ -13,7 +13,7 @@ export const DirectionalLightProperties: React.FC<{
     object: Object3D;
 }> = ({ name, object }) => {
     const sceneCollection = useStore((state) => state.sceneCollection);
-    const setObjectProperty = useStore((state) => state.setObjectProperty);
+    const updateObjectProperty = useStore((state) => state.updateObjectProperty);
 
     const lightProperties = sceneCollection[name].properties;
     const lightHelper = sceneCollection[name].helper;
@@ -36,7 +36,7 @@ export const DirectionalLightProperties: React.FC<{
                 z: object.target.position.z,
             };
             startTransition(() => {
-                setObjectProperty(name, "target", target);
+                updateObjectProperty(name, "target", target);
             });
         }
     };
@@ -54,7 +54,7 @@ export const DirectionalLightProperties: React.FC<{
                 z: object.target.position.z,
             };
             startTransition(() => {
-                setObjectProperty(name, "target", target);
+                updateObjectProperty(name, "target", target);
             });
         }
     };
@@ -72,7 +72,7 @@ export const DirectionalLightProperties: React.FC<{
                 z: value,
             };
             startTransition(() => {
-                setObjectProperty(name, "target", target);
+                updateObjectProperty(name, "target", target);
             });
         }
     };

@@ -32,27 +32,29 @@ const Light = ({ name, ...props }) => {
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const setLightHelper = useStore((state) => state.setLightHelper);
-    const setTransforms = useStore((state) => state.setTransforms);
+    const updateTransforms = useStore((state) => state.updateTransforms);
 
     const previousTransformRef = useRef({
         position: null,
     });
 
-    const { type, transforms, properties } = sceneCollection[name];
+    const type = sceneCollection[name]?.type;
+    const transforms = sceneCollection[name]?.transforms;
+    const properties = sceneCollection[name]?.properties;
 
-    const {
-        color,
-        intensity,
-        castShadow,
-        shadowBias,
-        shadowNormalBias,
-        angle,
-        decay,
-        distance,
-        penumbra,
-        target,
-        power,
-    } = properties;
+    // const {
+    //     color,
+    //     intensity,
+    //     castShadow,
+    //     shadowBias,
+    //     shadowNormalBias,
+    //     angle,
+    //     decay,
+    //     distance,
+    //     penumbra,
+    //     target,
+    //     power,
+    // } = properties;
 
     const setOutline = useCallback(
         (bool) => {
@@ -71,7 +73,7 @@ const Light = ({ name, ...props }) => {
                 });
                 if (isObjectMoved(lightRef.current)) {
                     startTransition(() => {
-                        setTransforms(
+                        updateTransforms(
                             { name: name },
                             {
                                 position: {
@@ -95,15 +97,22 @@ const Light = ({ name, ...props }) => {
                 }
             }
         },
-        [setSelectedObject, setTransforms, selectedObject]
+        [setSelectedObject, updateTransforms, selectedObject]
     );
 
     useLayoutEffect(() => {
         setHasLight(true);
 
         // set light target
-        if ((type === "DirectionalLight" || type === "SpotLight") && target) {
-            lightRef.current?.target?.position.set(target.x, target.y, target.z);
+        if (
+            (type === "DirectionalLight" || type === "SpotLight") &&
+            properties?.target
+        ) {
+            lightRef.current?.target?.position.set(
+                properties.target.x,
+                properties.target.y,
+                properties.target.z
+            );
         }
     }, []);
 
@@ -127,7 +136,7 @@ const Light = ({ name, ...props }) => {
                 !position.equals(previousTransform.position)
             ) {
                 lightHelperRef.current?.update();
-                setTransforms(
+                updateTransforms(
                     { name: name },
                     {
                         position: {
@@ -151,12 +160,14 @@ const Light = ({ name, ...props }) => {
             <directionalLight
                 ref={lightRef}
                 name={name}
-                castShadow={castShadow}
+                castShadow={properties.castShadow}
                 position={[
                     transforms.position.x,
                     transforms.position.y,
                     transforms.position.z,
                 ]}
+                shadow-bias={properties.shadowBias}
+                shadow-normalBias={properties.shadowNormalBias}
                 {...props}
                 dispose={null}
             />
@@ -177,19 +188,19 @@ const Light = ({ name, ...props }) => {
             <pointLight
                 ref={lightRef}
                 name={name}
-                castShadow={castShadow}
-                color={color}
-                decay={decay}
-                distance={distance}
-                intensity={intensity}
-                power={power}
+                castShadow={properties.castShadow}
+                color={properties.color}
+                decay={properties.decay}
+                distance={properties.distance}
+                intensity={properties.intensity}
+                power={properties.power}
+                shadow-bias={properties.shadowBias}
+                shadow-normalBias={properties.shadowNormalBias}
                 position={[
                     transforms.position.x,
                     transforms.position.y,
                     transforms.position.z,
                 ]}
-                shadow-bias={shadowBias}
-                shadow-normalBias={shadowNormalBias}
                 {...props}
                 dispose={null}
             />
@@ -210,14 +221,16 @@ const Light = ({ name, ...props }) => {
             <spotLight
                 ref={lightRef}
                 name={name}
-                castShadow={castShadow}
-                angle={angle}
-                color={color}
-                intensity={intensity}
-                distance={distance}
-                penumbra={penumbra}
-                decay={decay}
-                power={power}
+                castShadow={properties.castShadow}
+                angle={properties.angle}
+                color={properties.color}
+                intensity={properties.intensity}
+                distance={properties.distance}
+                penumbra={properties.penumbra}
+                decay={properties.decay}
+                power={properties.power}
+                shadow-bias={properties.shadowBias}
+                shadow-normalBias={properties.shadowNormalBias}
                 position={[
                     transforms.position.x,
                     transforms.position.y,

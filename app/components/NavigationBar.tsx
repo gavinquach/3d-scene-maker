@@ -39,14 +39,13 @@ export const NavigationBar: FC = () => {
     const sceneCollection = useStore((state) => state.sceneCollection);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSameFiles = useStore((state) => state.setSameFiles);
-    const setScene = useStore((state) => state.setScene);
+    const setSceneData = useStore((state) => state.setSceneData);
 
     const readSceneData: (
         event: React.ChangeEvent<HTMLInputElement>
     ) => Promise<void> = useCallback(
         async (event: React.ChangeEvent<HTMLInputElement>) => {
             const file: File | undefined = event.target.files?.[0];
-            console.log("file", file);
 
             // Reset the input field to allow uploading the same file again
             event.target.value = generateRandomString(Math.random() * 10);
@@ -83,17 +82,13 @@ export const NavigationBar: FC = () => {
                 console.error("Error handling file:", error);
             }
 
-            console.log("parsedData", parsedData);
-
             globalObject.canGenerate = false;
-            startTransition(() => {
-                clearAll();
-                addFiles(binFilesMap);
-                setScene(parsedData.scene);
-                loadGLTF(parsedData.collection);
-            });
+            clearAll();
+            addFiles(binFilesMap);
+            setSceneData(parsedData.scene);
+            loadGLTF(parsedData.collection);
         },
-        [addFiles, clearAll, loadGLTF, setScene]
+        [addFiles, clearAll, loadGLTF, setSceneData]
     );
 
     const exportSceneData: () => Promise<void> = useCallback(async () => {

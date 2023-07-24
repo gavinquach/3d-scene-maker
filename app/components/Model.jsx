@@ -22,10 +22,14 @@ const Model = ({ name, gltf, envIntensity, ...props }) => {
     const selectedObject = useStore((state) => state.selectedObject);
     const sceneCollection = useStore((state) => state.sceneCollection);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
-    const setTransforms = useStore((state) => state.setTransforms);
+    const updateTransforms = useStore((state) => state.updateTransforms);
 
-    const { position, rotation, scale } = sceneCollection[name].transforms;
-    const { castShadow, receiveShadow, visible, frustumCulled, renderOrder } = sceneCollection[name].properties;
+    const position = sceneCollection[name]?.transforms.position;
+    const rotation = sceneCollection[name]?.transforms.rotation;
+    const scale = sceneCollection[name]?.transforms.scale;
+
+    const { castShadow, receiveShadow, visible, frustumCulled, renderOrder } =
+        sceneCollection[name]?.properties;
 
     const { scene, animations } = useMemo(() => gltf, []);
     const { actions } = useAnimations(animations, meshRef);
@@ -37,7 +41,7 @@ const Model = ({ name, gltf, envIntensity, ...props }) => {
     });
 
     const handleTransformChange = useCallback(() => {
-        setTransforms(
+        updateTransforms(
             { name: name },
             {
                 position: {
@@ -75,7 +79,7 @@ const Model = ({ name, gltf, envIntensity, ...props }) => {
                 });
                 if (isObjectMoved(meshRef.current)) {
                     startTransition(() => {
-                        setTransforms(
+                        updateTransforms(
                             { name: name },
                             {
                                 position: {
@@ -99,7 +103,7 @@ const Model = ({ name, gltf, envIntensity, ...props }) => {
                 }
             }
         },
-        [setSelectedObject, setTransforms, selectedObject]
+        [setSelectedObject, updateTransforms, selectedObject]
     );
 
     // play animations
@@ -112,24 +116,24 @@ const Model = ({ name, gltf, envIntensity, ...props }) => {
         setGLTFEnvIntensity(meshRef.current, envIntensity);
     }, [envIntensity]);
 
-    // useEffect(() => {
-    //     console.log("properties changed");
-    //     // console.log("castShadow", castShadow);
-    //     // console.log("receiveShadow", receiveShadow);
-    //     // console.log("visible", visible);
-    //     // console.log("frustumCulled", frustumCulled);
-    //     // console.log("renderOrder", renderOrder);
+    useEffect(() => {
+        console.log("properties changed");
+        // console.log("castShadow", castShadow);
+        // console.log("receiveShadow", receiveShadow);
+        // console.log("visible", visible);
+        // console.log("frustumCulled", frustumCulled);
+        // console.log("renderOrder", renderOrder);
 
-    //     meshRef.current?.traverse((obj) => {
-    //         if (obj.isMesh) {
-    //             obj.castShadow = castShadow;
-    //             obj.receiveShadow = receiveShadow;
-    //             obj.visible = visible;
-    //             obj.frustumCulled = frustumCulled;
-    //             obj.renderOrder = renderOrder;
-    //         }
-    //     });
-    // }, [castShadow, receiveShadow, visible, frustumCulled, renderOrder]);
+        meshRef.current?.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.castShadow = castShadow;
+                obj.receiveShadow = receiveShadow;
+                obj.visible = visible;
+                obj.frustumCulled = frustumCulled;
+                obj.renderOrder = renderOrder;
+            }
+        });
+    }, [castShadow, receiveShadow, visible, frustumCulled, renderOrder]);
 
     // Use the useFrame hook to check for transform changes
     useFrame(() => {
