@@ -28,10 +28,10 @@ const AssignSceneToGlobal = dynamic(
         import("./AssignSceneToGlobal.tsx").then((mod) => mod.AssignSceneToGlobal),
     { ssr: true }
 );
-const Light = dynamic(() => import("../Light.jsx").then((mod) => mod.Light), {
+const Light = dynamic(() => import("../Light.jsx").then((mod) => mod.default), {
     ssr: true,
 });
-const Model = dynamic(() => import("../Model.jsx").then((mod) => mod.Model), {
+const Model = dynamic(() => import("../Model.jsx").then((mod) => mod.default), {
     ssr: true,
 });
 
@@ -65,7 +65,7 @@ export const Viewer: React.FC = () => {
             gl={{ preserveDrawingBuffer: true }}
             shadows
             dpr={[1, 1.5]}
-            camera={{ position: [6, 5, -10], fov: 50, near: 0.001, far: 1000 }}
+            camera={{ position: [6, 5, -10], fov: 50, near: 0.001, far: 500 }}
             performance={PERFORMANCE_SETTINGS}
         >
             <color attach="background" args={["#3B3B3B"]} />
@@ -99,27 +99,17 @@ export const Viewer: React.FC = () => {
                     </EffectComposer>
 
                     {Object.keys(sceneCollection).length > 0 &&
-                        Object.keys(sceneCollection).map((name) => {
-                            const { type, transforms, properties } = sceneCollection[name];
-                            if (sceneCollection[name].category === "light") {
-                                return (
-                                    <Light
-                                        key={name}
-                                        name={name}
-                                        transforms={transforms}
-                                        type={type}
-                                        properties={properties}
-                                    />
-                                );
-                            }
-                        })}
+                        Object.keys(sceneCollection).map(
+                            (name) =>
+                                sceneCollection[name].category === "light" && (
+                                    <Light key={name} name={name} />
+                                )
+                        )}
 
                     {Object.keys(results).length > 0 &&
-                        Object.keys(results).map((name) => {
-                            return (
-                                <Model key={name} name={name} />
-                            );
-                        })}
+                        Object.keys(results).map((name) => (
+                            <Model key={name} name={name} />
+                        ))}
                 </Selection>
 
                 {selectedObject?.object && (

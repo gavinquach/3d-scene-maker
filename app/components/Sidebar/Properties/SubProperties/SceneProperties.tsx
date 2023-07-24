@@ -1,5 +1,5 @@
 import React, { startTransition, useState } from "react";
-import { ENVMAP_PATH } from "@/app/utils/constants.ts";
+import { ENVMAP_LIST, ENVMAP_PATH } from "@/app/utils/constants.ts";
 import {
     PropertiesCheckBoxInput,
     PropertiesNumericInput,
@@ -21,7 +21,6 @@ export const SceneProperties: React.FC = () => {
     const [envBackground, setEnvBackground] = useState<boolean>(scene.properties.environmentBackground);
 
     const handleEnvironmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log(e.target.value);
         setEnvironment(e.target.value);
         startTransition(() => {
             setSceneProperties("environment", e.target.value);
@@ -54,22 +53,8 @@ export const SceneProperties: React.FC = () => {
         }
     };
 
-    const dreiBackgroundList = {
-        "none": "",
-        "apartment": `${ENVMAP_PATH}/lebombo_1k.hdr`,
-        "city": `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
-        "dawn": `${ENVMAP_PATH}/kiara_1_dawn_1k.hdr`,
-        "forest": `${ENVMAP_PATH}/forest_slope_1k.hdr`,
-        "lobby": `${ENVMAP_PATH}/st_fagans_interior_1k.hdr`,
-        "night": `${ENVMAP_PATH}/dikhololo_night_1k.hdr`,
-        "park": `${ENVMAP_PATH}/rooitou_park_1k.hdr`,
-        "studio": `${ENVMAP_PATH}/studio_small_03_1k.hdr`,
-        "sunset": `${ENVMAP_PATH}/venice_sunset_1k.hdr`,
-        "warehouse": `${ENVMAP_PATH}/empty_warehouse_01_1k.hdr`,
-    };
-
     const dreiBackgroundOptionComponents: React.ReactNode[] =
-        Object.entries(dreiBackgroundList).map((env) => (
+        Object.entries(ENVMAP_LIST).map((env) => (
             <PropertiesOption
                 value={env[1]}
                 key={env[0]}

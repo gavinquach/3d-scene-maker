@@ -35,3 +35,17 @@ export const PERFORMANCE_SETTINGS = {
 };
 
 export const LIGHT_TYPES = ["DirectionalLight", "PointLight", "SpotLight"];
+
+export const ENVMAP_LIST = {
+    "none": "",
+    "apartment": `${ENVMAP_PATH}/lebombo_1k.hdr`,
+    "city": `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
+    "dawn": `${ENVMAP_PATH}/kiara_1_dawn_1k.hdr`,
+    "forest": `${ENVMAP_PATH}/forest_slope_1k.hdr`,
+    "lobby": `${ENVMAP_PATH}/st_fagans_interior_1k.hdr`,
+    "night": `${ENVMAP_PATH}/dikhololo_night_1k.hdr`,
+    "park": `${ENVMAP_PATH}/rooitou_park_1k.hdr`,
+    "studio": `${ENVMAP_PATH}/studio_small_03_1k.hdr`,
+    "sunset": `${ENVMAP_PATH}/venice_sunset_1k.hdr`,
+    "warehouse": `${ENVMAP_PATH}/empty_warehouse_01_1k.hdr`,
+};

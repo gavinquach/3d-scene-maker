@@ -133,32 +133,6 @@ const useStore = create((set, get) => ({
             },
         }));
     },
-    deleteObject: (objectName) => {
-        if (objectName === null) return;
-        set((state) => ({
-            selectedObject: { name: "", object: null, objRef: globalObject.scene },
-            files: Object.fromEntries(
-                Object.entries(state.files).filter(([key]) => key !== objectName)
-            ),
-            results: Object.fromEntries(
-                Object.entries(state.results).filter(([key]) => key !== objectName)
-            ),
-            sceneCollection: Object.fromEntries(
-                Object.entries(state.sceneCollection).filter(
-                    ([key]) => key !== objectName
-                )
-            ),
-        }));
-    },
-    clearAll: () => {
-        set({
-            selectedObject: { name: "", object: null, objRef: globalObject.scene },
-            files: {},
-            results: {},
-            sceneCollection: {},
-            sameFiles: false,
-        });
-    },
     setSelectedObject: (objectObject) => {
         const { objectName, objectRef } = objectObject;
         if (objectName === null && objectRef === null) return;
@@ -269,6 +243,58 @@ const useStore = create((set, get) => ({
                 },
             },
         }));
+    },
+    deleteObject: (objectName) => {
+        if (objectName === null) return;
+        set((state) => ({
+            selectedObject: { name: "", object: null, objRef: globalObject.scene },
+            files: Object.fromEntries(
+                Object.entries(state.files).filter(([key]) => key !== objectName)
+            ),
+            results: Object.fromEntries(
+                Object.entries(state.results).filter(([key]) => key !== objectName)
+            ),
+            sceneCollection: Object.fromEntries(
+                Object.entries(state.sceneCollection).filter(
+                    ([key]) => key !== objectName
+                )
+            ),
+        }));
+    },
+    clearAll: () => {
+        set({
+            files: {},
+            results: {},
+            sceneCollection: {},
+            sameFiles: false,
+            transformMode: "translate",
+            selectedObject: { name: "", object: null, objRef: globalObject.scene },
+            scene: {
+                camera: {
+                    fov: 50,
+                    near: 0.01,
+                    far: 500,
+                    position: { x: 6, y: 5, z: -10 },
+                    rotation: { x: 0, y: 0, z: 0 },
+                    target: { x: 0, y: 0, z: 0 },
+                },
+                transforms: {
+                    position: { x: 0, y: 0, z: 0 },
+                    rotation: { x: 0, y: 0, z: 0 },
+                    scale: { x: 1, y: 1, z: 1 },
+                },
+                properties: {
+                    environment: `${ENVMAP_PATH}/potsdamer_platz_1k.hdr`,
+                    environmentBackground: true,
+                    environmentIntensity: 0.5,
+                    castShadow: false,
+                    receiveShadow: false,
+                    visible: true,
+                    frustumCulled: true,
+                    renderOrder: 0,
+                },
+            },
+        });
     },
 }));
 

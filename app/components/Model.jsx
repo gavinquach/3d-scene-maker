@@ -2,6 +2,7 @@
 
 import { useAnimations } from "@react-three/drei";
 import {
+    memo,
     startTransition,
     useCallback,
     useEffect,
@@ -14,7 +15,7 @@ import { useFrame } from "@react-three/fiber";
 import useStore from "@/app/utils/store";
 import globalObject from "@/app/utils/globalObject";
 
-export const Model = ({ name, ...props }) => {
+const Model = ({ name, ...props }) => {
     const meshRef = useRef(null);
 
     const results = useStore((state) => state.results);
@@ -200,3 +201,5 @@ export const Model = ({ name, ...props }) => {
         </mesh>
     );
 };
+
+export default memo(Model);

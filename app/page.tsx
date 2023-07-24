@@ -1,6 +1,6 @@
 "use client";
 
-import { JSX } from "react";
+import { JSX, MouseEvent } from "react";
 import { Sidebar } from "./components/Sidebar/Sidebar.tsx";
 import { NavigationBar } from "./components/NavigationBar.tsx";
 import { ToolShelf } from "./components/HUD/ToolShelf/ToolShelf.tsx";
@@ -25,7 +25,7 @@ export default function Home(): JSX.Element {
             <p
                 style={{ zIndex: 1000 }}
                 className="fixed bottom-2 right-2 cursor-default select-none hover:cursor-pointer"
-                onClick={(e) => {
+                onClick={(e: MouseEvent) => {
                     e.stopPropagation();
                     window.open("https://github.com/gavinquach/", "_blank", "noreferrer");
                 }}

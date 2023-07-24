@@ -1,6 +1,7 @@
 "use client";
 
 import {
+    memo,
     startTransition,
     useCallback,
     useEffect,
@@ -21,11 +22,12 @@ import globalObject from "../utils/globalObject";
 
 extend({ DirectionalLightHelper, PointLightHelper, SpotLightHelper });
 
-export const Light = ({ name, transforms, type, properties, ...props }) => {
+const Light = ({ name, ...props }) => {
     const [hasLight, setHasLight] = useState(false);
     const lightRef = useRef(null);
     const lightHelperRef = useRef(null);
 
+    const sceneCollection = useStore((state) => state.sceneCollection);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
     const setLightHelper = useStore((state) => state.setLightHelper);
@@ -34,6 +36,8 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
     const previousTransformRef = useRef({
         position: null,
     });
+
+    const { type, transforms, properties } = sceneCollection[name];
 
     const {
         color,
@@ -251,3 +255,5 @@ export const Light = ({ name, transforms, type, properties, ...props }) => {
         </Select>
     );
 };
+
+export default memo(Light);
