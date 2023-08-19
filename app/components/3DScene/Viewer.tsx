@@ -4,6 +4,7 @@ import {
     // BakeShadows,
     // ContactShadows,
     Environment,
+    Grid,
     OrbitControls,
     Preload,
     TransformControls,
@@ -76,7 +77,14 @@ export const Viewer: React.FC = () => {
             <Perf position="bottom-left" />
 
             <OrbitGizmo />
-            <gridHelper args={[1000, 1000, 0x000000, 0x808080]} />
+            <Grid
+                infiniteGrid={true}
+                cellThickness={1}
+                cellColor={0x808080}
+                sectionColor={0x909090}
+                sectionSize={3.0}
+                fadeDistance={80}
+            />
 
             {environment && (
                 <Environment
