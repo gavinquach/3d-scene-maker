@@ -1,11 +1,11 @@
 import { FC } from "react";
 import { SidebarWrapper } from "./SidebarStyled.ts";
-import { DirectoryTree } from "./DirectoryTree.tsx";
+import { UpperHalf } from "./UpperHalf/UpperHalf.tsx";
 import { BottomHalf } from "./BottomHalf/BottomHalf.tsx";
 
 export const Sidebar: FC = () => (
     <SidebarWrapper>
-        <DirectoryTree />
+        <UpperHalf />
         <BottomHalf />
     </SidebarWrapper>
 );

@@ -1,17 +1,13 @@
 import React, { startTransition, useEffect, useState } from "react";
 import { Scene } from "three";
-import styled from "styled-components";
-import useStore from "../../utils/store.js";
+
+import useStore from "../../../utils/store.js";
 import globalObject from "@/app/utils/globalObject.ts";
 import { generateRandomString } from "@/app/utils/functions.ts";
 
-const UpperHalfWrapper = styled.div`
-  height: 33.3%;
-  max-height: 35%;
-  overflow-y: auto;
-`;
+import { UpperHalfStyled } from "./UpperHalfStyled.ts";
 
-export const DirectoryTree: React.FC = () => {
+export const UpperHalf: React.FC = () => {
     const sceneCollection = useStore((state) => state.sceneCollection);
     const selectedObject = useStore((state) => state.selectedObject);
     const setSelectedObject = useStore((state) => state.setSelectedObject);
@@ -55,7 +51,7 @@ export const DirectoryTree: React.FC = () => {
     };
 
     return (
-        <UpperHalfWrapper>
+        <UpperHalfStyled>
             <ul className="directory-tree select-none list-none">
                 <li className="mb-2">
                     <ul>
@@ -90,6 +86,6 @@ export const DirectoryTree: React.FC = () => {
                     </ul>
                 </li>
             </ul>
-        </UpperHalfWrapper>
+        </UpperHalfStyled>
     );
 };

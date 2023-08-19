@@ -3,6 +3,7 @@
 import { JSX } from "react";
 import { Branding } from "./components/Branding.tsx";
 import { NavigationBar } from "./components/NavigationBar.tsx";
+import { Sidebar } from "./components/Sidebar/Sidebar.tsx";
 import { ToolShelf } from "./components/HUD/ToolShelf/ToolShelf.tsx";
 import { Viewer } from "./components/3DScene/Viewer.tsx";
 
